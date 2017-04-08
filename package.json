@@ -1,0 +1,41 @@
+{
+  "name": "nodecg-twitch-service",
+  "version": "0.0.1",
+  "description": "Provides Twitch channel, stream and chat information via NodeCG replicants",
+  "homepage": "https://github.com/helloitsdan/nodecg-twitch-service",
+  "author": {
+    "name": "dani quinn sexton",
+    "email": "dani@goneupinflames.com",
+    "url": "http://imakenicethin.gs"
+  },
+  "files": [
+    "dashboard",
+    "extension"
+  ],
+  "keywords": [
+    "nodecg-bundle"
+  ],
+  "nodecg": {
+    "compatibleRange": "~0.8.5",
+    "dashboardPanels": [
+      {
+        "name": "twitch-channel",
+        "title": "Twitch Channel",
+        "width": 2,
+        "file": "channel.html",
+        "headerColor": "#9f9bbd"
+      }
+    ]
+  },
+  "repository": "https://github.com/helloitsdan/nodecg-twitch-service.git",
+  "dependencies": {
+    "tmi.js": "^1.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.5.0",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-react": "^6.3.0",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-jsx-a11y": "^2.2.2"
+  }
+}
