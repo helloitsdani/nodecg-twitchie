@@ -7,9 +7,9 @@
   ],
   "rules": {
     "semi": ["error", "never"],
+    "comma-dangle": "off",
+    "global-require": "off",
     "no-confusing-arrow": "off",
-    "import/named": "error",
-    "import/default": "error",
-    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": "off",
   },
 }

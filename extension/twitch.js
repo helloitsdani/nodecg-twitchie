@@ -3,9 +3,9 @@ const tmi = require('tmi.js')
 const twitchAPI = {
   url: 'https://api.twitch.tv/kraken',
   methods: {
-    'channel': 'channels',
-    'stream': 'streams'
-  }
+    channel: 'channels',
+    stream: 'streams',
+  },
 }
 
 module.exports = (nodecg, { username, token }) => {
@@ -28,20 +28,20 @@ module.exports = (nodecg, { username, token }) => {
       username,
       password: `oauth:${token}`,
     },
-    channels: [ `#${channelId.value}` ]
+    channels: [`#${channelId.value}`]
   })
 
   const createAPIRequest = type => () => {
-    var apiURL = `${twitchAPI.url}/${twitchAPI.methods[type]}`
+    const apiURL = `${twitchAPI.url}/${twitchAPI.methods[type]}`
 
-    return new Promise(
-      (resolve, reject) => {
-        client.api({
+    return new Promise((resolve, reject) => {
+      client.api(
+        {
           url: `${apiURL}/${channelId.value}`,
           method: 'GET',
           headers: {
-            'Accept': 'application/vnd.twitchtv.v3+json',
-            'Authorization': token,
+            Accept: 'application/vnd.twitchtv.v3+json',
+            Authorization: token,
             'Client-ID': config.clientID
           }
         },
@@ -51,7 +51,7 @@ module.exports = (nodecg, { username, token }) => {
   }
 
   return {
-    client: client,
+    client,
     api: {
       getChannelInfo: createAPIRequest('channel'),
       getStreamInfo: createAPIRequest('stream')

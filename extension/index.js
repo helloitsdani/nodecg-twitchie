@@ -1,13 +1,23 @@
 const app = require('express')()
 const login = require('../../../lib/login')
 
-const isNodeCGConfigValid = config => (config.login.enabled && config.login.twitch.enabled)
+const isNodeCGConfigValid = config => (
+  config.login.enabled
+  && config.login.twitch.enabled
+)
 
-const isClientIDPresent = config => (config.clientID !== undefined)
+const isClientIDPresent = config => config.clientID !== undefined
 
-const isTwitchSession = session => (session.passport && session.passport.user && session.passport.user.provider === "twitch")
+const isTwitchSession = session => (
+  session.passport
+  && session.passport.user
+  && session.passport.user.provider === 'twitch'
+)
 
-const hasAccessDetails = session => (session.passport.user.username && session.passport.user.accessToken)
+const hasAccessDetails = session => (
+  session.passport.user.username
+  && session.passport.user.accessToken
+)
 
 module.exports = (nodecg) => {
   if (!isNodeCGConfigValid(nodecg.config)) {
@@ -19,18 +29,6 @@ module.exports = (nodecg) => {
   }
 
   let twitch
-
-  const handleConnect = (session) => {
-    if (!isTwitchSession(session) || !hasAccessDetails(session)) {
-      throw new Error("Invalid session data receieved")
-    }
-
-    if (twitch) {
-      performDisconnect()
-    }
-
-    return performConnect(session)
-  }
 
   const performConnect = (session) => {
     const { user } = session.passport
@@ -51,14 +49,6 @@ module.exports = (nodecg) => {
       })
   }
 
-  const handleDisconnect = () => {
-    if (!twitch) {
-      return
-    }
-
-    return performDisconnect()
-  }
-
   const performDisconnect = () => {
     twitch.client.disconnect()
       .then(() => {
@@ -69,10 +59,35 @@ module.exports = (nodecg) => {
       })
   }
 
+  const handleConnect = (session) => {
+    if (!isTwitchSession(session) || !hasAccessDetails(session)) {
+      throw new Error('Invalid session data receieved')
+    }
 
+    if (twitch) {
+      performDisconnect()
+    }
+
+    performConnect(session)
+  }
+
+  const handleDisconnect = () => {
+    if (!twitch) {
+      return
+    }
+
+    performDisconnect()
+  }
+
+
+  // listen for login and logout events emitted from nodecg's login module
   login.on('login', handleConnect)
   login.on('logout', handleDisconnect)
 
+  // create an express subapp with a route to refresh our the backend's twitch
+  // info based on the user's login stateh
+  // hitting this periodically from the dashboard allows us to keep in sync
+  // even if the user hasn't performed a login this browser/server session
   app.get(
     '/login/twitch/verify',
     (request, response) => {
@@ -90,8 +105,10 @@ module.exports = (nodecg) => {
     }
   )
 
+  // mount our refresh route under the main nodecg express app
   nodecg.mount(app)
 
+  // exposes a reference to the current twitch client for other modules to consume
   return {
     twitch,
   }
