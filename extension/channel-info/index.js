@@ -1,5 +1,7 @@
 let channelTimer
 
+const createChatHandlers = require('./handlers')
+
 module.exports = (nodecg, twitch) => {
   const config = nodecg.bundleConfig
 
@@ -13,8 +15,8 @@ module.exports = (nodecg, twitch) => {
     }
 
     Promise.all([
-      twitch.api.getChannelInfo(),
-      twitch.api.getStreamInfo(),
+      twitch.api.channel(),
+      twitch.api.stream(),
     ]).then((response) => {
       channelInfo.value = response[0]
       streamInfo.value = response[1]
@@ -27,8 +29,5 @@ module.exports = (nodecg, twitch) => {
 
   channelId.on('change', update)
 
-  twitch.client.on('hosted', (channel, host, viewers) => nodecg.sendMessage('channel.hosted', { host, viewers }))
-
-  twitch.client.on('subscribe', (channel, username, method) => nodecg.sendMessage('channel.subscribe', { username, method }))
-  twitch.client.on('resub', (channel, username, months, message) => nodecg.sendMessage('channel.resub', { username, months, message }))
+  createChatHandlers(nodecg, twitch)
 }
