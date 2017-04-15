@@ -71,4 +71,20 @@ module.exports = (nodecg, twitch) => {
   chat.on('slowmode', (channel, enabled) => send('slowmode', { enabled }))
   chat.on('emoteonly', (channel, enabled) => send('emoteonly', { enabled }))
   chat.on('r9kbeta', (channel, enabled) => send('r9kbeta', { enabled }))
+
+  // handle channel-related updates which twitch sends through chat
+  chat.on(
+    'hosted',
+    (channel, host, viewers) => send('hosted', { host, viewers })
+  )
+
+  chat.on(
+    'subscribe',
+    (channel, username, method) => send('subscribe', { username, method })
+  )
+
+  chat.on(
+    'resub',
+    (channel, username, months, message) => send('resub', { username, months, message })
+  )
 }

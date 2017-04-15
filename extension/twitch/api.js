@@ -3,22 +3,32 @@ const querystring = require('querystring')
 const twitchAPI = {
   url: 'https://api.twitch.tv/kraken',
   resources: {
-    channel: 'channels/{{channelId}}',
-    stream: 'streams/{{channelId}}',
+    users: 'users',
+    channel: 'channels/{{id}}',
+    stream: 'streams/{{id}}',
   },
 }
 
 module.exports = (nodecg, client, token) => {
-  const channelId = nodecg.Replicant('channel.id')
-  const { clientID } = nodecg.bundleConfig
+  const {
+    clientID,
+    timeBetweenRetries = 30000,
+  } = nodecg.bundleConfig
 
-  const apiRequest = ({
+  const channelId = nodecg.Replicant('channel.id')
+  const userInfo = nodecg.Replicant('user.info')
+  const userId = nodecg.Replicant('user.id')
+
+  let userInfoRequest = Promise.resolve()
+  let userInfoRequestRetryTimeout
+
+  const createApiRequest = ({
     resource,
     params = {},
     method = 'GET',
   } = {}) => {
     const url = `${twitchAPI.url}/${twitchAPI.resources[resource]}`
-      .replace('{{channelId}}', channelId.value)
+      .replace('{{id}}', userId.value)
 
     const paramString = querystring.stringify(params)
 
@@ -38,14 +48,55 @@ module.exports = (nodecg, client, token) => {
     })
   }
 
+  // creating API requests through this method allows you to ensure that
+  // the current channel name has been resolved to a twitch userId
+  const createIdentifiedApiRequest = params => (
+    userInfoRequest
+      .then(() => createApiRequest(params))
+  )
+
+  const fetchUserInfoFor = (newChannelId) => {
+    userId.value = null
+    userInfo.value = null
+    userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
+
+    userInfoRequest = createApiRequest({
+      resource: 'users',
+      params: { login: newChannelId },
+    })
+      .then(({ users }) => {
+        if (!users || users.length <= 0) {
+          throw new Error(`Could not retrieve user information for ${newChannelId}`)
+        }
+
+        // eslint-disable-next-line no-underscore-dangle
+        userId.value = users[0]._id
+        userInfo.value = users[0]
+      })
+      .catch((error) => {
+        userInfoRequestRetryTimeout = setTimeout(
+          () => fetchUserInfoFor(newChannelId),
+          timeBetweenRetries
+        )
+
+        console.error(error)
+        throw error
+      })
+  }
+
+  // twitch api v5 requires that all requests use user ID, rather than
+  // channel name, so whenever the channel ID is changed we need to perform
+  // a lookup before any other API requests can happen
+  channelId.on('change', newChannelId => fetchUserInfoFor(newChannelId))
+
   // proxy convenience methods for performing API requests
   // rather than having to do api('channel', ...), this lets you
   // call api.channel(...)
-  return new Proxy(apiRequest, {
+  return new Proxy(createIdentifiedApiRequest, {
     get: (target, resource) => (
       resource in twitchAPI.resources
         ? ({ params, method } = {}) => (
-          apiRequest({
+          createIdentifiedApiRequest({
             resource,
             params,
             method

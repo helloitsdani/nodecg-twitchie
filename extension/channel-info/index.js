@@ -1,11 +1,11 @@
 let channelTimer
 
-const createChatHandlers = require('./handlers')
-
 module.exports = (nodecg, twitch) => {
-  const config = nodecg.bundleConfig
+  const {
+    timeBetweenUpdates = 60000
+  } = nodecg.bundleConfig
 
-  const channelId = nodecg.Replicant('channel.id')
+  const userId = nodecg.Replicant('user.id')
   const channelInfo = nodecg.Replicant('channel.info')
   const streamInfo = nodecg.Replicant('stream.info')
 
@@ -23,11 +23,15 @@ module.exports = (nodecg, twitch) => {
     }).catch((err) => {
       console.error('Couldn\'t retrieve channel info :()', err)
     }).then(() => {
-      channelTimer = setTimeout(update, config.timeBetweenUpdates || 60000)
+      channelTimer = setTimeout(update, timeBetweenUpdates)
     })
   }
 
-  channelId.on('change', update)
-
-  createChatHandlers(nodecg, twitch)
+  userId.on('change', (newUserId) => {
+    if (newUserId) {
+      update()
+    } else {
+      channelTimer = clearTimeout(channelTimer)
+    }
+  })
 }
