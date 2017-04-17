@@ -42,7 +42,7 @@ module.exports = (nodecg) => {
       token: user.accessToken
     })
 
-    twitch.client.connect()
+    twitch.connect()
       .then(() => {
         require('./chat')(nodecg, twitch)
         require('./channel-info')(nodecg, twitch)
@@ -50,7 +50,7 @@ module.exports = (nodecg) => {
   }
 
   const performDisconnect = () => {
-    twitch.client.disconnect()
+    twitch.disconnect()
       .then(() => {
         twitch = undefined
       })

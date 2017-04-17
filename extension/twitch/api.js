@@ -9,15 +9,17 @@ const twitchAPI = {
   },
 }
 
-module.exports = (nodecg, client, token) => {
+module.exports = (nodecg, twitch, token) => {
   const {
     clientID,
     timeBetweenRetries = 30000,
   } = nodecg.bundleConfig
 
-  const channelId = nodecg.Replicant('channel.id')
-  const userInfo = nodecg.Replicant('user.info')
-  const userId = nodecg.Replicant('user.id')
+  const {
+    channelId,
+    userInfo,
+    userId
+  } = twitch.replicants
 
   let userInfoRequest = Promise.resolve()
   let userInfoRequestRetryTimeout
@@ -33,7 +35,7 @@ module.exports = (nodecg, client, token) => {
     const paramString = querystring.stringify(params)
 
     return new Promise((resolve, reject) => {
-      client.api(
+      twitch.client.api(
         {
           url: `${url}?${paramString}`,
           method,
