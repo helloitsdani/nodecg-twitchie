@@ -17,7 +17,8 @@ module.exports = (nodecg, { username, token }) => {
       username,
       password: `oauth:${token}`,
     },
-    channels: [`#${replicants.channelId.value}`]
+    channels: [`#${replicants.channelId.value}`],
+    logger: nodecg.log,
   })
 
   const api = twitchAPI(nodecg, { client, replicants }, token)

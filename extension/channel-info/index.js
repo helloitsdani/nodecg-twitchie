@@ -47,7 +47,7 @@ module.exports = (nodecg, twitch) => {
         channelInfo.value = response.channel
         streamInfo.value = response.stream
       }).catch((err) => {
-        console.error('Couldn\'t retrieve channel info :()', err)
+        nodecg.log.error('Couldn\'t retrieve channel info :()', err)
       }).then(() => {
         updateTimeout = setTimeout(update, timeBetweenUpdates)
       })

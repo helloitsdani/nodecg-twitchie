@@ -93,12 +93,18 @@ module.exports = (nodecg) => {
     (request, response) => {
       const session = request.session
 
+      nodecg.log.debug('Token refresh endpoint hit...')
+
       if (!twitch) {
         try {
           handleConnect(session)
+          nodecg.log.debug('Connected to Twitch.')
         } catch (e) {
+          nodecg.log.error('Could not connect to Twitch!', e)
           return response.sendStatus(500)
         }
+      } else {
+        nodecg.log.debug('No update necessary.')
       }
 
       return response.sendStatus(200)

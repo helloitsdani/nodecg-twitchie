@@ -34,6 +34,8 @@ module.exports = (nodecg, twitch, token) => {
 
     const paramString = querystring.stringify(params)
 
+    nodecg.log.debug(`Performing ${method} request to '${url}?${paramString}'`)
+
     return new Promise((resolve, reject) => {
       twitch.client.api(
         {
@@ -81,7 +83,7 @@ module.exports = (nodecg, twitch, token) => {
           timeBetweenRetries
         )
 
-        console.error(error)
+        nodecg.log.error(error)
         throw error
       })
   }
