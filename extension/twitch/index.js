@@ -3,7 +3,10 @@ const twitchAPI = require('./api')
 const createReplicants = require('./replicants')
 
 module.exports = (nodecg, { username, token }) => {
-  const replicants = createReplicants(nodecg, { channelId: username })
+  const replicants = createReplicants(
+    nodecg,
+    { 'channel.id': username }
+  )
 
   const client = tmi.client({
     options: {
@@ -17,7 +20,7 @@ module.exports = (nodecg, { username, token }) => {
       username,
       password: `oauth:${token}`,
     },
-    channels: [`#${replicants.channelId.value}`],
+    channels: [`#${replicants.channel.id.value}`],
     logger: nodecg.log,
   })
 

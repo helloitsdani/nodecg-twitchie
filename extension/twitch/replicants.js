@@ -13,10 +13,19 @@ module.exports = (nodecg, defaults = {}) => {
       )
     },
 
-    channelId: createReplicant('channel.id'),
-    channelInfo: createReplicant('channel.info'),
-    streamInfo: createReplicant('stream.info'),
-    userId: createReplicant('user.id'),
-    userInfo: createReplicant('user.info'),
+    channel: {
+      id: createReplicant('channel.id'),
+      info: createReplicant('channel.info'),
+      followers: createReplicant('channel.followers'),
+    },
+
+    stream: {
+      info: createReplicant('stream.info'),
+    },
+
+    user: {
+      id: createReplicant('user.id'),
+      info: createReplicant('user.info'),
+    },
   }
 }

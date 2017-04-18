@@ -5,6 +5,8 @@ const twitchAPI = {
   resources: {
     users: 'users',
     channel: 'channels/{{id}}',
+    editors: 'channels/{{id}}/editors',
+    followers: 'channels/{{id}}/follows',
     stream: 'streams/{{id}}',
   },
 }
@@ -16,9 +18,8 @@ module.exports = (nodecg, twitch, token) => {
   } = nodecg.bundleConfig
 
   const {
-    channelId,
-    userInfo,
-    userId
+    channel,
+    user,
   } = twitch.replicants
 
   let userInfoRequest = Promise.resolve()
@@ -30,7 +31,7 @@ module.exports = (nodecg, twitch, token) => {
     method = 'GET',
   } = {}) => {
     const url = `${twitchAPI.url}/${twitchAPI.resources[resource]}`
-      .replace('{{id}}', userId.value)
+      .replace('{{id}}', user.id.value)
 
     const paramString = querystring.stringify(params)
 
@@ -60,8 +61,8 @@ module.exports = (nodecg, twitch, token) => {
   )
 
   const fetchUserInfoFor = (newChannelId) => {
-    userId.value = null
-    userInfo.value = null
+    user.id.value = null
+    user.info.value = null
     userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
 
     userInfoRequest = createApiRequest({
@@ -74,8 +75,8 @@ module.exports = (nodecg, twitch, token) => {
         }
 
         // eslint-disable-next-line no-underscore-dangle
-        userId.value = users[0]._id
-        userInfo.value = users[0]
+        user.id.value = users[0]._id
+        user.info.value = users[0]
       })
       .catch((error) => {
         userInfoRequestRetryTimeout = setTimeout(
@@ -91,7 +92,7 @@ module.exports = (nodecg, twitch, token) => {
   // twitch api v5 requires that all requests use user ID, rather than
   // channel name, so whenever the channel ID is changed we need to perform
   // a lookup before any other API requests can happen
-  channelId.on('change', newChannelId => fetchUserInfoFor(newChannelId))
+  channel.id.on('change', newChannelId => fetchUserInfoFor(newChannelId))
 
   // proxy convenience methods for performing API requests
   // rather than having to do api('channel', ...), this lets you

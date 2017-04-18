@@ -1,9 +1,9 @@
 const createChatHandlers = require('./handlers')
 
 module.exports = (nodecg, twitch) => {
-  const channelId = nodecg.Replicant('channel.id')
+  const { channel } = twitch.replicants
 
-  channelId.on(
+  channel.id.on(
     'change',
     (newChannel, oldChannel) => {
       if (oldChannel) {
