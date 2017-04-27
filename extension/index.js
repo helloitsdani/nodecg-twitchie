@@ -101,7 +101,7 @@ module.exports = (nodecg) => {
           nodecg.log.debug('Connected to Twitch.')
         } catch (e) {
           nodecg.log.error('Could not connect to Twitch!', e)
-          return response.sendStatus(500)
+          return response.sendStatus(401)
         }
       } else {
         nodecg.log.debug('No update necessary.')

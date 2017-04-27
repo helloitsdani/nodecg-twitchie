@@ -1,4 +1,4 @@
-/*global nodecg,moment*/
+/* global nodecg, moment */
 
 (function () {
   const channelInfo = nodecg.Replicant('channel.info')
@@ -49,12 +49,12 @@
 
   channelInfo.on(
     'change',
-    newVal => stats.followers = newVal.followers
+    (newVal) => { stats.followers = newVal.followers }
   )
 
   streamInfo.on(
     'change',
-    newVal => {
+    (newVal) => {
       if (newVal.stream) {
         stats.viewers = newVal.stream.viewers
         stats.timer = newVal.stream.created_at
@@ -64,4 +64,4 @@
       }
     }
   )
-})()
+}())

@@ -1,4 +1,4 @@
-/*global nodecg*/
+/* global nodecg */
 
 (function () {
   const input = document.getElementById('channel.twitter')
@@ -8,7 +8,7 @@
 
   twitter.on(
     'change',
-    newVal => input.value = newVal
+    (newVal) => { input.value = newVal }
   )
 
   updateButton.addEventListener(
@@ -21,4 +21,4 @@
       }
     }
   )
-})()
+}())
