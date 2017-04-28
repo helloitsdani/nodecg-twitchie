@@ -1,10 +1,10 @@
 /* global nodecg */
 
 (() => {
+  const channelId = nodecg.Replicant('channel.id', 'nodecg-twitch-service')
+
   const input = document.getElementById('channel.id')
   const updateButton = document.getElementById('channel.update')
-
-  const channelId = nodecg.Replicant('channel.id')
 
   channelId.on(
     'change',
@@ -13,12 +13,6 @@
 
   updateButton.addEventListener(
     'click',
-    () => {
-      if (input.value) {
-        channelId.value = input.value
-      } else {
-        input.value = channelId.value
-      }
-    }
+    () => { channelId.value = input.value }
   )
 })()

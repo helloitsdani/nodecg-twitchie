@@ -37,11 +37,9 @@
   const pollForLoginStatus = () => verifyLogin()
     .then(() => {
       loggedInStatus.value = true
-      return true
     })
     .catch(() => {
       loggedInStatus.value = false
-      return false
     })
     .then(() => {
       setTimeout(pollForLoginStatus, timeBetweenUpdates)
