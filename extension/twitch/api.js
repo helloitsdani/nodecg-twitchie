@@ -61,8 +61,8 @@ module.exports = (nodecg, twitch, token) => {
   )
 
   const fetchUserInfoFor = (newChannelId) => {
-    user.id.value = null
-    user.info.value = null
+    user.id.value = undefined
+    user.info.value = undefined
     userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
 
     userInfoRequest = createApiRequest({

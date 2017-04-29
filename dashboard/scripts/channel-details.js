@@ -3,14 +3,27 @@
 (() => {
   const channelInfo = nodecg.Replicant('channel.info', 'nodecg-twitch-service')
   const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitch-service')
+  const loggedInStatus = nodecg.Replicant('login.status', 'nodecg-twitch-service')
 
   let streamStartedAt
 
   const elements = {
+    loginMessage: document.getElementById('login-message'),
+    channelInfo: document.getElementById('channel-info'),
+    loading: document.getElementById('loading'),
+    stats: document.getElementById('stats'),
     viewers: document.getElementById('stat.viewers'),
     followers: document.getElementById('stat.followers'),
-    timer: document.getElementById('stat.timer')
+    timer: document.getElementById('stat.timer'),
   }
+
+  loggedInStatus.on(
+    'change',
+    (isLoggedIn) => {
+      elements.loginMessage.style.display = isLoggedIn ? 'none' : 'block'
+      elements.channelInfo.style.display = isLoggedIn ? 'block' : 'none'
+    }
+  )
 
   const tick = () => {
     let timerText
@@ -27,33 +40,27 @@
 
   setInterval(tick, 1 * 1000)
 
-  const stats = {
-    set viewers(value) {
-      elements.viewers.innerHTML = value
-    },
-
-    set followers(value) {
-      elements.followers.innerHTML = value
-    },
-
-    set timer(value) {
-      streamStartedAt = value ? moment(value) : undefined
-      tick()
-    }
-  }
-
   channelInfo.on(
     'change',
     (channel) => {
-      stats.followers = channel ? channel.followers : 0
+      elements.loading.style.display = channel ? 'none' : 'block'
+      elements.stats.style.display = channel ? 'block' : 'none'
+    }
+  )
+
+  channelInfo.on(
+    'change',
+    ({ followers = 0 } = {}) => {
+      elements.followers.innerHTML = followers
     }
   )
 
   streamInfo.on(
     'change',
-    (info) => {
-      stats.viewers = info ? info.viewers : 0
-      stats.timer = info ? info.created_at : undefined
+    ({ viewers = 0, timer = 0 } = {}) => {
+      elements.viewers.innerHTML = viewers
+      streamStartedAt = timer ? moment(timer) : undefined
+      tick()
     }
   )
 })()

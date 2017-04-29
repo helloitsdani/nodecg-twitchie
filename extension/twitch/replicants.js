@@ -9,7 +9,7 @@ module.exports = (nodecg, defaults = {}) => {
   return {
     cleanup: () => {
       Object.keys(this).forEach(
-        (key) => { this[key].value = null }
+        (key) => { this[key].value = undefined }
       )
     },
 

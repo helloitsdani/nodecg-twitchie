@@ -48,9 +48,9 @@ module.exports = (nodecg, twitch) => {
   }
 
   user.id.on('change', (newUserId) => {
-    channel.info.value = null
-    channel.followers.value = null
-    stream.info.value = null
+    channel.info.value = undefined
+    channel.followers.value = undefined
+    stream.info.value = undefined
 
     if (newUserId) {
       update()
