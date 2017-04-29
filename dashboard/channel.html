@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="import" href="/components/paper-input/paper-input.html">
-  <link rel="import" href="/components/paper-button/paper-button.html">
-  <link rel="import" href="/components/paper-spinner/paper-spinner.html">
+  <link rel="import" href="components/paper-spinner/paper-spinner.html">
+  <link rel="import" href="components/nodecg-replicant-input/nodecg-replicant-input.html">
 
   <style>
     .loading {
@@ -55,7 +54,11 @@
   </section>
 
   <section class="channel-info" id="channel-info">
-    <paper-input label="Channel ID" id="channel.id"></paper-input>
+    <nodecg-replicant-input
+      label="Channel ID"
+      replicant-name="channel.id"
+      replicant-bundle="nodecg-twitch-service"
+    ></nodecg-replicant-input>
 
     <div id="loading" class="loading">
       <div class="loading__message">
@@ -86,15 +89,10 @@
         <span id="stat.timer">Offline</span>
       </div>
     </div>
-
-    <paper-button class="update" raised id="channel.update">
-      Update
-    </paper-button>
   </section>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>
+  <script src="components/moment/moment.js"></script>
   <script src="scripts/verify-login.js"></script>
-  <script src="scripts/channel-id.js"></script>
   <script src="scripts/channel-details.js"></script>
 </body>
 </html>

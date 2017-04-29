@@ -8,7 +8,8 @@
   "rules": {
     "semi": ["error", "never"],
     "comma-dangle": "off",
-    "global-require": "off",
+    "new-cap": "off",
+    "capitalized-comments": "off",
     "no-confusing-arrow": "off",
     "import/no-extraneous-dependencies": "off",
   },

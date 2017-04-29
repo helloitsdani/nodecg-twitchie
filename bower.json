@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "dependencies": {
     "paper-spinner": "^1.2.1",
-    "paper-input": "^1.1.24",
-    "paper-button": "^1.0.15"
+    "nodecg-replicant-input": "NodeCGElements/nodecg-replicant-input#0.4.0"
   }
 }

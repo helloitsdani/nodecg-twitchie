@@ -1,4 +1,5 @@
 const querystring = require('querystring')
+const debounce = require('debounce')
 
 const twitchAPI = {
   url: 'https://api.twitch.tv/kraken',
@@ -61,17 +62,17 @@ module.exports = (nodecg, twitch, token) => {
   )
 
   const fetchUserInfoFor = (newChannelId) => {
-    user.id.value = undefined
-    user.info.value = undefined
-    userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
-
     userInfoRequest = createApiRequest({
       resource: 'users',
       params: { login: newChannelId },
     })
       .then(({ users }) => {
         if (!users || users.length <= 0) {
-          throw new Error(`Could not retrieve user information for ${newChannelId}`)
+          user.id.value = undefined
+          user.info.value = { unknown: true }
+
+          nodecg.log.debug(`Twitch API found no users with the channel ID "${newChannelId}"`)
+          return
         }
 
         // eslint-disable-next-line no-underscore-dangle
@@ -84,15 +85,23 @@ module.exports = (nodecg, twitch, token) => {
           timeBetweenRetries
         )
 
-        nodecg.log.error(error)
+        nodecg.log.error('User lookup request failed!', error)
         throw error
       })
   }
 
+  const debouncedFetchUserInfoFor = debounce(fetchUserInfoFor, 500)
+
   // twitch api v5 requires that all requests use user ID, rather than
   // channel name, so whenever the channel ID is changed we need to perform
   // a lookup before any other API requests can happen
-  channel.id.on('change', newChannelId => fetchUserInfoFor(newChannelId))
+  channel.id.on('change', (newChannelId) => {
+    user.id.value = undefined
+    user.info.value = undefined
+    userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
+
+    debouncedFetchUserInfoFor(newChannelId)
+  })
 
   // proxy convenience methods for performing API requests
   // rather than having to do api('channel', ...), this lets you
