@@ -29,13 +29,13 @@ module.exports = (nodecg, twitch) => {
       id: userstate.id,
       type: userstate['message-type'],
       emotes: userstate.emotes,
-      content: messageText,
+      message: messageText,
     }
 
     send(message.type, {
       channel,
+      user: getUserInfo(userstate),
       message,
-      user: getUserInfo(userstate)
     })
   })
 
@@ -43,48 +43,75 @@ module.exports = (nodecg, twitch) => {
   // https://github.com/justintv/Twitch-API/blob/master/IRC.md#bits-message
   chat.on('cheer', (channel, userstate, message) => {
     send('cheer', {
+      channel,
+      user: getUserInfo(userstate),
       cheer: {
         message,
-        user: getUserInfo(userstate),
         bits: userstate.bits,
-      }
+      },
     })
   })
 
+  chat.on(
+    'subscription',
+    (channel, username, extra) => {
+      send('subscription', {
+        channel,
+        username,
+        resub: false,
+        prime: !!extra.prime,
+      })
+    }
+  )
+
+  chat.on(
+    'resub',
+    (channel, username, months, message, userstate, extra) => {
+      send('subscription', {
+        channel,
+        username,
+        months,
+        message,
+        resub: true,
+        prime: !!extra.prime,
+      })
+    }
+  )
+
   // handle when users have been naughty
   chat.on('ban', (channel, user, reason) => {
-    send('ban', { user, reason })
+    send('ban', { channel, user, reason })
   })
 
   chat.on('timeout', (channel, user, reason, duration) => {
-    send('timeout', { user, reason, duration })
+    send('timeout', { channel, user, reason, duration })
   })
 
   chat.on('clearchat', () => send('clear'))
 
   // join/part messages are batched and dispatched every 30 seconds or so
-  chat.on('join', (channel, username, self) => send('join', { username, self }))
-  chat.on('part', (channel, username, self) => send('part', { username, self }))
+  chat.on('join', (channel, username, self) => send('join', { channel, username, self }))
+  chat.on('part', (channel, username, self) => send('part', { channel, username, self }))
 
   // handle chat config modes
-  chat.on('subscribers', (channel, enabled) => send('subscribers', { enabled }))
-  chat.on('slowmode', (channel, enabled) => send('slowmode', { enabled }))
-  chat.on('emoteonly', (channel, enabled) => send('emoteonly', { enabled }))
-  chat.on('r9kbeta', (channel, enabled) => send('r9kbeta', { enabled }))
+  chat.on('subscribers', (channel, enabled) => send('subscribers', { channel, enabled }))
+  chat.on('slowmode', (channel, enabled) => send('slowmode', { channel, enabled }))
+  chat.on('emoteonly', (channel, enabled) => send('emoteonly', { channel, enabled }))
+  chat.on('r9kbeta', (channel, enabled) => send('r9kbeta', { channel, enabled }))
 
   // handle channel-related updates which twitch sends through chat
   chat.on(
     'hosted',
-    (channel, host, viewers) => send('hosted', { host, viewers })
+    (channel, host, viewers) => send('hosted', { channel, host, viewers })
   )
 
   chat.on(
-    'subscribe',
-    (channel, username, method) => send('subscribe', { username, method })
+    'hosting',
+    (channel, target, viewers) => send('hosted', { channel, target, viewers })
   )
 
   chat.on(
-    'resub',
-    (channel, username, months, message) => send('resub', { username, months, message })
+    'unhost',
+    (channel, viewers) => send('hosted', { channel, viewers })
   )
 }
