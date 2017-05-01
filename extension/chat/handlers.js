@@ -54,7 +54,7 @@ module.exports = (nodecg, twitch) => {
 
   chat.on(
     'subscription',
-    (channel, username, extra) => {
+    (channel, username, extra = {}) => {
       send('subscription', {
         channel,
         username,
@@ -66,7 +66,7 @@ module.exports = (nodecg, twitch) => {
 
   chat.on(
     'resub',
-    (channel, username, months, message, userstate, extra) => {
+    (channel, username, months, message, userstate, extra = {}) => {
       send('subscription', {
         channel,
         username,
@@ -107,11 +107,11 @@ module.exports = (nodecg, twitch) => {
 
   chat.on(
     'hosting',
-    (channel, target, viewers) => send('hosted', { channel, target, viewers })
+    (channel, target, viewers) => send('hosting', { channel, target, viewers })
   )
 
   chat.on(
     'unhost',
-    (channel, viewers) => send('hosted', { channel, viewers })
+    (channel, viewers) => send('unhost', { channel, viewers })
   )
 }

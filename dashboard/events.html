@@ -2,16 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
+  <link rel="import" href="components/iron-list/iron-list.html">
+  <link rel="import" href="components/paper-item/paper-item.html">
   <style>
+    .event-list {
+      height: 20em;
+    }
 
+    .event {
+      border-bottom: 0.075em solid #ccc;
+      padding: 0.5em 0;
+    }
+
+    .event:last-child {
+      border: none;
+    }
+
+    .event__timestamp {
+      width: 4em;
+      font-size: 0.85em;
+      flex: 0 0 auto;
+      font-weight: bold;
+    }
+
+    .event__subject {
+      font-weight: bold;
+    }
+
+    .event__subject,
+    .event__title {
+      display: inline-block;
+    }
+
+    .event__message {
+      font-size: 0.85em;
+      line-height: 1.1;
+    }
   </style>
 </head>
 <body>
   <section>
-    <ul id="event-history">
-      <li>i'm cute</li>
-    </ul>
+    <iron-list items=[] id="eventList" as="event" class="event-list">
+      <template>
+        <paper-item class="event">
+          <div class="event__timestamp">
+            [[event.timestamp]]
+          </div>
+
+          <paper-item-body two-line class="event__body">
+            <header class="event__header">
+              <div class="event__subject">[[event.subject]]</div>
+              <div class="event__title">[[event.action]]</div>
+            </header>
+
+            <div class="event__message">
+              [[event.message]]
+            </div>
+          </paper-item-body>
+        </paper-item>
+      </template>
+    </iron-list>
   </section>
+
+  <script src="components/moment/moment.js"></script>
+  <script src="scripts/events.js"></script>
 </body>
 </html>

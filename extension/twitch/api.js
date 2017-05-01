@@ -90,7 +90,7 @@ module.exports = (nodecg, twitch, token) => {
       })
   }
 
-  const debouncedFetchUserInfoFor = debounce(fetchUserInfoFor, 500)
+  const debouncedFetchUserInfoFor = debounce(fetchUserInfoFor, 1000)
 
   // twitch api v5 requires that all requests use user ID, rather than
   // channel name, so whenever the channel ID is changed we need to perform

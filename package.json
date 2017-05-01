@@ -30,8 +30,8 @@
       },
       {
         "name": "twitch-channel-events",
-        "title": "Twitch Events",
-        "width": 2,
+        "title": "Twitch Channel Events",
+        "width": 3,
         "file": "events.html",
         "headerColor": "#6441a5"
       }

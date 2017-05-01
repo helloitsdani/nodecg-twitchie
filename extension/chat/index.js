@@ -3,8 +3,12 @@ const createChatHandlers = require('./handlers')
 module.exports = (nodecg, twitch) => {
   const { channel, user } = twitch.replicants
 
-  const isUserInChannel = channelId =>
-    twitch.client.getChannels().includes(`#${channelId}`)
+  // channel IDs need to be normalised for use in twitch irc;
+  // trying to part #User won't actually make you leave #user
+  const getChatChannelFor = channelName => `#${channelName.toLowerCase()}`
+
+  const isUserInChannel = channelName =>
+    twitch.client.getChannels().includes(channelName)
 
   // leave chat immediately when channel ID is changed;
   // there might be a content reason we want to change ASAP
@@ -12,11 +16,17 @@ module.exports = (nodecg, twitch) => {
   channel.id.on(
     'change',
     (newChannel, oldChannel) => {
-      if (!oldChannel || !isUserInChannel(oldChannel)) {
+      if (!oldChannel) {
         return
       }
 
-      twitch.client.part(`#${oldChannel}`)
+      const channelToPart = getChatChannelFor(oldChannel)
+
+      if (!isUserInChannel(channelToPart)) {
+        return
+      }
+
+      twitch.client.part(channelToPart)
     }
   )
 
@@ -27,11 +37,12 @@ module.exports = (nodecg, twitch) => {
   user.id.on(
     'change',
     (newUserId) => {
-      if (!newUserId || isUserInChannel(channel.id.value)) {
+      if (!newUserId) {
         return
       }
 
-      twitch.client.join(`#${channel.id.value}`)
+      const channelToJoin = getChatChannelFor(channel.id.value)
+      twitch.client.join(channelToJoin)
     }
   )
 
