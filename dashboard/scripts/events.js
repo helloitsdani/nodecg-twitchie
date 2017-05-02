@@ -4,35 +4,42 @@
   const MAX_STORED_EVENTS = 100
   const eventList = document.getElementById('eventList')
 
-  const channelId = nodecg.Replicant('channel.id', 'nodecg-twitch-service')
-  const events = nodecg.Replicant('channel.events', 'nodecg-twitch-service', {
-    defaultValue: [],
+  const userId = nodecg.Replicant('user.id', 'nodecg-twitch-service')
+  const events = nodecg.Replicant('events', 'nodecg-twitch-service', {
+    defaultValue: {},
     persistent: true,
   })
 
-  channelId.on('change', (newVal, oldVal) => {
-    if (oldVal === undefined) {
-      return
+  const getEventsForCurrentChannel = () => {
+    if (!events.value || !userId.value) {
+      return []
     }
 
-    events.value = []
-  })
+    return events.value[userId.value] || []
+  }
 
-  events.on('change', (newVal) => {
-    eventList.items = newVal
-  })
+  const updateEventList = () => {
+    eventList.items = getEventsForCurrentChannel()
+  }
+
+  userId.on('change', updateEventList)
+  events.on('change', updateEventList)
 
   const addEvent = (subject, action, message) => {
-    const eventArray = (events.value || []).slice(0, MAX_STORED_EVENTS - 2)
+    const eventStore = events.value
+    const channelEvents = getEventsForCurrentChannel().slice(0, MAX_STORED_EVENTS - 2)
+    const timestamp = Date.now()
 
-    eventArray.unshift({
-      timestamp: moment(Date.now()).format('H:mm'),
+    channelEvents.unshift({
+      time: moment(timestamp).format('HH:mm'),
+      timestamp,
       subject,
       action,
       message,
     })
 
-    events.value = eventArray
+    eventStore[userId.value] = channelEvents
+    events.value = eventStore
   }
 
   // listen for exciting messages from Twitch to show on the dashboard
@@ -42,7 +49,7 @@
     'channel.follower',
     follower => addEvent(
       follower.user['display-name'] || follower.user.name,
-      'followed you!'
+      'followed'
     )
   )
 
@@ -50,7 +57,7 @@
     'chat.cheer',
     ({ user, cheer }) => addEvent(
       user['display-name'] || user.username,
-      `sent cheers! (${cheer.bits} bits)`,
+      `sent cheers (${cheer.bits} bits)`,
       cheer.message
     )
   )
@@ -60,8 +67,8 @@
     ({ username, resub, months, message }) => addEvent(
       username,
       resub
-        ? `resubscribed! (${months} months)`
-        : 'subscribed!',
+        ? `resubscribed (${months} months)`
+        : 'subscribed',
       message
     )
   )
@@ -70,7 +77,7 @@
     'chat.hosted',
     ({ host, viewers }) => addEvent(
       host,
-      `hosted you! (${viewers} viewers)`
+      `hosted (${viewers} viewers)`
     )
   )
 
