@@ -1,4 +1,4 @@
-module.exports = (nodecg, twitch) => {
+module.exports = (nodecg, events, twitch) => {
   const { channel } = twitch.replicants
 
   channel.followers.on(
@@ -14,7 +14,11 @@ module.exports = (nodecg, twitch) => {
         const isNewFollower = !followers.includes(follower.user.name)
 
         if (isNewFollower) {
-          nodecg.sendMessage('channel.follower', follower)
+          events.emitMessage({
+            scope: 'channel',
+            action: 'follower',
+            payload: follower,
+          })
         }
 
         return isNewFollower

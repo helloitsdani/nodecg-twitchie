@@ -1,4 +1,4 @@
-module.exports = (nodecg, defaults = {}) => {
+module.exports = (nodecg, events, defaults = {}) => {
   const createReplicant = name => nodecg.Replicant(
     name, 'nodecg-twitch-service', {
       defaultValue: defaults[name],

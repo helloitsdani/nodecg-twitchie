@@ -2,9 +2,10 @@ const tmi = require('tmi.js')
 const twitchAPI = require('./api')
 const createReplicants = require('./replicants')
 
-module.exports = (nodecg, { username, token }) => {
+module.exports = (nodecg, events, { username, token }) => {
   const replicants = createReplicants(
     nodecg,
+    events,
     { 'channel.id': username }
   )
 
@@ -24,7 +25,7 @@ module.exports = (nodecg, { username, token }) => {
     logger: nodecg.log,
   })
 
-  const api = twitchAPI(nodecg, { client, replicants }, token)
+  const api = twitchAPI(nodecg, events, { client, replicants }, token)
 
   const disconnect = () => {
     replicants.cleanup()

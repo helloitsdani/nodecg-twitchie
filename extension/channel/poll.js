@@ -1,6 +1,6 @@
 let updateTimeout
 
-module.exports = (nodecg, twitch) => {
+module.exports = (nodecg, events, twitch) => {
   const {
     timeBetweenUpdates = 60000
   } = nodecg.bundleConfig

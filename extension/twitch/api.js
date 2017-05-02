@@ -12,7 +12,7 @@ const twitchAPI = {
   },
 }
 
-module.exports = (nodecg, twitch, token) => {
+module.exports = (nodecg, events, twitch, token) => {
   const {
     clientID,
     timeBetweenRetries = 30000,

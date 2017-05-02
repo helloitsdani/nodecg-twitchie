@@ -1,6 +1,6 @@
 const createChatHandlers = require('./handlers')
 
-module.exports = (nodecg, twitch) => {
+module.exports = (nodecg, events, twitch) => {
   const { channel, user } = twitch.replicants
 
   // channel IDs need to be normalised for use in twitch irc;
@@ -46,5 +46,5 @@ module.exports = (nodecg, twitch) => {
     }
   )
 
-  createChatHandlers(nodecg, twitch)
+  createChatHandlers(nodecg, events, twitch)
 }

@@ -1,7 +1,7 @@
 const watchForNewFollowers = require('./followers')
 const pollForChannelInfo = require('./poll')
 
-module.exports = (nodecg, twitch) => {
-  pollForChannelInfo(nodecg, twitch)
-  watchForNewFollowers(nodecg, twitch)
+module.exports = (nodecg, events, twitch) => {
+  pollForChannelInfo(nodecg, events, twitch)
+  watchForNewFollowers(nodecg, events, twitch)
 }

@@ -1,6 +1,7 @@
-const express = require('express')
+const app = require('express')()
 const login = require('../../../lib/login')
 
+const createTwitchEventEmitter = require('./events')
 const twitchModule = require('./twitch')
 const chatModule = require('./chat')
 const channelModule = require('./channel')
@@ -16,10 +17,9 @@ const hasAccessDetails = session => (
   && session.passport.user.accessToken
 )
 
-
 module.exports = (nodecg) => {
-  const app = express()
   let twitch
+  const events = createTwitchEventEmitter(nodecg)
 
   const performConnect = (session) => {
     const { user } = session.passport
@@ -28,15 +28,15 @@ module.exports = (nodecg) => {
     // therefore i'm going to naively assume that once
     // we've logged in and connected, it should be okay
     // for the lifespan of the server/stream
-    twitch = twitchModule(nodecg, {
+    twitch = twitchModule(nodecg, events, {
       username: user.username,
       token: user.accessToken
     })
 
     twitch.connect()
       .then(() => {
-        chatModule(nodecg, twitch)
-        channelModule(nodecg, twitch)
+        chatModule(nodecg, events, twitch)
+        channelModule(nodecg, events, twitch)
       })
   }
 
@@ -105,8 +105,15 @@ module.exports = (nodecg) => {
   // mount our refresh route under the main nodecg express app
   nodecg.mount(app)
 
-  // exposes a reference to the current twitch client for other modules to consume
-  return {
-    twitch,
-  }
+  // exposes the module's EventEmitter, and proxies requests to the current
+  // twitch instance if one exists--we can't just return the twitch object,
+  // because we create and destroy it based on user login status
+  // this lets other nodecg bundles access the twitch api and recieve events we emit
+  return new Proxy(events, {
+    get: (target, method) => (
+      twitch !== undefined && method in twitch
+        ? twitch[method]
+        : target[method]
+    )
+  })
 }

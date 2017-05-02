@@ -1,4 +1,4 @@
-const getUserInfo = userstate => ({
+const getUserInfo = (userstate = {}) => ({
   id: userstate['user-id'],
   username: userstate.username,
   'display-name': userstate['display-name'],
@@ -11,15 +11,27 @@ const getUserInfo = userstate => ({
   broadcaster: (userstate.badges && userstate.badges.broadcaster !== undefined)
 })
 
-module.exports = (nodecg, twitch) => {
+module.exports = (nodecg, events, twitch) => {
   // conveinence shorthands
   const chat = twitch.client
-  const send = (key, data) => nodecg.sendMessage(`chat.${key}`, data)
+  const send = ({ scope = 'chat', action, payload } = {}) =>
+    events.emitMessage({ scope, action, payload })
 
-  chat.on('connected', () => send('connected'))
-  chat.on('connecting', () => send('connecting'))
-  chat.on('disconnected', reason => send('disconnected', { reason }))
-  chat.on('reconnect', () => send('reconnect'))
+  chat.on('connected', () => {
+    send({ action: 'connected' })
+  })
+
+  chat.on('connecting', () => {
+    send({ action: 'connecting' })
+  })
+
+  chat.on('disconnected', (reason) => {
+    send({ action: 'disconnected', payload: { reason } })
+  })
+
+  chat.on('reconnect', () => {
+    send({ action: 'reconnect' })
+  })
 
   // message fires on either a chat message, an action, or a whisper
   // can contain emotes which require further parsing on the client
@@ -32,86 +44,143 @@ module.exports = (nodecg, twitch) => {
       message: messageText,
     }
 
-    send(message.type, {
-      channel,
-      user: getUserInfo(userstate),
-      message,
+    send({
+      action: message.type,
+      payload: {
+        channel,
+        user: getUserInfo(userstate),
+        message,
+      }
     })
   })
 
   // cheers contain bits which require further parsing on the client
   // https://github.com/justintv/Twitch-API/blob/master/IRC.md#bits-message
   chat.on('cheer', (channel, userstate, message) => {
-    send('cheer', {
-      channel,
-      user: getUserInfo(userstate),
-      cheer: {
-        message,
-        bits: userstate.bits,
-      },
+    send({
+      action: 'cheer',
+      payload: {
+        channel,
+        user: getUserInfo(userstate),
+        cheer: {
+          message,
+          bits: userstate.bits,
+        },
+      }
     })
   })
 
-  chat.on(
-    'subscription',
-    (channel, username, extra = {}) => {
-      send('subscription', {
+  chat.on('subscription', (channel, username, extra = {}) => {
+    send({
+      action: 'subscription',
+      payload: {
         channel,
         username,
         resub: false,
         prime: !!extra.prime,
-      })
-    }
-  )
+      },
+    })
+  })
 
-  chat.on(
-    'resub',
-    (channel, username, months, message, userstate, extra = {}) => {
-      send('subscription', {
+  chat.on('resub', (channel, username, months, message, userstate, extra = {}) => {
+    send({
+      action: 'subscription',
+      payload: {
         channel,
         username,
         months,
         message,
         resub: true,
         prime: !!extra.prime,
-      })
-    }
-  )
+      },
+    })
+  })
 
   // handle when users have been naughty
   chat.on('ban', (channel, user, reason) => {
-    send('ban', { channel, user, reason })
+    send({
+      action: 'ban',
+      payload: { channel, user, reason },
+    })
   })
 
   chat.on('timeout', (channel, user, reason, duration) => {
-    send('timeout', { channel, user, reason, duration })
+    send({
+      action: 'timeout',
+      payload: { channel, user, reason, duration },
+    })
   })
 
-  chat.on('clearchat', () => send('clear'))
+  chat.on('clearchat', () => {
+    send({ action: 'clear' })
+  })
 
   // join/part messages are batched and dispatched every 30 seconds or so
-  chat.on('join', (channel, username, self) => send('join', { channel, username, self }))
-  chat.on('part', (channel, username, self) => send('part', { channel, username, self }))
+  chat.on('join', (channel, username, self) => {
+    send({
+      action: 'join',
+      payload: { channel, username, self },
+    })
+  })
+
+  chat.on('part', (channel, username, self) => {
+    send({
+      action: 'part',
+      payload: { channel, username, self },
+    })
+  })
 
   // handle chat config modes
-  chat.on('subscribers', (channel, enabled) => send('subscribers', { channel, enabled }))
-  chat.on('slowmode', (channel, enabled) => send('slowmode', { channel, enabled }))
-  chat.on('emoteonly', (channel, enabled) => send('emoteonly', { channel, enabled }))
-  chat.on('r9kbeta', (channel, enabled) => send('r9kbeta', { channel, enabled }))
+  chat.on('subscribers', (channel, enabled) => {
+    send({
+      action: 'subscribers',
+      payload: { channel, enabled },
+    })
+  })
+
+  chat.on('slowmode', (channel, enabled) => {
+    send({
+      action: 'slowmode',
+      payload: { channel, enabled },
+    })
+  })
+
+  chat.on('emoteonly', (channel, enabled) => {
+    send({
+      action: 'emoteonly',
+      payload: { channel, enabled },
+    })
+  })
+
+  chat.on('r9kbeta', (channel, enabled) => {
+    send({
+      action: 'r9kbeta',
+      payload: { channel, enabled },
+    })
+  })
 
   // handle channel-related updates which twitch sends through chat
-  chat.on(
-    'hosted',
-    (channel, host, viewers) => send('hosted', { channel, host, viewers })
-  )
+  chat.on('hosted', (channel, host, viewers) => {
+    send({
+      scope: 'channel',
+      action: 'hosted',
+      payload: { channel, host, viewers },
+    })
+  })
 
-  chat.on(
-    'hosting',
-    (channel, target, viewers) => send('hosting', { channel, target, viewers })
-  )
+  chat.on('hosting', (channel, target, viewers) => {
+    send({
+      scope: 'channel',
+      action: 'hosting',
+      payload: { channel, target, viewers },
+    })
+  })
 
-  chat.on(
-    'unhost',
-    (channel, viewers) => send('unhost', { channel, viewers })
-  )
+  chat.on('unhost', (channel, viewers) => {
+    send({
+      scope: 'channel',
+      action: 'unhost',
+      payload: { channel, viewers },
+    })
+  })
 }
