@@ -24,6 +24,8 @@ module.exports = (nodecg) => {
   const performConnect = (session) => {
     const { user } = session.passport
 
+    nodecg.log.debug('Performing connect...')
+
     // twitch currently doesn't expire oauth tokens
     // therefore i'm going to naively assume that once
     // we've logged in and connected, it should be okay
@@ -33,7 +35,7 @@ module.exports = (nodecg) => {
       token: user.accessToken
     })
 
-    twitch.connect()
+    return twitch.connect()
       .then(() => {
         chatModule(nodecg, events, twitch)
         channelModule(nodecg, events, twitch)
@@ -41,7 +43,9 @@ module.exports = (nodecg) => {
   }
 
   const performDisconnect = () => {
-    twitch.disconnect()
+    nodecg.log.debug('Performing disconnect...')
+
+    return twitch.disconnect()
       .then(() => {
         twitch = undefined
       })
@@ -51,18 +55,23 @@ module.exports = (nodecg) => {
   }
 
   const handleConnect = (session) => {
+    nodecg.log.debug('Handling connect...')
+
     if (!isTwitchSession(session) || !hasAccessDetails(session)) {
       throw new Error('Invalid session data receieved')
     }
 
-    if (twitch) {
-      performDisconnect()
-    }
-
-    performConnect(session)
+    (
+      twitch
+        ? performDisconnect()
+        : Promise.resolve()
+    )
+      .then(() => performConnect(session))
   }
 
   const handleDisconnect = () => {
+    nodecg.log.debug('Handling disconnect...')
+
     if (!twitch) {
       return
     }
