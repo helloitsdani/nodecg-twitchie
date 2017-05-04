@@ -1,0 +1,10 @@
+{
+  "url": "https://api.twitch.tv/kraken",
+  "resources": {
+    "users": "users",
+    "channel": "channels/{{id}}",
+    "editors": "channels/{{id}}/editors",
+    "followers": "channels/{{id}}/follows",
+    "stream": "streams/{{id}}"
+  }
+}

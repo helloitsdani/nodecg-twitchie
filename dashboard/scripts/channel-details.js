@@ -9,18 +9,13 @@
   let streamStartedAt
 
   const elements = {
-    sections: {
-      login: document.getElementById('login-section'),
-      channel: document.getElementById('channel-section'),
+    pages: {
+      login: document.getElementById('login-pages'),
+      stats: document.getElementById('stats-pages'),
+      info: document.getElementById('info-page'),
     },
 
-    panels: {
-      error: document.getElementById('error-panel'),
-      info: document.getElementById('info-panel'),
-    },
-
-    loading: document.getElementById('loading'),
-    stats: document.getElementById('stats'),
+    logo: document.getElementById('logo'),
     viewers: document.getElementById('stat.viewers'),
     followers: document.getElementById('stat.followers'),
     timer: document.getElementById('stat.timer'),
@@ -29,8 +24,7 @@
   loggedInStatus.on(
     'change',
     (isLoggedIn) => {
-      elements.sections.login.style.display = isLoggedIn ? 'none' : 'block'
-      elements.sections.channel.style.display = isLoggedIn ? 'block' : 'none'
+      elements.pages.login.selected = isLoggedIn ? 'channel' : 'login'
     }
   )
 
@@ -51,17 +45,16 @@
 
   userInfo.on(
     'change',
-    ({ unknown = false } = {}) => {
-      elements.panels.error.style.display = unknown ? 'block' : 'none'
-      elements.panels.info.style.display = unknown ? 'none' : 'block'
+    ({ unknown = false, logo } = {}) => {
+      elements.pages.stats.selected = unknown ? 'error' : 'info'
+      elements.logo.src = logo
     }
   )
 
   channelInfo.on(
     'change',
     (channel) => {
-      elements.loading.style.display = channel ? 'none' : 'block'
-      elements.stats.style.display = channel ? 'block' : 'none'
+      elements.pages.info.classList.toggle('is-loading', !channel)
     }
   )
 
