@@ -1,5 +1,3 @@
-const createChatHandlers = require('./handlers')
-
 module.exports = (nodecg, events, twitch) => {
   const { channel, user } = twitch.replicants
 
@@ -45,6 +43,4 @@ module.exports = (nodecg, events, twitch) => {
       twitch.client.join(channelToJoin)
     }
   )
-
-  createChatHandlers(nodecg, events, twitch)
 }

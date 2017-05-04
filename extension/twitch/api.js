@@ -1,5 +1,6 @@
 const querystring = require('querystring')
 const debounce = require('debounce')
+const request = require('request')
 
 const twitchAPI = {
   url: 'https://api.twitch.tv/kraken',
@@ -12,7 +13,7 @@ const twitchAPI = {
   },
 }
 
-module.exports = (nodecg, events, twitch, token) => {
+module.exports = (nodecg, events, twitch) => {
   const {
     clientID,
     timeBetweenRetries = 30000,
@@ -39,13 +40,14 @@ module.exports = (nodecg, events, twitch, token) => {
     nodecg.log.debug(`Performing ${method} request to '${url}?${paramString}'`)
 
     return new Promise((resolve, reject) => {
-      twitch.client.api(
+      request(
         {
           url: `${url}?${paramString}`,
           method,
+          json: true,
           headers: {
             Accept: 'application/vnd.twitchtv.v5+json',
-            Authorization: token,
+            Authorization: twitch.auth.token,
             'Client-ID': clientID
           }
         },
@@ -98,8 +100,12 @@ module.exports = (nodecg, events, twitch, token) => {
   channel.id.on('change', (newChannelId) => {
     user.id.value = undefined
     user.info.value = undefined
-    userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
 
+    if (!newChannelId) {
+      return
+    }
+
+    userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
     debouncedFetchUserInfoFor(newChannelId)
   })
 

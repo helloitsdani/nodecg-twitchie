@@ -18,40 +18,25 @@ const hasAccessDetails = session => (
 )
 
 module.exports = (nodecg) => {
-  let twitch
   const events = createTwitchEventEmitter(nodecg)
+  const twitch = twitchModule(nodecg, events)
+  chatModule(nodecg, events, twitch)
+  channelModule(nodecg, events, twitch)
 
   const performConnect = (session) => {
     const { user } = session.passport
 
     nodecg.log.debug('Performing connect...')
 
-    // twitch currently doesn't expire oauth tokens
-    // therefore i'm going to naively assume that once
-    // we've logged in and connected, it should be okay
-    // for the lifespan of the server/stream
-    twitch = twitchModule(nodecg, events, {
+    return twitch.connect({
       username: user.username,
       token: user.accessToken
     })
-
-    return twitch.connect()
-      .then(() => {
-        chatModule(nodecg, events, twitch)
-        channelModule(nodecg, events, twitch)
-      })
   }
 
   const performDisconnect = () => {
     nodecg.log.debug('Performing disconnect...')
-
     return twitch.disconnect()
-      .then(() => {
-        twitch = undefined
-      })
-      .catch(() => {
-        twitch = undefined
-      })
   }
 
   const handleConnect = (session) => {
@@ -61,24 +46,13 @@ module.exports = (nodecg) => {
       throw new Error('Invalid session data receieved')
     }
 
-    (
-      twitch
-        ? performDisconnect()
-        : Promise.resolve()
-    )
-      .then(() => performConnect(session))
+    return performConnect(session)
   }
 
   const handleDisconnect = () => {
     nodecg.log.debug('Handling disconnect...')
-
-    if (!twitch) {
-      return
-    }
-
-    performDisconnect()
+    return performDisconnect()
   }
-
 
   // listen for login and logout events emitted from nodecg's login module
   login.on('login', handleConnect)
@@ -95,12 +69,12 @@ module.exports = (nodecg) => {
 
       nodecg.log.debug('Token refresh endpoint hit...')
 
-      if (!twitch) {
+      if (!twitch.isConnected()) {
         try {
           handleConnect(session)
           nodecg.log.debug('Connected to Twitch.')
         } catch (e) {
-          nodecg.log.error('Could not connect to Twitch!', e)
+          nodecg.log.error('Could not connect to Twitch!', e.message)
           return response.sendStatus(401)
         }
       } else {

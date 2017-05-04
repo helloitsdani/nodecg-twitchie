@@ -40,7 +40,8 @@
   "repository": "https://github.com/helloitsdan/nodecg-twitch-service.git",
   "dependencies": {
     "debounce": "^1.0.2",
-    "tmi.js": "^1.1.1"
+    "tmi.js": "^1.2.0",
+    "request": "2.74.0"
   },
   "devDependencies": {
     "eslint": "^3.5.0",

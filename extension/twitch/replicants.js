@@ -7,12 +7,6 @@ module.exports = (nodecg, events, defaults = {}) => {
   )
 
   return {
-    cleanup: () => {
-      Object.keys(this).forEach(
-        (key) => { this[key].value = undefined }
-      )
-    },
-
     channel: {
       id: createReplicant('channel.id'),
       info: createReplicant('channel.info'),
