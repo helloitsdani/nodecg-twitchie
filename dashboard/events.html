@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <link rel="import" href="components/iron-list/iron-list.html">
   <link rel="import" href="components/paper-item/paper-item.html">
+  <link rel="import" href="components/moment-element/moment-element.html">
+
   <style>
     .event-list {
       height: 20em;
@@ -46,7 +49,7 @@
       <template>
         <paper-item class="event">
           <div class="event__timestamp">
-            [[event.time]]
+            <moment-element datetime="{{event.timestamp}}" output-format="HH:mm"></moment-element>
           </div>
 
           <paper-item-body two-line class="event__body">

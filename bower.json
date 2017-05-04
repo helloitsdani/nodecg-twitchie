@@ -7,6 +7,8 @@
     "iron-list": "^1.4.5",
     "paper-item": "^1.2.2",
     "iron-image": "^1.2.6",
-    "iron-pages": "^1.0.9"
+    "iron-pages": "^1.0.9",
+    "moment-element": "^0.4.4",
+    "moment": "~2.15.0"
   }
 }
