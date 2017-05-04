@@ -29,6 +29,7 @@ module.exports = (nodecg, events) => {
   twitch.disconnect = () => twitch.client.disconnect()
     .then(() => { twitch.client = undefined })
     .catch(() => { twitch.client = undefined })
+    .then(() => { events.emit('twitch.disconnected') })
 
   twitch.connect = ({ username, token }) => {
     twitch.auth.username = username
@@ -54,7 +55,7 @@ module.exports = (nodecg, events) => {
             username: twitch.auth.username,
             password: `oauth:${twitch.auth.token}`,
           },
-          channels: [],
+          channels: [twitch.auth.username],
           logger: nodecg.log,
         })
 
@@ -62,6 +63,7 @@ module.exports = (nodecg, events) => {
           .then(() => {
             createChatHandlers(nodecg, events, twitch)
             twitch.replicants.channel.id.value = twitch.auth.username
+            events.emit('twitch.connected')
           })
       })
   }
