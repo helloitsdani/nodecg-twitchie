@@ -7,21 +7,10 @@ const requestModule = require('./request')
 // ensures this information is available
 module.exports = (nodecg, events, twitch) => {
   const {
-    timeBetweenRetries = 30000,
-  } = nodecg.bundleConfig
-
-  const {
     user,
   } = twitch.replicants
-
-  // all API requests expect to chain off a promise resolving to a user id;
-  // when there's no known id, we want to reject all authorised requests
-  const undefinedUserIDRejection = Promise.reject('No User ID has been set for requests')
-
-  let userInfoRequest = undefinedUserIDRejection
-  let userInfoRequestRetryTimeout
-
   const createApiRequest = requestModule(nodecg, events, twitch)
+  let userInfoRequest = Promise.resolve()
 
   const userLookupRequest = newChannelId =>
     createApiRequest({
@@ -43,37 +32,16 @@ module.exports = (nodecg, events, twitch) => {
         return user.id.value
       })
 
-  // resolves the corresponding channel id to a user id
-  // if there is a technical problem with the request,
-  // this method will wait for a specified amount of time
-  // and then try again
-  const fetchUserInfo = (newChannelId) => {
-    if (!newChannelId) {
-      userInfoRequest = undefinedUserIDRejection
-      return userInfoRequest
-    }
-
-    userInfoRequest = userLookupRequest(newChannelId)
-      .catch((error) => {
-        userInfoRequestRetryTimeout = setTimeout(
-          () => userLookupRequest(newChannelId),
-          timeBetweenRetries
-        )
-
-        nodecg.log.error('User lookup request failed!', error)
-        throw error
-      })
-
-    return userInfoRequest
-  }
-
   // performs a lookup for the specified channel ID, and ensures
   // api requests performed after this point wait until this lookup
   // has resolved
-  const resolveChannelID = (newChannelId) => {
+  const resolveChannelId = (newChannelId) => {
     const performLookup = () => {
-      userInfoRequestRetryTimeout = clearTimeout(userInfoRequestRetryTimeout)
-      return fetchUserInfo(newChannelId)
+      userInfoRequest = newChannelId
+        ? userLookupRequest(newChannelId)
+        : Promise.reject(new Error('No User ID has been set for requests'))
+
+      return userInfoRequest
     }
 
     // chain the new lookup off the old one, in order to eliminate
@@ -92,7 +60,7 @@ module.exports = (nodecg, events, twitch) => {
       ))
 
   return {
-    resolveChannelID,
+    resolveChannelId,
     createIdentifiedApiRequest,
   }
 }
