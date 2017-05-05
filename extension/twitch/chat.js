@@ -70,32 +70,6 @@ module.exports = (nodecg, events, twitch) => {
     })
   })
 
-  chat.on('subscription', (channel, username, extra = {}) => {
-    send({
-      action: 'subscription',
-      payload: {
-        channel,
-        username,
-        resub: false,
-        prime: !!extra.prime,
-      },
-    })
-  })
-
-  chat.on('resub', (channel, username, months, message, userstate, extra = {}) => {
-    send({
-      action: 'subscription',
-      payload: {
-        channel,
-        username,
-        months,
-        message,
-        resub: true,
-        prime: !!extra.prime,
-      },
-    })
-  })
-
   // handle when users have been naughty
   chat.on('ban', (channel, user, reason) => {
     send({
@@ -160,6 +134,34 @@ module.exports = (nodecg, events, twitch) => {
   })
 
   // handle channel-related updates which twitch sends through chat
+  chat.on('subscription', (channel, username, extra = {}) => {
+    send({
+      scope: 'channel',
+      action: 'subscription',
+      payload: {
+        channel,
+        username,
+        resub: false,
+        prime: !!extra.prime,
+      },
+    })
+  })
+
+  chat.on('resub', (channel, username, months, message, userstate, extra = {}) => {
+    send({
+      scope: 'channel',
+      action: 'subscription',
+      payload: {
+        channel,
+        username,
+        months,
+        message,
+        resub: true,
+        prime: !!extra.prime,
+      },
+    })
+  })
+
   chat.on('hosted', (channel, host, viewers) => {
     send({
       scope: 'channel',
