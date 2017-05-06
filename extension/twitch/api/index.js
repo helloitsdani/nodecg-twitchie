@@ -1,4 +1,6 @@
 const debounce = require('debounce')
+const guarantee = require('../../utils/guarantee')
+
 const twitchAPI = require('./twitch-api')
 const identifiedRequestModule = require('./identified-request')
 
@@ -17,30 +19,17 @@ module.exports = (nodecg, events, twitch) => {
     createIdentifiedApiRequest,
   } = identifiedRequestModule(nodecg, events, twitch)
 
-  let channelIdResolveTimeout
-
-  // split out into its own function so that it can call itself
-  // in order to re-run the same promise
-  const resolveChannelIdWithRetry = newChannelId => (
-    resolveChannelId(newChannelId)
-      .catch((error) => {
-        channelIdResolveTimeout = setTimeout(
-          () => resolveChannelIdWithRetry(newChannelId),
-          timeBetweenRetries
-        )
-
-        nodecg.log.error(`Channel ID lookup request failed! Retrying in ${timeBetweenRetries / 1000} seconds...`, error)
-      })
+  const guaranteedResolveChannelId = guarantee(
+    resolveChannelId,
+    { timeBetweenRetries, logger: nodecg.log }
   )
 
   // debounced because the dashboard will update the value
   // of the channel.id replicant on every change; we only want to resolve
   // a channel id when the user's finished typing it
-  const debouncedResolveChannelId = debounce(resolveChannelIdWithRetry, 1000)
+  const debouncedResolveChannelId = debounce(guaranteedResolveChannelId, 1000)
 
   channel.id.on('change', (newChannelId) => {
-    channelIdResolveTimeout = clearTimeout(channelIdResolveTimeout)
-
     // clearing the resolved user information indicates a request is
     // currently ongoing
     user.id.value = undefined

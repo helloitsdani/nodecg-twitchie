@@ -31,7 +31,6 @@ module.exports = (nodecg, events) => {
   twitch.disconnect = () => twitch.client.disconnect()
     .then(() => { twitch.client = undefined })
     .catch(() => { twitch.client = undefined })
-    .then(() => { events.emit('twitch.disconnected') })
 
   twitch.connect = ({ username, token }) => {
     twitch.auth.username = username
@@ -63,11 +62,16 @@ module.exports = (nodecg, events) => {
           logger: nodecg.log,
         })
 
+        createChatHandlers(nodecg, events, twitch)
+
         return twitch.client.connect()
           .then(() => {
-            createChatHandlers(nodecg, events, twitch)
             twitch.replicants.channel.id.value = currentChannel
-            events.emit('twitch.connected')
+          })
+          .catch((error) => {
+            twitch.client = undefined
+            nodecg.log.error('Could not connect to Twitch!', error)
+            throw error
           })
       })
   }
