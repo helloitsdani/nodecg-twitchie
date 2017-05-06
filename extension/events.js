@@ -75,7 +75,7 @@ module.exports = (nodecg) => {
     ({ user, cheer }) => addEvent(
       user['display-name'] || user.username,
       `sent cheers (${cheer.bits} bits)`,
-      cheer.message
+      cheer.message.message
     )
   )
 
@@ -86,7 +86,7 @@ module.exports = (nodecg) => {
       resub
         ? `resubscribed (${months} months)`
         : 'subscribed',
-      message
+      message.message
     )
   )
 

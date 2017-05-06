@@ -1,15 +1,7 @@
-const getUserInfo = (userstate = {}) => ({
-  id: userstate['user-id'],
-  username: userstate.username,
-  'display-name': userstate['display-name'],
-  'user-type': userstate['user-type'], // empty, mod, global-mod, admin, staff
-  color: userstate.color,
-  badges: userstate.badges,
-  mod: userstate.mod,
-  turbo: userstate.turbo,
-  subscriber: userstate.subscriber,
-  broadcaster: (userstate.badges && userstate.badges.broadcaster !== undefined)
-})
+const {
+  getMessageDetails,
+  getUserDetails,
+} = require('../chat/parse')
 
 module.exports = (nodecg, events, twitch) => {
   // conveinence shorthands
@@ -37,18 +29,14 @@ module.exports = (nodecg, events, twitch) => {
   // can contain emotes which require further parsing on the client
   // https://github.com/justintv/Twitch-API/blob/master/IRC.md#bits-message
   chat.on('message', (channel, userstate, messageText) => {
-    const message = {
-      id: userstate.id,
-      type: userstate['message-type'],
-      emotes: userstate.emotes,
-      message: messageText,
-    }
+    const message = getMessageDetails(messageText, userstate)
+    const user = getUserDetails(userstate)
 
     send({
       action: message.type,
       payload: {
         channel,
-        user: getUserInfo(userstate),
+        user,
         message,
       }
     })
@@ -56,14 +44,17 @@ module.exports = (nodecg, events, twitch) => {
 
   // cheers contain bits which require further parsing on the client
   // https://github.com/justintv/Twitch-API/blob/master/IRC.md#bits-message
-  chat.on('cheer', (channel, userstate, message) => {
+  chat.on('cheer', (channel, userstate, messageText) => {
+    const message = getMessageDetails(messageText, userstate)
+    const user = getUserDetails(userstate)
+
     send({
       action: 'cheer',
       payload: {
         channel,
-        user: getUserInfo(userstate),
+        user,
+        message,
         cheer: {
-          message,
           bits: userstate.bits,
         },
       }
@@ -147,7 +138,9 @@ module.exports = (nodecg, events, twitch) => {
     })
   })
 
-  chat.on('resub', (channel, username, months, message, userstate, extra = {}) => {
+  chat.on('resub', (channel, username, months, messageText, userstate, extra = {}) => {
+    const message = getMessageDetails(messageText)
+
     send({
       scope: 'channel',
       action: 'subscription',
