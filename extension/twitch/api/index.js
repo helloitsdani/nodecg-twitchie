@@ -59,13 +59,10 @@ module.exports = (nodecg, events, twitch) => {
   return new Proxy(createIdentifiedApiRequest, {
     get: (target, resource) => (
       resource in twitchAPI.resources
-        ? ({ params, method } = {}) => (
-          createIdentifiedApiRequest({
-            resource,
-            params,
-            method
-          })
-        )
+        ? (params = {}) =>
+          createIdentifiedApiRequest(
+            Object.assign({}, params, { resource })
+          )
         : target[resource]
     )
   })

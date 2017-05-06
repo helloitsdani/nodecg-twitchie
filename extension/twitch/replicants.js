@@ -21,5 +21,10 @@ module.exports = (nodecg, events, defaults = {}) => {
       id: createReplicant('user.id'),
       info: createReplicant('user.info'),
     },
+
+    chat: {
+      badges: createReplicant('chat.badges'),
+      cheermotes: createReplicant('chat.cheermotes'),
+    }
   }
 }

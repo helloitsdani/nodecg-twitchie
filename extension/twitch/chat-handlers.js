@@ -1,7 +1,7 @@
 const {
   getMessageDetails,
   getUserDetails,
-} = require('../chat/parse')
+} = require('../utils/parseMessage')
 
 module.exports = (nodecg, events, twitch) => {
   // conveinence shorthands

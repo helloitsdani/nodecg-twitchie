@@ -4,7 +4,12 @@
     "users": "users",
     "channel": "channels/{{id}}",
     "editors": "channels/{{id}}/editors",
+    "teams": "channels/{{id}}/teams",
+    "community": "channels/{{id}}/community",
+    "commercial": "channels/{{id}}/commercial",
     "followers": "channels/{{id}}/follows",
-    "stream": "streams/{{id}}"
+    "stream": "streams/{{id}}",
+    "badges": "chat/{{id}}/badges",
+    "cheermotes": "bits/actions"
   }
 }

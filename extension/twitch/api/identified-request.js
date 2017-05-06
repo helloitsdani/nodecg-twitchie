@@ -53,7 +53,7 @@ module.exports = (nodecg, events, twitch) => {
 
   // creating API requests through this method allows you to ensure that
   // the current channel name has been resolved to a twitch userId
-  const createIdentifiedApiRequest = params =>
+  const createIdentifiedApiRequest = (params = {}) =>
     userInfoRequest
       .then(userId => createApiRequest(
         Object.assign({}, params, { userId })
