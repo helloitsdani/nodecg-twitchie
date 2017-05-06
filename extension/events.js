@@ -72,10 +72,10 @@ module.exports = (nodecg) => {
 
   emitter.on(
     'chat.cheer',
-    ({ user, cheer }) => addEvent(
+    ({ user, cheer, message }) => addEvent(
       user['display-name'] || user.username,
       `sent cheers (${cheer.bits} bits)`,
-      cheer.message.message
+      message.message
     )
   )
 
