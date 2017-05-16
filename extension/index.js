@@ -7,6 +7,10 @@ const isNodeCGConfigValid = config => (
 
 const isClientIDPresent = config => config.clientID !== undefined
 
+process.on('unhandledRejection', (reason) => {
+  console.log(reason)
+})
+
 module.exports = (nodecg) => {
   if (!isNodeCGConfigValid(nodecg.config)) {
     throw new Error('nodecg-twitch-service requires Twitch login to be enabled in your NodeCG config!')

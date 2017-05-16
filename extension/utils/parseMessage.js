@@ -1,33 +1,46 @@
-const getEmoteUrl = (emote, size = '3.0') =>
-  `http://static-cdn.jtvnw.net/emoticons/v1/${emote}/${size}`
-
-const getEmoteImageElement = (emote, size) =>
-  `<img src="${getEmoteUrl(emote, size)}" class="c-twitch-emote" />`
+const {
+  getEmote,
+} = require('./getEmoteElements')
 
 const parseEmotes = (message, emotes) => {
-  if (!emotes) {
-    return message
+  if (!message || !emotes) {
+    return [{
+      type: 'text',
+      content: message,
+    }]
   }
 
-  // split the message into an array of characters, and replace the first
-  // character of each occurrence of an emote with a full image tag
-  // doing this, rather than replacing them inline, ensures that other
-  // emote occurrence indices don't shift out of line when we replace
-  const chars = message.split('')
+  const tokens = []
+  let lastTokenIndex = 0
 
   Object.keys(emotes).forEach((key) => {
     emotes[key].forEach((occurrence) => {
-      const [startIndex, endIndex] = occurrence.split('-')
-      const offset = (endIndex - startIndex) + 1
+      const [startIndex, endIndex] = occurrence.split('-').map(idx => parseInt(idx, 10))
 
-      const replacementArray = new Array(offset).fill('')
-      replacementArray[0] = getEmoteImageElement(key)
+      if (startIndex !== lastTokenIndex) {
+        tokens.push({
+          type: 'text',
+          content: message.slice(lastTokenIndex, startIndex)
+        })
+      }
 
-      chars.splice(startIndex, offset, ...replacementArray)
+      tokens.push({
+        type: 'emote',
+        content: getEmote(key),
+        title: message.slice(startIndex, endIndex + 1),
+        key,
+      })
+
+      lastTokenIndex = endIndex + 1
     })
   })
 
-  return chars.join('')
+  return tokens
+}
+
+const parseCheermotes = (message) => {
+  // TODO: tokenise cheermotes
+  return message
 }
 
 const getUserDetails = (userstate = {}) => ({
@@ -47,14 +60,13 @@ const getMessageDetails = (message, userstate = {}) => ({
   id: userstate.id,
   type: userstate['message-type'],
   emotes: userstate.emotes,
-  message: parseEmotes(message, userstate.emotes),
+  tokens: parseEmotes(message, userstate.emotes),
   raw: message,
 })
 
 module.exports = {
-  getEmoteUrl,
-  getEmoteImageElement,
   parseEmotes,
+  parseCheermotes,
   getUserDetails,
   getMessageDetails,
 }

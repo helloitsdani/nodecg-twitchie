@@ -1,6 +1,7 @@
 const {
   getMessageDetails,
   getUserDetails,
+  parseCheermotes,
 } = require('../utils/parseMessage')
 
 module.exports = (nodecg, events, twitch) => {
@@ -45,8 +46,9 @@ module.exports = (nodecg, events, twitch) => {
   // cheers contain bits which require further parsing on the client
   // https://github.com/justintv/Twitch-API/blob/master/IRC.md#bits-message
   chat.on('cheer', (channel, userstate, messageText) => {
-    const message = getMessageDetails(messageText, userstate)
     const user = getUserDetails(userstate)
+    const message = getMessageDetails(messageText, userstate)
+    message.content = parseCheermotes(message.content)
 
     send({
       action: 'cheer',
