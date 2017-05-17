@@ -5,6 +5,10 @@ const {
 } = require('../utils/parseMessage')
 
 module.exports = (nodecg, events, twitch) => {
+  const {
+    chat: { cheermotes }
+  } = twitch.replicants
+
   // conveinence shorthands
   const chat = twitch.client
   const send = ({ scope = 'chat', action, payload } = {}) =>
@@ -27,8 +31,6 @@ module.exports = (nodecg, events, twitch) => {
   })
 
   // message fires on either a chat message, an action, or a whisper
-  // can contain emotes which require further parsing on the client
-  // https://github.com/justintv/Twitch-API/blob/master/IRC.md#bits-message
   chat.on('message', (channel, userstate, messageText) => {
     const message = getMessageDetails(messageText, userstate)
     const user = getUserDetails(userstate)
@@ -43,12 +45,22 @@ module.exports = (nodecg, events, twitch) => {
     })
   })
 
-  // cheers contain bits which require further parsing on the client
-  // https://github.com/justintv/Twitch-API/blob/master/IRC.md#bits-message
+  // cheers contain bits within the userstate and may have special emotes in
+  // their message text which need to be parsed separately via a regex, rather
+  // than twitchirc's usual way of handling emotes
   chat.on('cheer', (channel, userstate, messageText) => {
     const user = getUserDetails(userstate)
     const message = getMessageDetails(messageText, userstate)
-    message.content = parseCheermotes(message.content)
+
+    message.tokens = message.tokens.reduce(
+      (tokens, token) => {
+        if (token.type !== 'text') {
+          return [...tokens, token]
+        }
+
+        return [...tokens, ...parseCheermotes(token.content, cheermotes.value)]
+      }, []
+    )
 
     send({
       action: 'cheer',

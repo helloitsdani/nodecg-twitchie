@@ -1,7 +1,3 @@
-const {
-  getEmote,
-} = require('./getEmoteElements')
-
 const parseEmotes = (message, emotes) => {
   if (!message || !emotes) {
     return [{
@@ -26,9 +22,8 @@ const parseEmotes = (message, emotes) => {
 
       tokens.push({
         type: 'emote',
-        content: getEmote(key),
+        content: key,
         title: message.slice(startIndex, endIndex + 1),
-        key,
       })
 
       lastTokenIndex = endIndex + 1
@@ -38,9 +33,47 @@ const parseEmotes = (message, emotes) => {
   return tokens
 }
 
-const parseCheermotes = (message) => {
-  // TODO: tokenise cheermotes
-  return message
+const parseCheermotes = (message, cheermotes) => {
+  if (!message || !cheermotes) {
+    return [{
+      type: 'text',
+      content: message,
+    }]
+  }
+
+  const emoteNames = Object.keys(cheermotes).join('|')
+  const emoteRegex = new RegExp(`\\b(${emoteNames})(\\d+)\\b`, 'ig')
+
+  const tokens = []
+  let lastTokenIndex = 0
+  let match = emoteRegex.exec(message)
+
+  while (match !== null) {
+    if (match.index !== lastTokenIndex) {
+      tokens.push({
+        type: 'text',
+        content: message.slice(lastTokenIndex, match.index),
+      })
+    }
+
+    tokens.push({
+      type: 'cheer',
+      content: match[1],
+      bits: match[2],
+    })
+
+    lastTokenIndex = emoteRegex.lastIndex
+    match = emoteRegex.exec(message)
+  }
+
+  if (lastTokenIndex !== message.length) {
+    tokens.push({
+      type: 'text',
+      content: message.slice(lastTokenIndex)
+    })
+  }
+
+  return tokens
 }
 
 const getUserDetails = (userstate = {}) => ({
