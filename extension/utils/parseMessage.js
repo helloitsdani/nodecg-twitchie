@@ -1,5 +1,5 @@
-const parseEmotes = (message, emotes) => {
-  if (!message || !emotes) {
+const tokeniseMessage = (message, instances) => {
+  if (!message || !instances) {
     return [{
       type: 'text',
       content: message,
@@ -7,73 +7,92 @@ const parseEmotes = (message, emotes) => {
   }
 
   const tokens = []
-  let lastTokenIndex = 0
+  let nextTokenStartIndex = 0
 
-  Object.keys(emotes).forEach((key) => {
-    emotes[key].forEach((occurrence) => {
-      const [startIndex, endIndex] = occurrence.split('-').map(idx => parseInt(idx, 10))
-
-      if (startIndex !== lastTokenIndex) {
-        tokens.push({
-          type: 'text',
-          content: message.slice(lastTokenIndex, startIndex)
-        })
-      }
-
-      tokens.push({
-        type: 'emote',
-        content: key,
-        title: message.slice(startIndex, endIndex + 1),
-      })
-
-      lastTokenIndex = endIndex + 1
-    })
-  })
-
-  return tokens
-}
-
-const parseCheermotes = (message, cheermotes) => {
-  if (!message || !cheermotes) {
-    return [{
-      type: 'text',
-      content: message,
-    }]
-  }
-
-  const emoteNames = Object.keys(cheermotes).join('|')
-  const emoteRegex = new RegExp(`\\b(${emoteNames})(\\d+)\\b`, 'ig')
-
-  const tokens = []
-  let lastTokenIndex = 0
-  let match = emoteRegex.exec(message)
-
-  while (match !== null) {
-    if (match.index !== lastTokenIndex) {
+  instances.forEach((instance) => {
+    if (instance.start !== nextTokenStartIndex) {
       tokens.push({
         type: 'text',
-        content: message.slice(lastTokenIndex, match.index),
+        content: message.slice(nextTokenStartIndex, instance.start),
       })
     }
 
     tokens.push({
-      type: 'cheer',
-      content: match[1],
-      bits: match[2],
+      type: instance.type,
+      content: instance.content,
     })
 
-    lastTokenIndex = emoteRegex.lastIndex
-    match = emoteRegex.exec(message)
-  }
+    nextTokenStartIndex = instance.end + 1
+  })
 
-  if (lastTokenIndex !== message.length) {
+  if (nextTokenStartIndex !== message.length) {
     tokens.push({
       type: 'text',
-      content: message.slice(lastTokenIndex)
+      content: message.slice(nextTokenStartIndex),
     })
   }
 
   return tokens
+}
+
+const parseEmotes = (message, emotes) => {
+  const instances = []
+
+  Object.keys(emotes).forEach((key) => {
+    emotes[key].forEach((occurrence) => {
+      const [start, end] = occurrence.split('-').map(idx => parseInt(idx, 10))
+
+      instances.push({
+        type: 'emote',
+        start,
+        end,
+        content: {
+          title: message.slice(start, end + 1),
+          key,
+        }
+      })
+    })
+  })
+
+  return tokeniseMessage(message, instances)
+}
+
+const parseCheermotes = (message, cheermotes) => {
+  const instances = []
+
+  const emoteNames = Object.keys(cheermotes).join('|')
+  const emoteRegex = new RegExp(`\\b(${emoteNames})(\\d+)\\b`, 'ig')
+
+  let match = emoteRegex.exec(message)
+
+  while (match !== null) {
+    instances.push({
+      type: 'cheer',
+      start: match.index,
+      end: emoteRegex.lastIndex - 1,
+      content: {
+        title: `${match[1]}${match[2]}`,
+        key: match[1],
+        bits: match[2],
+      }
+    })
+
+    match = emoteRegex.exec(message)
+  }
+
+  return tokeniseMessage(message, instances)
+}
+
+const parseTokens = (tokens, tokeniser) => {
+  if (!Array.isArray(tokens)) {
+    return tokeniser(tokens)
+  }
+
+  return tokens.map(
+    token => token.type === 'text' ? tokeniser(token) : token
+  ).reduce(
+    (tokenArray, token) => tokenArray.concat(token), []
+  )
 }
 
 const getUserDetails = (userstate = {}) => ({
@@ -93,13 +112,17 @@ const getMessageDetails = (message, userstate = {}) => ({
   id: userstate.id,
   type: userstate['message-type'],
   emotes: userstate.emotes,
-  tokens: parseEmotes(message, userstate.emotes),
+  tokens: parseTokens(
+    message,
+    token => parseEmotes(token, userstate.emotes)
+  ),
   raw: message,
 })
 
 module.exports = {
   parseEmotes,
   parseCheermotes,
+  parseTokens,
   getUserDetails,
   getMessageDetails,
 }

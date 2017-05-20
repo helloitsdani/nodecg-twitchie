@@ -3,6 +3,14 @@ const EventEmitter = require('events')
 const MAX_STORED_EVENTS = 100
 const getMessageKey = (scope, action) => `${scope ? `${scope}.` : ''}${action}`
 
+const parseMessage = ({
+  tokens = []
+} = {}) => tokens.reduce(
+  (message, token) => (
+    `${message}${token.content.title || token.content}`
+  ), ''
+)
+
 // create a shared singleton EventEmitter for the entire module
 // so we don't have to pass it around everywhere
 module.exports = (nodecg) => {
@@ -75,7 +83,7 @@ module.exports = (nodecg) => {
     ({ user, cheer, message }) => addEvent(
       user['display-name'] || user.username,
       `sent cheers (${cheer.bits} bits)`,
-      message.content
+      parseMessage(message)
     )
   )
 
@@ -86,7 +94,7 @@ module.exports = (nodecg) => {
       resub
         ? `resubscribed (${months} months)`
         : 'subscribed',
-      message.content
+      parseMessage(message)
     )
   )
 

@@ -2,6 +2,7 @@ const {
   getMessageDetails,
   getUserDetails,
   parseCheermotes,
+  parseTokens,
 } = require('../utils/parseMessage')
 
 module.exports = (nodecg, events, twitch) => {
@@ -51,15 +52,9 @@ module.exports = (nodecg, events, twitch) => {
   chat.on('cheer', (channel, userstate, messageText) => {
     const user = getUserDetails(userstate)
     const message = getMessageDetails(messageText, userstate)
-
-    message.tokens = message.tokens.reduce(
-      (tokens, token) => {
-        if (token.type !== 'text') {
-          return [...tokens, token]
-        }
-
-        return [...tokens, ...parseCheermotes(token.content, cheermotes.value)]
-      }, []
+    message.tokens = parseTokens(
+      message.tokens,
+      token => parseCheermotes(token.content, cheermotes.value)
     )
 
     send({
