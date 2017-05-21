@@ -1,11 +1,11 @@
 {
-  "name": "nodecg-twitch-service",
+  "name": "nodecg-twitchie",
   "version": "0.0.1",
   "engines": {
     "node": ">=6.4.0"
   },
   "description": "Provides Twitch channel, stream and chat information via NodeCG replicants",
-  "homepage": "https://github.com/helloitsdan/nodecg-twitch-service",
+  "homepage": "https://github.com/helloitsdan/nodecg-twitchie",
   "author": {
     "name": "dani quinn sexton",
     "email": "dani@goneupinflames.com",
@@ -37,7 +37,7 @@
       }
     ]
   },
-  "repository": "https://github.com/helloitsdan/nodecg-twitch-service.git",
+  "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "dependencies": {
     "debounce": "^1.0.2",
     "tmi.js": "^1.2.0",

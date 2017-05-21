@@ -1,6 +1,6 @@
 module.exports = (nodecg, events, defaults = {}) => {
   const createReplicant = name => nodecg.Replicant(
-    name, 'nodecg-twitch-service', {
+    name, 'nodecg-twitchie', {
       defaultValue: defaults[name],
       persistent: false
     }

@@ -28,17 +28,17 @@ module.exports = (nodecg) => {
     emitter.emit(key, payload)
   }
 
-  const userId = nodecg.Replicant('user.id', 'nodecg-twitch-service', {
+  const userId = nodecg.Replicant('user.id', 'nodecg-twitchie', {
     defaultValue: undefined,
     persistent: false,
   })
 
-  const allEvents = nodecg.Replicant('events', 'nodecg-twitch-service', {
+  const allEvents = nodecg.Replicant('events', 'nodecg-twitchie', {
     defaultValue: {},
     persistent: true,
   })
 
-  const currentChannelEvents = nodecg.Replicant('events.current', 'nodecg-twitch-service', {
+  const currentChannelEvents = nodecg.Replicant('events.current', 'nodecg-twitchie', {
     defaultValue: [],
     persistent: false,
   })

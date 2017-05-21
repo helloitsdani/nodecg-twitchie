@@ -9,7 +9,7 @@
     requireLogin = true,
   } = nodecg.bundleConfig
 
-  const loggedInStatus = nodecg.Replicant('login.status', 'nodecg-twitch-service')
+  const loggedInStatus = nodecg.Replicant('login.status', 'nodecg-twitchie')
 
   const redirectToLogin = () => {
     window.top.location.replace(loginURL)

@@ -1,10 +1,10 @@
 /* global nodecg, moment */
 
 (() => {
-  const channelInfo = nodecg.Replicant('channel.info', 'nodecg-twitch-service')
-  const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitch-service')
-  const loggedInStatus = nodecg.Replicant('login.status', 'nodecg-twitch-service')
-  const userInfo = nodecg.Replicant('user.info', 'nodecg-twitch-service')
+  const channelInfo = nodecg.Replicant('channel.info', 'nodecg-twitchie')
+  const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitchie')
+  const loggedInStatus = nodecg.Replicant('login.status', 'nodecg-twitchie')
+  const userInfo = nodecg.Replicant('user.info', 'nodecg-twitchie')
 
   let streamStartedAt
 

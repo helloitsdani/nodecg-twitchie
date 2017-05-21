@@ -1,5 +1,5 @@
 {
-  "name": "nodecg-twitch-service",
+  "name": "nodecg-twitchie",
   "version": "0.0.1",
   "dependencies": {
     "paper-spinner": "^1.2.1",
