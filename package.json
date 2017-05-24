@@ -35,7 +35,8 @@
         "file": "events.html",
         "headerColor": "#6441a5"
       }
-    ]
+    ],
+    "graphics": []
   },
   "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "dependencies": {
