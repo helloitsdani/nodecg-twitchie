@@ -4,6 +4,14 @@
   "engines": {
     "node": ">=6.4.0"
   },
+  "scripts": {
+    "lint:js": "eslint \"{dashboard,extension,graphics}/**/*.{js,jsx}\"",
+    "lint": "yarn lint:js",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "{dashboard,extension,graphics}/**/*.{js,jsx}": "eslint"
+  },
   "description": "Provides Twitch channel, stream and chat information via NodeCG replicants",
   "homepage": "https://github.com/helloitsdan/nodecg-twitchie",
   "author": {
@@ -41,8 +49,10 @@
   "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "dependencies": {
     "debounce": "^1.0.2",
-    "tmi.js": "^1.2.0",
-    "request": "2.74.0"
+    "husky": "^0.13.3",
+    "lint-staged": "^3.5.0",
+    "request": "2.74.0",
+    "tmi.js": "^1.2.0"
   },
   "devDependencies": {
     "eslint": "^3.5.0",
