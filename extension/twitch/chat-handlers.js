@@ -54,7 +54,7 @@ module.exports = (nodecg, events, twitch) => {
     const message = getMessageDetails(messageText, userstate)
     message.tokens = parseTokens(
       message.tokens,
-      token => parseCheermotes(token.content, cheermotes.value)
+      token => parseCheermotes(token, cheermotes.value)
     )
 
     send({
