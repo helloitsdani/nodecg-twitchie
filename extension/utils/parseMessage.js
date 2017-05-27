@@ -1,5 +1,9 @@
 const tokeniseMessage = (message, instances) => {
-  if (!message || !instances) {
+  if (!message) {
+    return []
+  }
+
+  if (!instances) {
     return [{
       type: 'text',
       content: message,
@@ -48,6 +52,10 @@ const sortTokens = (a, b) => {
 }
 
 const getEmoteTokens = (message, emotes) => {
+  if (!emotes) {
+    return []
+  }
+
   const instances = []
 
   Object.keys(emotes).forEach((key) => {
@@ -72,6 +80,10 @@ const getEmoteTokens = (message, emotes) => {
 }
 
 const getCheermoteTokens = (message, cheermotes) => {
+  if (!cheermotes) {
+    return []
+  }
+
   const instances = []
 
   const emoteNames = Object.keys(cheermotes).join('|')
@@ -111,7 +123,7 @@ const parseCheermotes = (message, cheermotes) =>
 
 const parseTokens = (tokens, tokeniser) => {
   if (!Array.isArray(tokens)) {
-    return tokeniser(tokens)
+    return [].concat(tokeniser(tokens))
   }
 
   return tokens.map(
