@@ -1,13 +1,16 @@
 {
   "name": "nodecg-twitchie",
   "version": "0.0.1",
+  "license": "MIT",
   "engines": {
     "node": ">=6.4.0"
   },
   "scripts": {
+    "test": "ava",
     "lint:js": "eslint \"{dashboard,extension,graphics}/**/*.{js,jsx}\"",
     "lint": "yarn lint:js",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "prepush": "yarn test"
   },
   "lint-staged": {
     "{dashboard,extension,graphics}/**/*.{js,jsx}": "eslint"
@@ -49,16 +52,17 @@
   "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "dependencies": {
     "debounce": "^1.0.2",
-    "husky": "^0.13.3",
-    "lint-staged": "^3.5.0",
     "request": "2.74.0",
     "tmi.js": "^1.2.0"
   },
   "devDependencies": {
+    "ava": "^0.19.1",
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.2",
-    "eslint-plugin-react": "^6.3.0"
+    "eslint-plugin-react": "^6.3.0",
+    "husky": "^0.13.3",
+    "lint-staged": "^3.5.0"
   }
 }
