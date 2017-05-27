@@ -142,7 +142,7 @@ const getUserDetails = (userstate = {}) => ({
   'display-name': userstate['display-name'],
   'user-type': userstate['user-type'], // empty, mod, global-mod, admin, staff
   color: userstate.color,
-  badges: userstate.badges,
+  badges: userstate.badges || [],
   mod: userstate.mod,
   turbo: userstate.turbo,
   subscriber: userstate.subscriber,
