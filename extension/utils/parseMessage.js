@@ -122,12 +122,15 @@ const parseCheermotes = (message, cheermotes) =>
   )
 
 const parseTokens = (tokens, tokeniser) => {
-  if (!Array.isArray(tokens)) {
-    return [].concat(tokeniser(tokens))
-  }
+  const toParse = Array.isArray(tokens)
+    ? tokens
+    : [{
+      type: 'text',
+      content: tokens
+    }]
 
-  return tokens.map(
-    token => token.type === 'text' ? tokeniser(token) : token
+  return toParse.map(
+    token => token.type === 'text' ? tokeniser(token.content) : token
   ).reduce(
     (tokenArray, token) => tokenArray.concat(token), []
   )
