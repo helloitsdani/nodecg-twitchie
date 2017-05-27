@@ -35,7 +35,19 @@ const tokeniseMessage = (message, instances) => {
   return tokens
 }
 
-const parseEmotes = (message, emotes) => {
+const sortTokens = (a, b) => {
+  if (a.start < b.start) {
+    return -1
+  }
+
+  if (a.start === b.start) {
+    return 0
+  }
+
+  return 1
+}
+
+const getEmoteTokens = (message, emotes) => {
   const instances = []
 
   Object.keys(emotes).forEach((key) => {
@@ -54,10 +66,12 @@ const parseEmotes = (message, emotes) => {
     })
   })
 
-  return tokeniseMessage(message, instances)
+  // make sure that emotes are returned in occurrence order;
+  // the twitch emote syntax is first ordered by emote key, then occurrence
+  return instances.sort(sortTokens)
 }
 
-const parseCheermotes = (message, cheermotes) => {
+const getCheermoteTokens = (message, cheermotes) => {
   const instances = []
 
   const emoteNames = Object.keys(cheermotes).join('|')
@@ -80,8 +94,20 @@ const parseCheermotes = (message, cheermotes) => {
     match = emoteRegex.exec(message)
   }
 
-  return tokeniseMessage(message, instances)
+  return instances
 }
+
+const parseEmotes = (message, emotes) =>
+  tokeniseMessage(
+    message,
+    getEmoteTokens(message, emotes)
+  )
+
+const parseCheermotes = (message, cheermotes) =>
+  tokeniseMessage(
+    message,
+    getCheermoteTokens(message, cheermotes)
+  )
 
 const parseTokens = (tokens, tokeniser) => {
   if (!Array.isArray(tokens)) {
@@ -120,6 +146,10 @@ const getMessageDetails = (message, userstate = {}) => ({
 })
 
 module.exports = {
+  tokeniseMessage,
+  sortTokens,
+  getEmoteTokens,
+  getCheermoteTokens,
   parseEmotes,
   parseCheermotes,
   parseTokens,
