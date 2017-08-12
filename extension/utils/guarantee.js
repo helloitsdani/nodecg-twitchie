@@ -1,8 +1,10 @@
+const { log } = require('../context')
+
 const guarantee = (
   promiseFn,
   {
     timeBetweenRetries = 30000,
-    logger = console,
+    logger = log,
   } = {}
 ) => {
   let retryPromise = Promise.resolve()

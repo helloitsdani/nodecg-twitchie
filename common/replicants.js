@@ -1,6 +1,8 @@
-module.exports = (nodecg, events, defaults = {}) => {
+const { NAMESPACE } = require('./constants')
+
+module.exports = (nodecg, defaults = {}) => {
   const createReplicant = name => nodecg.Replicant(
-    name, 'nodecg-twitchie', {
+    name, NAMESPACE, {
       defaultValue: defaults[name],
       persistent: false
     }

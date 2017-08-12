@@ -1,0 +1,2 @@
+require('./assets')
+require('./channel')

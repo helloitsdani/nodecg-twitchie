@@ -39,22 +39,8 @@ For a full list of all the events you can subscribe to, and the data Twitchie ma
 
 You can also use Twitchie to query the Twitch API/access the tmi.js client directly through your bundles, if you want to do something we can't handle quite yet. For instructions on how to do this, please see the [Extension API wiki page](https://github.com/helloitsdan/nodecg-twitchie/wiki/Extension-API).
 
-## Configuration
+## Configuring Twitchie
 
-### Twitchie
-
-In order to use Twitchie, you'll need a Twitch Client ID—Twitch requires that you have one in order to make requests to their API! This can be configured in `<nodecg-root>/cfg/node-twitchie.json`, as follows:
-
-```
-{
-  "clientID": "my_secret_id_here",
-}
-```
-
-If you don't have a Client ID yet, you can generate one [here](https://www.twitch.tv/kraken/oauth2/clients/new). Remember to keep a note of the Client ID and Client Secret that it gives you!
-
-### Logging into Twitch
-
-Twitchie also requires that you enable Twitch logins on your NodeCG instance, as it uses this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](http://nodecg.com/tutorial-nodecg-configuration.html).
+In order to use Twitchie, you'll need to enable Twitch logins on your NodeCG instance, as we use this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](http://nodecg.com/tutorial-nodecg-configuration.html).
 
 Please make sure you've included **user_read** and **chat_login** in your scopes!
