@@ -1,7 +1,6 @@
 const { nodecg, twitch, replicants, config } = require('../context')
 
 const { user, channel, stream } = replicants
-const { timeBetweenUpdates } = config
 
 let updateTimeout
 
@@ -37,7 +36,7 @@ const update = () => {
     }).catch((err) => {
       nodecg.log.error('Couldn\'t retrieve channel info :()', err)
     }).then(() => {
-      updateTimeout = setTimeout(update, timeBetweenUpdates)
+      updateTimeout = setTimeout(update, config.timeBetweenUpdates)
     })
 }
 

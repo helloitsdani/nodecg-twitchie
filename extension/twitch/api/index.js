@@ -2,8 +2,9 @@ const debounce = require('debounce')
 const guarantee = require('../../utils/guarantee')
 
 const { config, replicants } = require('../../context')
-const twitchAPI = require('./twitch-api')
 const { resolveChannelId, createIdentifiedApiRequest } = require('./identified-request')
+
+const twitchAPI = require('./twitch-api.json')
 
 const { timeBetweenRetries } = config
 const { channel, user } = replicants

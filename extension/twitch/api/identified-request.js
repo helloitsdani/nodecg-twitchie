@@ -1,17 +1,17 @@
-const createApiRequest = require('./request')
-const { log, replicants } = require('../../context')
-
 // twitch api v5 requires that all api requests use user ID, rather than
 // channel name, to parameterise requests
 // this module resolves channel names to user IDs whenever the channel.id
 // replicant is updated, and providers a wrapper to createApiRequest which
 // ensures this information is available
-const { user } = replicants
 
+const createAuthorisedApiRequest = require('./authorised-request')
+const { log, replicants } = require('../../context')
+
+const { user } = replicants
 let userInfoRequest = Promise.resolve()
 
 const userLookupRequest = newChannelId =>
-  createApiRequest({
+  createAuthorisedApiRequest({
     resource: 'users',
     params: { login: newChannelId },
   })
@@ -53,7 +53,7 @@ const resolveChannelId = (newChannelId) => {
 // the current channel name has been resolved to a twitch userId
 const createIdentifiedApiRequest = (params = {}) =>
   userInfoRequest
-    .then(userId => createApiRequest(
+    .then(userId => createAuthorisedApiRequest(
       Object.assign({}, params, { userId })
     ))
 

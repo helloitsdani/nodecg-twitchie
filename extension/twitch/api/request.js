@@ -1,20 +1,17 @@
 const querystring = require('querystring')
 const request = require('request')
 
-const { log, twitch, config } = require('../../context')
-const twitchAPI = require('./twitch-api')
+const { log, config } = require('../../context')
 
-const { clientID } = config
-
-const verifyCredentials = () =>
-  (twitch.auth && twitch.auth.token)
-    ? Promise.resolve()
-    : Promise.reject()
+const twitchAPI = require('./twitch-api.json')
 
 const apiRequest = ({
   resource,
   userId,
   params = {},
+  auth: {
+    token,
+  } = {},
   method = 'GET',
 } = {}) => {
   const url = `${twitchAPI.url}/${twitchAPI.resources[resource]}`
@@ -32,8 +29,8 @@ const apiRequest = ({
         json: true,
         headers: {
           Accept: 'application/vnd.twitchtv.v5+json',
-          Authorization: twitch.auth.token,
-          'Client-ID': clientID
+          Authorization: token,
+          'Client-ID': config.clientID
         }
       },
       (err, res, body) => err ? reject(err) : resolve(body)
@@ -41,7 +38,12 @@ const apiRequest = ({
   })
 }
 
-const createApiRequest = params => verifyCredentials()
+const verifyCredentials = auth =>
+  (auth && auth.token)
+    ? Promise.resolve()
+    : Promise.reject()
+
+const createApiRequest = params => verifyCredentials(params.auth)
   .then(() => apiRequest(params))
 
 module.exports = createApiRequest
