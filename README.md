@@ -44,3 +44,6 @@ You can also use Twitchie to query the Twitch API/access the tmi.js client direc
 In order to use Twitchie, you'll need to enable Twitch logins on your NodeCG instance, as we use this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](http://nodecg.com/tutorial-nodecg-configuration.html).
 
 Please make sure you've included **user_read** and **chat_login** in your scopes!
+
+### Node Compatibility
+Please note that Twitchie requires you use a version of Node greater than *6.4.0*, because of some ES2016 compatibility stuff.
