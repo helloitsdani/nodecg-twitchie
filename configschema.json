@@ -12,7 +12,13 @@
     },
     "timeBetweenUpdates": {
       "type": "number",
-      "description": "How often the Twitch API should be polled to get channel and stream info"
+      "description": "How often the Twitch API should be polled to get channel and stream info",
+      "default": 60000
+    },
+    "timeBetweenRetries": {
+      "type": "number",
+      "description": "How long twitchie should wait before retrying after failed Twitch API lookups",
+      "default": 30000
     },
     "required": [
       "clientID"
