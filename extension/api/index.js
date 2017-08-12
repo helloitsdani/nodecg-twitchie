@@ -1,7 +1,7 @@
 const debounce = require('debounce')
-const guarantee = require('../../utils/guarantee')
+const guarantee = require('../utils/guarantee')
 
-const { config, replicants } = require('../../context')
+const { config, replicants } = require('../context')
 const { resolveChannelId, createIdentifiedApiRequest } = require('./identified-request')
 
 const twitchAPI = require('./twitch-api.json')

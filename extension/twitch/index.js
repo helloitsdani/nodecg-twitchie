@@ -11,15 +11,10 @@ const twitch = {
     username: undefined,
     token: undefined,
   },
-  api: undefined,
   isConnected: undefined,
   connect: undefined,
   disconnect: undefined,
 }
-
-context.twitch = twitch
-
-twitch.api = require('./api')
 
 twitch.isConnected = () => !!twitch.client
 

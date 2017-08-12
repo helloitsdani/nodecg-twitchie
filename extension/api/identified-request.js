@@ -5,7 +5,7 @@
 // ensures this information is available
 
 const createAuthorisedApiRequest = require('./authorised-request')
-const { log, replicants } = require('../../context')
+const { log, replicants } = require('../context')
 
 const { user } = replicants
 let userInfoRequest = Promise.resolve()

@@ -1,5 +1,5 @@
 const createApiRequest = require('./request')
-const context = require('../../context')
+const context = require('../context')
 
 const createAuthorisedApiRequest = params =>
   createApiRequest(

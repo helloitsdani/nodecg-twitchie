@@ -1,23 +1,24 @@
-const { nodecg, twitch, replicants, config } = require('../context')
+const { nodecg, replicants, config } = require('../context')
+const api = require('../api')
 
 const { user, channel, stream } = replicants
 
 let updateTimeout
 
-const fetchFollowers = () => twitch.api.followers()
+const fetchFollowers = () => api.followers()
   .then(followerInfo => followerInfo.follows)
 
 // if a stream is active, the api response will contain the
 // channel's information as well; therefore, we only need to
 // specifically request it if no stream is active
-const fetchInfo = () => twitch.api.stream()
+const fetchInfo = () => api.stream()
   .then(streamInfo => streamInfo.stream
     ? {
       stream: streamInfo.stream,
       channel: streamInfo.stream.channel,
     }
     : (
-      twitch.api.channel()
+      api.channel()
         .then(channelInfo => ({ channel: channelInfo }))
     )
   )

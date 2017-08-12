@@ -1,7 +1,7 @@
 const querystring = require('querystring')
 const request = require('request')
 
-const { log, config } = require('../../context')
+const { log, config } = require('../context')
 
 const twitchAPI = require('./twitch-api.json')
 

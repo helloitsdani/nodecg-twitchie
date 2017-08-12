@@ -7,10 +7,6 @@ const isNodeCGConfigValid = config => (
 
 const isClientIDPresent = config => config.clientID !== undefined
 
-process.on('unhandledRejection', (reason) => {
-  console.error(reason)
-})
-
 module.exports = (nodecg) => {
   if (!isNodeCGConfigValid(nodecg.config)) {
     throw new Error('nodecg-twitchie requires Twitch login to be enabled in your NodeCG config!')
@@ -23,6 +19,7 @@ module.exports = (nodecg) => {
   context.nodecg = nodecg
   context.twitch = require('./twitch')
 
+  const api = require('./api')
   require('./service')
   require('./eventLog')
   require('./channel')
@@ -33,10 +30,14 @@ module.exports = (nodecg) => {
   // because we create and destroy it based on user login status
   // this lets other nodecg bundles access the twitch api and recieve events we emit
   return new Proxy(context.events, {
-    get: (target, method) => (
-      context.twitch !== undefined && method in context.twitch
+    get: (target, method) => {
+      if (method === 'api') {
+        return api
+      }
+
+      return context.twitch !== undefined && method in context.twitch
         ? context.twitch[method]
         : target[method]
-    )
+    }
   })
 }

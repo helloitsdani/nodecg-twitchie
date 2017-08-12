@@ -1,15 +1,16 @@
-const { twitch, replicants, config } = require('../context')
+const { replicants, config } = require('../context')
+const api = require('../api')
 const guarantee = require('../utils/guarantee')
 
 const { chat, user } = replicants
 const { timeBetweenRetries } = config
 
 const badgesLookup = () =>
-  twitch.api.badges()
+  api.badges()
     .then((response) => { chat.badges.value = response })
 
 const cheermotesLookup = userId =>
-  twitch.api.cheermotes({
+  api.cheermotes({
     params: { channel_id: userId }
   })
     .then((response) => {
