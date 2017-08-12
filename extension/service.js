@@ -1,7 +1,7 @@
 const app = require('express')()
 const login = require('../../../lib/login')
 
-const { nodecg, log, twitch } = require('./context')
+const { log, twitch } = require('./context')
 
 const isTwitchSession = session => (
   session.passport
@@ -17,7 +17,7 @@ const hasAccessDetails = session => (
 const performConnect = (session) => {
   const { user } = session.passport
 
-  nodecg.log.debug('Performing connect...')
+  log.debug('Performing connect...')
 
   return twitch.connect({
     username: user.username,
@@ -76,5 +76,4 @@ app.get(
   }
 )
 
-// mount our refresh route under the main nodecg express app
-nodecg.mount(app)
+module.exports = app

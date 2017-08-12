@@ -1,5 +1,5 @@
-const { nodecg, replicants, config } = require('../context')
-const api = require('../api')
+const { nodecg, replicants, config } = require('../../context')
+const api = require('../../api')
 
 const { user, channel, stream } = replicants
 

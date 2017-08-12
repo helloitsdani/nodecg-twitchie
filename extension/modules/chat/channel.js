@@ -1,5 +1,5 @@
-const { twitch, replicants } = require('../context')
-const getChatChannelFor = require('../utils/getChatChannelFor')
+const { twitch, replicants } = require('../../context')
+const getChatChannelFor = require('../../utils/getChatChannelFor')
 
 const { channel, user } = replicants
 

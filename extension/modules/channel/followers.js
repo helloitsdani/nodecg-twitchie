@@ -1,4 +1,4 @@
-const { events, replicants } = require('../context')
+const { events, replicants } = require('../../context')
 
 const { channel } = replicants
 

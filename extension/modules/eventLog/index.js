@@ -1,4 +1,4 @@
-const { events } = require('../context')
+const { events } = require('../../context')
 
 const parseMessage = ({
   tokens = []

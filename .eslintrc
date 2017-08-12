@@ -13,5 +13,6 @@
     "no-confusing-arrow": "off",
     "import/no-extraneous-dependencies": "off",
     "global-require": "off",
+    "import/newline-after-import": "off"
   },
 }

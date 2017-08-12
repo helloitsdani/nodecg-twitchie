@@ -1,6 +1,6 @@
-const { replicants, config } = require('../context')
-const api = require('../api')
-const guarantee = require('../utils/guarantee')
+const { replicants, config } = require('../../context')
+const api = require('../../api')
+const guarantee = require('../../utils/guarantee')
 
 const { chat, user } = replicants
 const { timeBetweenRetries } = config
