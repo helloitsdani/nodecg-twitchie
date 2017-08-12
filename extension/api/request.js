@@ -1,5 +1,5 @@
 const querystring = require('querystring')
-const request = require('request')
+const request = require('request-promise-native')
 
 const { log, config } = require('../context')
 
@@ -21,20 +21,15 @@ const apiRequest = ({
 
   log.debug(`Performing ${method} request to '${url}?${paramString}'`)
 
-  return new Promise((resolve, reject) => {
-    request(
-      {
-        url: `${url}?${paramString}`,
-        method,
-        json: true,
-        headers: {
-          Accept: 'application/vnd.twitchtv.v5+json',
-          Authorization: token,
-          'Client-ID': config.clientID
-        }
-      },
-      (err, res, body) => err ? reject(err) : resolve(body)
-    )
+  return request({
+    url: `${url}?${paramString}`,
+    method,
+    json: true,
+    headers: {
+      Accept: 'application/vnd.twitchtv.v5+json',
+      Authorization: token,
+      'Client-ID': config.clientID
+    }
   })
 }
 
