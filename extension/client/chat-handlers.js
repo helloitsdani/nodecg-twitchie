@@ -5,7 +5,11 @@ const {
   parseTokens,
 } = require('../utils/parseMessage')
 
-const { events } = require('../context')
+const { events, replicants } = require('../context')
+const { chat: { cheermotes } } = replicants
+
+const parseCheermotesFromTwitch = message =>
+  parseCheermotes(message, cheermotes.value)
 
 const send = ({ scope = 'chat', action, payload } = {}) =>
   events.emitMessage({ scope, action, payload })
@@ -50,7 +54,7 @@ module.exports = (chat) => {
     const message = getMessageDetails(messageText, userstate)
     message.tokens = parseTokens(
       message.tokens,
-      token => parseCheermotes(token)
+      token => parseCheermotesFromTwitch(token)
     )
 
     send({
