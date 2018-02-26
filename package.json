@@ -7,20 +7,20 @@
   },
   "scripts": {
     "test": "ava",
-    "lint:js": "eslint \"{dashboard,extension,graphics}/**/*.{js,jsx}\"",
-    "lint": "yarn lint:js",
+    "lint:js": "eslint \"{dashboard,extension,graphics}/**/*.js\"",
+    "lint": "npm lint:js",
     "precommit": "lint-staged",
-    "prepush": "yarn test"
+    "prepush": "npm test"
   },
   "lint-staged": {
-    "{dashboard,extension,graphics}/**/*.{js,jsx}": "eslint"
+    "{dashboard,extension,graphics}/**/*.js": "eslint"
   },
   "description": "Provides Twitch channel, stream and chat information via NodeCG replicants",
   "homepage": "https://github.com/helloitsdan/nodecg-twitchie",
   "author": {
     "name": "dani quinn sexton",
-    "email": "dani@goneupinflames.com",
-    "url": "http://imakenicethin.gs"
+    "email": "dani@glitter.tech",
+    "url": "http://glitter.tech"
   },
   "files": [
     "dashboard",
@@ -46,8 +46,7 @@
         "file": "events.html",
         "headerColor": "#6441a5"
       }
-    ],
-    "graphics": []
+    ]
   },
   "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "dependencies": {
@@ -61,8 +60,6 @@
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.16.0",
-    "eslint-plugin-jsx-a11y": "^2.2.2",
-    "eslint-plugin-react": "^6.3.0",
     "husky": "^0.13.3",
     "lint-staged": "^3.5.0"
   }
