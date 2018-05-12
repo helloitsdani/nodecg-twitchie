@@ -30,7 +30,7 @@
     "nodecg-bundle"
   ],
   "nodecg": {
-    "compatibleRange": "~0.8.5",
+    "compatibleRange": ">=0.8.5",
     "dashboardPanels": [
       {
         "name": "twitch-channel",

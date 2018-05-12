@@ -2,9 +2,19 @@
 
 (() => {
   const eventList = document.getElementById('eventList')
-  const channelEvents = nodecg.Replicant('events.current', 'nodecg-twitchie')
+  const events = nodecg.Replicant('events', 'nodecg-twitchie')
 
-  channelEvents.on('change', () => {
-    eventList.items = channelEvents.value || []
+  events.on('change', (newEvents) => {
+    const parsedEvents = (newEvents || [])
+      .map((item) => {
+        const newItem = Object.assign({}, item)
+        const eventDate = moment(item.timestamp)
+
+        newItem.time = eventDate.format('HH:mm')
+        newItem.date = eventDate.format('Do MMM')
+        return newItem
+      })
+
+    eventList.items = parsedEvents
   })
 })()

@@ -1,17 +1,17 @@
 /* global nodecg, moment */
 
-(() => {
+(async () => {
   const channelInfo = nodecg.Replicant('channel.info', 'nodecg-twitchie')
   const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitchie')
-  const loggedInStatus = nodecg.Replicant('login.status', 'nodecg-twitchie')
   const userInfo = nodecg.Replicant('user.info', 'nodecg-twitchie')
+
+  await NodeCG.waitForReplicants(channelInfo, streamInfo, userInfo)
 
   let streamStartedAt
 
   const elements = {
     pages: {
-      login: document.getElementById('login-pages'),
-      stats: document.getElementById('stats-pages'),
+      error: document.getElementById('error-page'),
       info: document.getElementById('info-page'),
     },
 
@@ -20,13 +20,6 @@
     followers: document.getElementById('stat.followers'),
     timer: document.getElementById('stat.timer'),
   }
-
-  loggedInStatus.on(
-    'change',
-    (isLoggedIn) => {
-      elements.pages.login.selected = isLoggedIn ? 'channel' : 'login'
-    }
-  )
 
   const tick = () => {
     let timerText
@@ -46,7 +39,9 @@
   userInfo.on(
     'change',
     ({ unknown = false, logo } = {}) => {
-      elements.pages.stats.selected = unknown ? 'error' : 'info'
+      elements.pages.error.style.display = unknown ? 'block' : 'none'
+      elements.pages.info.style.display = unknown ? 'none' : 'block'
+
       elements.logo.src = logo
     }
   )
