@@ -12,6 +12,9 @@ Out of the box, Twitchie will provide you with all of this:
 * Chat, via [tmi.js](https://tmijs.org/)
 * Emote (and cheermote) parsing from chat messages, including channel-specific emotes
 
+## Compatibility
+Twitchie requires that you use a version of NodeCG greater than *0.9*, and a version of node greater than *6.4.0*, because of some compatibility stuff.
+
 ## Usage
 
 Everything that Twitchie handles is exposed through NodeCG's replicants and bundle messages, in the `nodecg-twitchie` namespace. This means that getting stream information in your graphics is extra-simple!
@@ -44,6 +47,3 @@ You can also use Twitchie to query the Twitch API/access the tmi.js client direc
 In order to use Twitchie, you'll need to enable Twitch logins on your NodeCG instance, as we use this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](http://nodecg.com/tutorial-nodecg-configuration.html).
 
 Please make sure you've included **user_read** and **chat_login** in your scopes!
-
-### Node Compatibility
-Please note that Twitchie requires you use a version of Node greater than *6.4.0*, because of some ES2016 compatibility stuff.
