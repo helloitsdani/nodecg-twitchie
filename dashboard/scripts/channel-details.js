@@ -1,9 +1,9 @@
-/* global nodecg, moment */
+/* global NodeCG, moment */
 
 (async () => {
-  const channelInfo = nodecg.Replicant('channel.info', 'nodecg-twitchie')
-  const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitchie')
-  const userInfo = nodecg.Replicant('user.info', 'nodecg-twitchie')
+  const channelInfo = NodeCG.Replicant('channel.info', 'nodecg-twitchie')
+  const streamInfo = NodeCG.Replicant('stream.info', 'nodecg-twitchie')
+  const userInfo = NodeCG.Replicant('user.info', 'nodecg-twitchie')
 
   await NodeCG.waitForReplicants(channelInfo, streamInfo, userInfo)
 
@@ -25,7 +25,7 @@
     let timerText
 
     if (streamStartedAt) {
-      const diff = moment().diff(streamStartedAt)
+      const diff = moment.utc().diff(streamStartedAt)
       timerText = moment(diff).format('H:mm:ss')
     } else {
       timerText = 'Offline'

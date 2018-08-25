@@ -36,7 +36,7 @@ module.exports = (nodecg) => {
       throw new Error('No channel has been set to log events for')
     }
 
-    const events = [ ...eventHistory.value ].slice(0, MAX_STORED_EVENTS - 2)
+    const events = [...eventHistory.value].slice(0, MAX_STORED_EVENTS - 2)
     const timestamp = Date.now()
 
     events.unshift({

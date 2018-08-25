@@ -33,18 +33,18 @@
     "compatibleRange": ">=0.9.0",
     "dashboardPanels": [
       {
-        "name": "twitch-channel",
+        "name": "Twitch Channel",
         "title": "Twitch Channel",
         "width": 2,
         "file": "channel.html",
         "headerColor": "#6441a5"
       },
       {
-        "name": "twitch-channel-events",
-        "title": "Twitch Channel Events",
-        "width": 3,
+        "name": "Events",
+        "title": "Events",
         "file": "events.html",
-        "headerColor": "#6441a5"
+        "headerColor": "#6441a5",
+        "fullbleed": true
       }
     ]
   },
