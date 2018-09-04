@@ -2,167 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="import" href="components/iron-image/iron-image.html">
-  <link rel="import" href="components/iron-pages/iron-pages.html">
-  <link rel="import" href="components/paper-spinner/paper-spinner.html">
-  <link rel="import" href="components/nodecg-replicant-input/nodecg-replicant-input.html">
 
-  <style is="custom-style">
-    #channel-field {
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
-      margin: 0 auto 0.5em;
+  <link href="/bundles/nodecg-twitchie/dashboard/styles/base.css" rel="stylesheet">
+
+  <link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-image/iron-image.html">
+  <link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-pages/iron-pages.html">
+  <link rel="import" href="/bundles/nodecg-twitchie/bower_components/paper-spinner/paper-spinner.html">
+  <link rel="import" href="/bundles/nodecg-twitchie/bower_components/nodecg-replicant-input/nodecg-replicant-input.html">
+
+  <style>
+    .c-channel-field-group {
+      align-items: flex-end;
     }
 
-    #logo {
-			width: 3em;
-			height: 3em;
+    .c-channel-logo {
+      width: 3em;
+      height: 3em;
       margin: 0 0 0 1em;
-			background-color: #ccc;
+      background-color: #ccc;
     }
 
-    #info-page {
-      position: relative;
-    }
-
-    #info-page.is-loading #loading {
-      visibility: visible;
-      opacity: 1;
-      transition: 0.3s all ease-in-out;
-    }
-
-    #info-page.is-loading #stats {
-      opacity: 0;
-      visibility: hidden;
-      transition: none;
-    }
-
-    #loading {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      opacity: 0;
-      visibility: hidden;
-      @apply(--layout-vertical);
-      @apply(--layout-center);
-      @apply(--layout-center-justified);
-      transition: none;
-    }
-
-    #loading paper-spinner {
-      --paper-spinner-layer-1-color: #6441a5;
-      --paper-spinner-layer-2-color: var(--paper-spinner-layer-1-color);
-      --paper-spinner-layer-3-color: var(--paper-spinner-layer-1-color);
-      --paper-spinner-layer-4-color: var(--paper-spinner-layer-1-color);
-    }
-
-    .loading__message {
+    .c-stats {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-flow: row wrap;
     }
 
-    .loading__message-item {
-      margin: 0 0.5em;
-    }
-
-    #stats {
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
-      @apply(--layout-wrap);
-      transition: 0.3s all ease-in-out;
-    }
-
-    .stat {
+    .c-stat {
       width: 50%;
     }
 
-    .stat.full {
+    .c-stat--full {
       width: 100%;
     }
 
-    svg {
+    .c-stat__icon {
       display: inline-block;
       vertical-align: -3px;
     }
-
-    #error-message {
-      margin: 0 auto 0.5em;
-    }
   </style>
 </head>
+
 <body>
-  <iron-pages id="login-pages" selected="channel" attr-for-selected="data-page-name">
-    <section data-page-name="login">
-      <h3>We've lost connection to Twitch!</h3>
-
-      <p>
-        Please reconnect by logging in again.
-      </p>
-
-      <a target="_parent" href="/login/twitch">
-        <img src="/login/signin_twitch.png" />
-      </a>
-    </section>
-
-    <section data-page-name="channel">
-      <div id="channel-field">
+  <main>
+    <section id="channel-field">
+      <div class="c-field-group c-channel-field-group">
         <nodecg-replicant-input
+          class="c-flush-input"
           label="Channel ID"
           replicant-name="channel.id"
           replicant-bundle="nodecg-twitchie"
         ></nodecg-replicant-input>
 
-        <iron-image id="logo" sizing="contain" preload fade></iron-image>
+        <iron-image
+          class="c-channel-logo"
+          id="logo"
+          sizing="contain"
+          preload fade
+        ></iron-image>
       </div>
-
-      <iron-pages id="stats-pages" selected="info" attr-for-selected="data-page-name">
-        <div data-page-name="error">
-          <p class="error-message" id="error-message">
-            We couldn't find any channels with that ID on Twitch.
-          </p>
-        </div>
-
-        <div data-page-name="info" id="info-page">
-          <div id="loading">
-            <div class="loading__message">
-              <paper-spinner active class="loading__message-item"></paper-spinner>
-              <span class="loading__message-item">Retrieving channel info&hellip;</span>
-            </div>
-          </div>
-
-          <div id="stats">
-            <div class="viewers stat">
-              <svg height="16px" version="1.1" viewBox="0 0 16 16" width="16px" x="0px" y="0px">
-                <path clip-rule="evenodd" d="M11,14H5H2v-1l3-3h2L5,8V2h6v6l-2,2h2l3,3v1H11z" fill-rule="evenodd"></path>
-        			</svg>
-              <span id="stat.viewers">0</span>
-            </div>
-
-            <div class="followers stat">
-              <svg height="16px" version="1.1" viewBox="0 0 16 16" width="16px" x="0px" y="0px">
-                <path d="M8,13.5L1.5,7V4l2-2h3L8,3.5L9.5,2h3l2,2v3L8,13.5z" />
-        			</svg>
-              <span id="stat.followers">0</span>
-            </div>
-
-            <div class="timer full stat">
-              <svg height="18px" version="1.1" viewbox="0 0 18 18" width="18px" x="0px" y="0px">
-                <path clip-rule="evenodd" d="M15,14l-4-4v4H8.707l-0.5-0.5h-1L7.5,13.207V8.5h-5v4.707L2.793,13.5h-1l-0.5,0.5H1V4h10v4l4-4h2v10H15z M3,14h1l-1-1V9h1h2h1v4l-1,1h1h1l1,1v2H1v-2l1-1H3z" fill-rule="evenodd"></path>
-              </svg>
-              <span id="stat.timer">Offline</span>
-            </div>
-          </div>
-        </div>
-      </iron-pages>
     </section>
-  </iron-pages>
 
-  <script src="components/moment/moment.js"></script>
+    <iron-pages
+      id="channel.pages"
+      selected="channel.status"
+      attr-for-selected="name"
+    >
+      <section name="channel.error">
+        We couldn't find any channels with that ID on Twitch.
+      </section>
+
+      <section name="channel.status">
+        <div id="loading" class="c-loading">
+          <div class="c-loading__message">
+            <paper-spinner class="c-loading__spinner" active></paper-spinner>
+            <span>Retrieving channel info&hellip;</span>
+          </div>
+        </div>
+
+        <div class="c-stats">
+          <div class="viewers c-stat">
+            <svg class="c-stat__icon" height="16px" version="1.1" viewBox="0 0 16 16" width="16px" x="0px" y="0px">
+              <path clip-rule="evenodd" d="M11,14H5H2v-1l3-3h2L5,8V2h6v6l-2,2h2l3,3v1H11z" fill-rule="evenodd"></path>
+            </svg>
+
+            <span id="stat.viewers">0</span>
+          </div>
+
+          <div class="followers c-stat">
+            <svg class="c-stat__icon" height="16px" version="1.1" viewBox="0 0 16 16" width="16px" x="0px" y="0px">
+              <path d="M8,13.5L1.5,7V4l2-2h3L8,3.5L9.5,2h3l2,2v3L8,13.5z" />
+            </svg>
+
+            <span id="stat.followers">0</span>
+          </div>
+
+          <div class="timer c-stat c-stat--full">
+            <svg class="c-stat__icon" height="18px" version="1.1" viewbox="0 0 18 18" width="18px" x="0px" y="0px">
+              <path clip-rule="evenodd" d="M15,14l-4-4v4H8.707l-0.5-0.5h-1L7.5,13.207V8.5h-5v4.707L2.793,13.5h-1l-0.5,0.5H1V4h10v4l4-4h2v10H15z M3,14h1l-1-1V9h1h2h1v4l-1,1h1h1l1,1v2H1v-2l1-1H3z" fill-rule="evenodd"></path>
+            </svg>
+
+            <span id="stat.timer">Offline</span>
+          </div>
+        </div>
+      </section>
+    </iron-pages>
+  </main>
+
+  <script src="/bundles/nodecg-twitchie/bower_components/moment/moment.js"></script>
   <script src="scripts/verify-login.js"></script>
-  <script src="scripts/channel-details.js"></script>
+  <script src="scripts/channel.js"></script>
 </body>
 </html>

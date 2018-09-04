@@ -1,38 +1,29 @@
-/* global nodecg, moment */
+/* global NodeCG, moment */
 
-(() => {
-  const channelInfo = nodecg.Replicant('channel.info', 'nodecg-twitchie')
-  const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitchie')
-  const loggedInStatus = nodecg.Replicant('login.status', 'nodecg-twitchie')
-  const userInfo = nodecg.Replicant('user.info', 'nodecg-twitchie')
+(async () => {
+  const channelInfo = NodeCG.Replicant('channel.info', 'nodecg-twitchie')
+  const streamInfo = NodeCG.Replicant('stream.info', 'nodecg-twitchie')
+  const userInfo = NodeCG.Replicant('user.info', 'nodecg-twitchie')
 
   let streamStartedAt
 
-  const elements = {
-    pages: {
-      login: document.getElementById('login-pages'),
-      stats: document.getElementById('stats-pages'),
-      info: document.getElementById('info-page'),
-    },
+  const pages = document.getElementById('channel.pages')
 
+  const elements = {
+    loading: document.getElementById('loading'),
     logo: document.getElementById('logo'),
     viewers: document.getElementById('stat.viewers'),
     followers: document.getElementById('stat.followers'),
     timer: document.getElementById('stat.timer'),
   }
 
-  loggedInStatus.on(
-    'change',
-    (isLoggedIn) => {
-      elements.pages.login.selected = isLoggedIn ? 'channel' : 'login'
-    }
-  )
+  await NodeCG.waitForReplicants(channelInfo, streamInfo, userInfo)
 
   const tick = () => {
     let timerText
 
     if (streamStartedAt) {
-      const diff = moment().diff(streamStartedAt)
+      const diff = moment.utc().diff(streamStartedAt)
       timerText = moment(diff).format('H:mm:ss')
     } else {
       timerText = 'Offline'
@@ -46,7 +37,10 @@
   userInfo.on(
     'change',
     ({ unknown = false, logo } = {}) => {
-      elements.pages.stats.selected = unknown ? 'error' : 'info'
+      pages.selected = unknown
+        ? 'channel.error'
+        : 'channel.status'
+
       elements.logo.src = logo
     }
   )
@@ -54,7 +48,7 @@
   channelInfo.on(
     'change',
     (channel) => {
-      elements.pages.info.classList.toggle('is-loading', !channel)
+      elements.loading.classList.toggle('is-loading', !channel)
     }
   )
 
@@ -69,7 +63,11 @@
     'change',
     ({ viewers = 0, created_at: createdAt } = {}) => {
       elements.viewers.innerHTML = viewers
-      streamStartedAt = createdAt ? moment(createdAt) : undefined
+
+      streamStartedAt = createdAt
+        ? moment(createdAt)
+        : undefined
+
       tick()
     }
   )

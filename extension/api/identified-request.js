@@ -24,9 +24,14 @@ const userLookupRequest = newChannelId =>
         return undefined
       }
 
+      const resolvedUser = users[0]
+
+      log.debug(`User ${newChannelId} resolved to ID ${resolvedUser._id}`)
+
       // eslint-disable-next-line no-underscore-dangle
-      user.id.value = users[0]._id
-      user.info.value = users[0]
+      user.id.value = resolvedUser._id
+      user.info.value = resolvedUser
+
       return user.id.value
     })
 

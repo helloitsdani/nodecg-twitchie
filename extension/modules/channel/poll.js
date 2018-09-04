@@ -31,9 +31,9 @@ const update = () => {
     fetchFollowers()
   ])
     .then(([info, followers]) => {
-      channel.info.value = info.channel
-      channel.followers.value = followers
-      stream.info.value = info.stream
+      channel.info.value = Object.assign({}, info.channel)
+      channel.followers.value = [ ...followers ]
+      stream.info.value = Object.assign({}, info.stream)
     }).catch((err) => {
       nodecg.log.error('Couldn\'t retrieve channel info :()', err)
     }).then(() => {
@@ -41,7 +41,7 @@ const update = () => {
     })
 }
 
-user.id.on('change', (newUserId) => {
+user.id.on('change', (newUserId, ...what) => {
   channel.info.value = undefined
   channel.followers.value = undefined
   stream.info.value = undefined

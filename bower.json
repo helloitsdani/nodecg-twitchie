@@ -2,13 +2,11 @@
   "name": "nodecg-twitchie",
   "version": "0.0.1",
   "dependencies": {
-    "paper-spinner": "^1.2.1",
-    "nodecg-replicant-input": "NodeCGElements/nodecg-replicant-input#0.4.0",
-    "iron-list": "^1.4.5",
-    "paper-item": "^1.2.2",
-    "iron-image": "^1.2.6",
-    "iron-pages": "^1.0.9",
-    "moment-element": "^0.4.4",
-    "moment": "~2.15.0"
+    "paper-spinner": "^2.1.0",
+    "iron-list": "^2.0.15",
+    "iron-image": "^2.2.1",
+    "iron-pages": "PolymerElements/iron-pages#^2.1.1",
+    "nodecg-replicant-input": "NodeCGElements/nodecg-replicant-input#^1.0.1",
+    "moment": "~2.18.0"
   }
 }

@@ -1,4 +1,4 @@
 module.exports = {
   NAMESPACE: 'nodecg-twitchie',
-  MAX_STORED_EVENTS: 100,
+  MAX_STORED_EVENTS: 50,
 }

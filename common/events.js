@@ -19,46 +19,35 @@ module.exports = (nodecg) => {
     emitter.emit(key, payload)
   }
 
-  const userId = nodecg.Replicant('user.id', NAMESPACE, {
+  const channelId = nodecg.Replicant('channel.id', NAMESPACE, {
     defaultValue: undefined,
     persistent: false,
   })
 
-  const allEvents = nodecg.Replicant('events', NAMESPACE, {
-    defaultValue: {},
+  const eventHistory = nodecg.Replicant('events', NAMESPACE, {
+    defaultValue: [],
     persistent: true,
   })
 
-  const currentChannelEvents = nodecg.Replicant('events.current', NAMESPACE, {
-    defaultValue: [],
-    persistent: false,
-  })
-
-  userId.on('change', (newValue) => {
-    currentChannelEvents.value = allEvents.value[newValue]
-  })
-
   emitter.addEvent = (subject, action, message) => {
-    const currentUser = userId.value
+    const channel = channelId.value
 
-    if (!currentUser) {
-      throw new Error('No user has been set to log events for')
+    if (!channel) {
+      throw new Error('No channel has been set to log events for')
     }
 
-    const eventStore = allEvents.value
-    const channelEvents = (eventStore[userId.value] || []).slice(0, MAX_STORED_EVENTS - 2)
+    const events = [...eventHistory.value].slice(0, MAX_STORED_EVENTS - 2)
     const timestamp = Date.now()
 
-    channelEvents.unshift({
-      timestamp,
+    events.unshift({
       subject,
       action,
       message,
+      timestamp,
+      channel,
     })
 
-    eventStore[userId.value] = channelEvents
-    allEvents.value = eventStore
-    currentChannelEvents.value = channelEvents
+    eventHistory.value = events
   }
 
   return emitter

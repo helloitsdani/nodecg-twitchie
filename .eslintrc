@@ -3,7 +3,7 @@
     "browser": true,
   },
   "extends": [
-    "airbnb"
+    "airbnb/base"
   ],
   "rules": {
     "semi": ["error", "never"],

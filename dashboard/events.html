@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
 
-  <link rel="import" href="components/iron-list/iron-list.html">
-  <link rel="import" href="components/paper-item/paper-item.html">
-  <link rel="import" href="components/moment-element/moment-element.html">
+  <link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-list/iron-list.html">
 
   <style>
-    .event-list {
-      height: 20em;
-    }
-
     .event {
       border-bottom: 0.075em solid #ccc;
       padding: 0.5em 0;
+      line-height: 1.2;
+
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .event:last-child {
@@ -37,22 +37,24 @@
       display: inline-block;
     }
 
-    .event__message {
+    .event__meta {
+      list-style-type: none;
+      margin: 0 0 0 0.5em;
       font-size: 0.85em;
-      line-height: 1.1;
+      text-align: center;
+    }
+
+    .event__channel {
+      margin-left: 0.5em;
     }
   </style>
 </head>
 <body>
-  <section>
+  <main role="main">
     <iron-list items=[] id="eventList" as="event" class="event-list">
       <template>
-        <paper-item class="event">
-          <div class="event__timestamp">
-            <moment-element datetime="{{event.timestamp}}" output-format="HH:mm"></moment-element>
-          </div>
-
-          <paper-item-body two-line class="event__body">
+        <div class="event">
+          <div class="event__body">
             <header class="event__header">
               <div class="event__subject">[[event.subject]]</div>
               <div class="event__title">[[event.action]]</div>
@@ -61,13 +63,25 @@
             <div class="event__message">
               [[event.message]]
             </div>
-          </paper-item-body>
-        </paper-item>
+          </div>
+
+          <ul class="event__meta">
+            <li>
+              <strong>[[event.channel]]</strong>
+            </li>
+            <li>
+              <time>[[event.time]]</time>
+            </li>
+            <li>
+              <time>[[event.date]]</time>
+            </li>
+          </ul>
+        </div>
       </template>
     </iron-list>
-  </section>
+  </main>
 
-  <script src="components/moment/moment.js"></script>
+  <script src="/bundles/nodecg-twitchie/bower_components/moment/moment.js"></script>
   <script src="scripts/events.js"></script>
 </body>
 </html>
