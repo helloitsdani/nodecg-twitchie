@@ -5,6 +5,7 @@
     "paper-spinner": "^2.1.0",
     "iron-list": "^2.0.15",
     "iron-image": "^2.2.1",
+    "iron-pages": "PolymerElements/iron-pages#^2.1.1",
     "nodecg-replicant-input": "NodeCGElements/nodecg-replicant-input#^1.0.1",
     "moment": "~2.18.0"
   }

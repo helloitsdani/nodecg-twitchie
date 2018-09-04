@@ -5,21 +5,19 @@
   const streamInfo = NodeCG.Replicant('stream.info', 'nodecg-twitchie')
   const userInfo = NodeCG.Replicant('user.info', 'nodecg-twitchie')
 
-  await NodeCG.waitForReplicants(channelInfo, streamInfo, userInfo)
-
   let streamStartedAt
 
-  const elements = {
-    pages: {
-      error: document.getElementById('error-page'),
-      info: document.getElementById('info-page'),
-    },
+  const pages = document.getElementById('channel.pages')
 
+  const elements = {
+    loading: document.getElementById('loading'),
     logo: document.getElementById('logo'),
     viewers: document.getElementById('stat.viewers'),
     followers: document.getElementById('stat.followers'),
     timer: document.getElementById('stat.timer'),
   }
+
+  await NodeCG.waitForReplicants(channelInfo, streamInfo, userInfo)
 
   const tick = () => {
     let timerText
@@ -39,8 +37,9 @@
   userInfo.on(
     'change',
     ({ unknown = false, logo } = {}) => {
-      elements.pages.error.style.display = unknown ? 'block' : 'none'
-      elements.pages.info.style.display = unknown ? 'none' : 'block'
+      pages.selected = unknown
+        ? 'channel.error'
+        : 'channel.status'
 
       elements.logo.src = logo
     }
@@ -49,7 +48,7 @@
   channelInfo.on(
     'change',
     (channel) => {
-      elements.pages.info.classList.toggle('is-loading', !channel)
+      elements.loading.classList.toggle('is-loading', !channel)
     }
   )
 
@@ -64,7 +63,11 @@
     'change',
     ({ viewers = 0, created_at: createdAt } = {}) => {
       elements.viewers.innerHTML = viewers
-      streamStartedAt = createdAt ? moment(createdAt) : undefined
+
+      streamStartedAt = createdAt
+        ? moment(createdAt)
+        : undefined
+
       tick()
     }
   )

@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
 
-  <link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-pages/iron-pages.html">
   <link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-list/iron-list.html">
 
   <style>
@@ -51,7 +50,7 @@
   </style>
 </head>
 <body>
-  <section>
+  <main role="main">
     <iron-list items=[] id="eventList" as="event" class="event-list">
       <template>
         <div class="event">
@@ -80,7 +79,7 @@
         </div>
       </template>
     </iron-list>
-  </section>
+  </main>
 
   <script src="/bundles/nodecg-twitchie/bower_components/moment/moment.js"></script>
   <script src="scripts/events.js"></script>
