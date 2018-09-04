@@ -13,7 +13,7 @@ Out of the box, Twitchie will provide you with all of this:
 * Emote (and cheermote) parsing from chat messages, including channel-specific emotes
 
 ## Compatibility
-Twitchie requires that you use a version of NodeCG greater than *0.9*, and a version of node greater than *6.4.0*, because of some compatibility stuff.
+Twitchie requires that you use a version of NodeCG greater than *1.0*, and a version of node greater than *6.4.0*, because of some compatibility stuff.
 
 ## Usage
 
