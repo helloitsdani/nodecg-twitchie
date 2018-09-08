@@ -2,10 +2,12 @@
 <link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-image/iron-image.html">
 <link rel="import" href="/bundles/nodecg-twitchie/bower_components/nodecg-replicant-input/nodecg-replicant-input.html">
 
-<dom-module id="twitchie-channel-field">
-  <link href="/bundles/nodecg-twitchie/dashboard/styles/base.css" rel="import" type="css">
+<link rel="import" href="/bundles/nodecg-twitchie/dashboard/twitchie-styles/twitchie-styles.html">
 
+<dom-module id="twitchie-channel-field">
   <template>
+    <style include="twitchie-styles"></style>
+
     <style>
       .c-channel-field-group {
         align-items: flex-end;
