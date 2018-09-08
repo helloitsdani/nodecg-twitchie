@@ -2,86 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-list/iron-list.html">
-
-  <style>
-    .event {
-      border-bottom: 0.075em solid #ccc;
-      padding: 0.5em 0;
-      line-height: 1.2;
-
-      display: flex;
-      flex-flow: row nowrap;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .event:last-child {
-      border: none;
-    }
-
-    .event__timestamp {
-      width: 4em;
-      font-size: 0.85em;
-      flex: 0 0 auto;
-      font-weight: bold;
-    }
-
-    .event__subject {
-      font-weight: bold;
-    }
-
-    .event__subject,
-    .event__title {
-      display: inline-block;
-    }
-
-    .event__meta {
-      list-style-type: none;
-      margin: 0 0 0 0.5em;
-      font-size: 0.85em;
-      text-align: center;
-    }
-
-    .event__channel {
-      margin-left: 0.5em;
-    }
-  </style>
+  <link rel="import" href="twitchie-events/twitchie-events.html">
 </head>
+
 <body>
-  <main role="main">
-    <iron-list items=[] id="eventList" as="event" class="event-list">
-      <template>
-        <div class="event">
-          <div class="event__body">
-            <header class="event__header">
-              <div class="event__subject">[[event.subject]]</div>
-              <div class="event__title">[[event.action]]</div>
-            </header>
-
-            <div class="event__message">
-              [[event.message]]
-            </div>
-          </div>
-
-          <ul class="event__meta">
-            <li>
-              <strong>[[event.channel]]</strong>
-            </li>
-            <li>
-              <time>[[event.time]]</time>
-            </li>
-            <li>
-              <time>[[event.date]]</time>
-            </li>
-          </ul>
-        </div>
-      </template>
-    </iron-list>
-  </main>
-
-  <script src="/bundles/nodecg-twitchie/bower_components/moment/moment.js"></script>
-  <script src="scripts/events.js"></script>
+  <twitchie-events></twitchie-events>
 </body>
 </html>
