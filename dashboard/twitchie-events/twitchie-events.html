@@ -1,0 +1,87 @@
+<link rel="import" href="/bundles/nodecg-twitchie/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bundles/nodecg-twitchie/bower_components/iron-list/iron-list.html">
+
+<dom-module id="twitchie-events">
+  <link href="/bundles/nodecg-twitchie/dashboard/styles/base.css" rel="import" type="css">
+
+  <template>
+    <style>
+      .c-event {
+        border-bottom: 0.075em solid #ccc;
+        padding: 0.5em 0;
+        line-height: 1.2;
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .c-event:last-child {
+        border: none;
+      }
+
+      .c-event__timestamp {
+        width: 4em;
+        font-size: 0.85em;
+        flex: 0 0 auto;
+        font-weight: bold;
+      }
+
+      .c-event__subject {
+        font-weight: bold;
+      }
+
+      .c-event__subject,
+      .c-event__title {
+        display: inline-block;
+      }
+
+      .c-event__meta {
+        list-style-type: none;
+        margin: 0 0 0 0.5em;
+        font-size: 0.85em;
+        text-align: center;
+      }
+
+      .c-event__channel {
+        margin-left: 0.5em;
+      }
+    </style>
+
+    <dom-repeat
+      items="{{channelEvents}}"
+      as="event"
+    >
+      <template>
+        <div class="c-event">
+          <div class="c-event__body">
+            <header class="c-event__header">
+              <div class="c-event__subject">[[event.subject]]</div>
+              <div class="c-event__title">[[event.action]]</div>
+            </header>
+
+            <div class="c-event__message">
+              [[event.message]]
+            </div>
+          </div>
+
+          <ul class="c-event__meta">
+            <li>
+              <strong>[[event.channel]]</strong>
+            </li>
+            <li>
+              <time>[[event.time]]</time>
+            </li>
+            <li>
+              <time>[[event.date]]</time>
+            </li>
+          </ul>
+        </div>
+      </template>
+    </dom-repeat>
+  </template>
+
+  <script src="/bundles/nodecg-twitchie/bower_components/moment/moment.js"></script>
+  <script src="twitchie-events.js"></script>
+</dom-module>
