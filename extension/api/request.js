@@ -38,8 +38,9 @@ const verifyCredentials = (params = {}) =>
     ? Promise.resolve(params)
     : Promise.reject(new Error('No Twitch auth token provided'))
 
-const createApiRequest = params =>
+const createApiRequest = (params) => (
   verifyCredentials(params)
     .then(apiRequest)
+)
 
 module.exports = createApiRequest

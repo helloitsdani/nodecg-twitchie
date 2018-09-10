@@ -3,8 +3,9 @@ const getChatChannelFor = require('../../utils/getChatChannelFor')
 
 const { channel, user } = replicants
 
-const isUserInChannel = channelName =>
+const isUserInChannel = (channelName) => (
   twitch.client.getChannels().includes(channelName)
+)
 
 // leave chat immediately when channel ID is changed;
 // there might be a content reason we want to change ASAP

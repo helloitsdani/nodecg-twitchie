@@ -9,7 +9,7 @@ const badgesLookup = () =>
   api.badges()
     .then((response) => { chat.badges.value = response })
 
-const cheermotesLookup = userId =>
+const cheermotesLookup = (userId) => (
   api.cheermotes({
     params: { channel_id: userId }
   })
@@ -24,6 +24,7 @@ const cheermotesLookup = userId =>
         ), {}
       )
     })
+)
 
 const guaranteedBadgesLookup = guarantee(
   badgesLookup,

@@ -8,11 +8,13 @@ const {
 const { events, replicants } = require('../context')
 const { chat: { cheermotes } } = replicants
 
-const parseCheermotesFromTwitch = message =>
+const parseCheermotesFromTwitch = (message) => (
   parseCheermotes(message, cheermotes.value)
+)
 
-const send = ({ scope = 'chat', action, payload } = {}) =>
+const send = ({ scope = 'chat', action, payload } = {}) => (
   events.emitMessage({ scope, action, payload })
+)
 
 module.exports = (chat) => {
   chat.on('connected', () => {
@@ -54,7 +56,7 @@ module.exports = (chat) => {
     const message = getMessageDetails(messageText, userstate)
     message.tokens = parseTokens(
       message.tokens,
-      token => parseCheermotesFromTwitch(token)
+      (token) => parseCheermotesFromTwitch(token)
     )
 
     send({

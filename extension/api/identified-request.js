@@ -10,7 +10,7 @@ const { log, replicants } = require('../context')
 const { user } = replicants
 let userInfoRequest = Promise.resolve()
 
-const userLookupRequest = newChannelId =>
+const userLookupRequest = (newChannelId) => (
   createAuthorisedApiRequest({
     resource: 'users',
     params: { login: newChannelId },
@@ -34,6 +34,7 @@ const userLookupRequest = newChannelId =>
 
       return user.id.value
     })
+)
 
 // performs a lookup for the specified channel ID, and ensures
 // api requests performed after this point wait until this lookup
@@ -58,9 +59,11 @@ const resolveChannelId = (newChannelId) => {
 // the current channel name has been resolved to a twitch userId
 const createIdentifiedApiRequest = (params = {}) =>
   userInfoRequest
-    .then(userId => createAuthorisedApiRequest(
+    .then(
+      (userId) => createAuthorisedApiRequest(
       Object.assign({}, params, { userId })
-    ))
+      )
+    )
 
 module.exports = {
   resolveChannelId,

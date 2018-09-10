@@ -60,7 +60,9 @@ const getEmoteTokens = (message, emotes) => {
 
   Object.keys(emotes).forEach((key) => {
     emotes[key].forEach((occurrence) => {
-      const [start, end] = occurrence.split('-').map(idx => parseInt(idx, 10))
+      const [start, end] = occurrence.split('-').map(
+        (idx) => parseInt(idx, 10)
+      )
 
       instances.push({
         type: 'emote',
@@ -130,7 +132,7 @@ const parseTokens = (tokens, tokeniser) => {
     }]
 
   return toParse.map(
-    token => token.type === 'text' ? tokeniser(token.content) : token
+    (token) => token.type === 'text' ? tokeniser(token.content) : token
   ).reduce(
     (tokenArray, token) => tokenArray.concat(token), []
   )
@@ -155,7 +157,7 @@ const getMessageDetails = (message, userstate = {}) => ({
   emotes: userstate.emotes,
   tokens: parseTokens(
     message,
-    token => parseEmotes(token, userstate.emotes)
+    (token) => parseEmotes(token, userstate.emotes)
   ),
   raw: message,
 })

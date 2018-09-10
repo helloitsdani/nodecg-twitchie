@@ -1,6 +1,6 @@
 const context = require('./context')
 
-const isNodeCGConfigValid = config => (
+const isNodeCGConfigValid = (config) => (
   config.login.enabled
   && config.login.twitch.enabled
   && config.login.twitch.clientID
@@ -32,6 +32,10 @@ module.exports = (nodecg) => {
     get: (target, method) => {
       if (method === 'api') {
         return api
+      }
+
+      if (method === 'replicants') {
+        return context.replicants
       }
 
       return context.twitch !== undefined && method in context.twitch

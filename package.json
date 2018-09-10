@@ -8,7 +8,7 @@
   "scripts": {
     "test": "ava",
     "lint:js": "eslint \"{dashboard,extension,graphics}/**/*.js\"",
-    "lint": "npm lint:js",
+    "lint": "npm run lint:js",
     "precommit": "lint-staged",
     "prepush": "npm test"
   },

@@ -6,7 +6,9 @@ let replicants
 let events
 let twitchInstance
 
-const getDefaultClientID = nodecg => nodecg.config.login.twitch.clientID
+const getDefaultClientID = (nodecg) => (
+  nodecg.config.login.twitch.clientID
+)
 
 module.exports = {
   get nodecg() {

@@ -6,6 +6,7 @@
     "airbnb/base"
   ],
   "rules": {
+    "arrow-parens": ["error", "always"],
     "semi": ["error", "never"],
     "comma-dangle": "off",
     "new-cap": "off",
@@ -13,6 +14,7 @@
     "no-confusing-arrow": "off",
     "global-require": "off",
     "class-methods-use-this": "off",
+    "no-underscore-dangle": "off",
     "import/no-extraneous-dependencies": "off",
     "import/newline-after-import": "off"
   },

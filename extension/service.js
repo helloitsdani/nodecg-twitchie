@@ -3,13 +3,13 @@ const login = require('../../../lib/login')
 
 const { log, twitch } = require('./context')
 
-const isTwitchSession = session => (
+const isTwitchSession = (session) => (
   session.passport
   && session.passport.user
   && session.passport.user.provider === 'twitch'
 )
 
-const hasAccessDetails = session => (
+const hasAccessDetails = (session) => (
   session.passport.user.username
   && session.passport.user.accessToken
 )

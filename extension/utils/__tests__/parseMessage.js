@@ -93,7 +93,7 @@ test('tokeniseMessage: creates text tokens inbetween instances', (t) => {
   )
 
   t.is(
-    tokens.filter(token => token.type === 'text').length,
+    tokens.filter((token) => token.type === 'text').length,
     3
   )
 })

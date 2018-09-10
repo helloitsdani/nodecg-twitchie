@@ -6,20 +6,22 @@ const { user, channel, stream } = replicants
 let updateTimeout
 
 const fetchFollowers = () => api.followers()
-  .then(followerInfo => followerInfo.follows)
+  .then(
+    (followerInfo) => followerInfo.follows
+  )
 
 // if a stream is active, the api response will contain the
 // channel's information as well; therefore, we only need to
 // specifically request it if no stream is active
 const fetchInfo = () => api.stream()
-  .then(streamInfo => streamInfo.stream
+  .then((streamInfo) => streamInfo.stream
     ? {
       stream: streamInfo.stream,
       channel: streamInfo.stream.channel,
     }
     : (
       api.channel()
-        .then(channelInfo => ({ channel: channelInfo }))
+        .then((channelInfo) => ({ channel: channelInfo }))
     )
   )
 
@@ -32,7 +34,7 @@ const update = () => {
   ])
     .then(([info, followers]) => {
       channel.info.value = Object.assign({}, info.channel)
-      channel.followers.value = [ ...followers ]
+      channel.followers.value = [...followers]
       stream.info.value = Object.assign({}, info.stream)
     }).catch((err) => {
       nodecg.log.error('Couldn\'t retrieve channel info :()', err)
@@ -41,7 +43,7 @@ const update = () => {
     })
 }
 
-user.id.on('change', (newUserId, ...what) => {
+user.id.on('change', (newUserId) => {
   channel.info.value = undefined
   channel.followers.value = undefined
   stream.info.value = undefined

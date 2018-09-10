@@ -10,7 +10,7 @@ const parseMessage = ({
 
 events.on(
   'channel.follower',
-  follower => events.addEvent(
+  (follower) => events.addEvent(
     follower.user['display-name'] || follower.user.name,
     'followed'
   )
