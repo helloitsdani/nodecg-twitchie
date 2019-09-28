@@ -6,7 +6,7 @@
     "node": ">=6.4.0"
   },
   "scripts": {
-    "build": "NODE_ENV=production tsc --rootDir src/extension --outdir extension",
+    "build": "NODE_ENV=production tsc --rootDir src --outdir .",
     "watch": "npm run build -- --watch",
     "test": "ava",
     "lint:js": "tslint \"{dashboard,extension,graphics}/**/*.(ts|js)\"",
@@ -15,7 +15,7 @@
     "prepush": "npm test"
   },
   "lint-staged": {
-    "{dashboard,extension,graphics}/**/*.js": "eslint"
+    "{dashboard,extension,graphics}/**/*.ts": "tslint"
   },
   "description": "Provides Twitch channel, stream and chat information via NodeCG replicants",
   "homepage": "https://github.com/helloitsdan/nodecg-twitchie",
