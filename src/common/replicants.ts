@@ -3,7 +3,13 @@ import { NAMESPACE } from './constants'
 interface Replicant<T> {
   value?: T
   namespace?: string
-  on(event: 'change', listener: (newValue: T, oldValue?: T) => void): void
+  on(event: 'change', listener: (newValue?: T, oldValue?: T) => void): void
+}
+
+interface GameInfo {
+  id: string
+  name: string
+  box_art_url: string
 }
 
 interface StreamInfo {
@@ -45,6 +51,7 @@ interface TwitchieReplicants {
   }
   stream: {
     info: Replicant<StreamInfo>
+    game: Replicant<GameInfo>
   }
   user: {
     id: Replicant<string>
@@ -57,7 +64,7 @@ interface TwitchieReplicants {
   }
 }
 
-export { Replicant, TwitchieReplicants, StreamInfo, UserInfo, FollowInfo }
+export { GameInfo, Replicant, TwitchieReplicants, StreamInfo, UserInfo, FollowInfo }
 
 export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
   const createReplicant = (name: string) =>
@@ -73,6 +80,7 @@ export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
 
     stream: {
       info: createReplicant('stream.info'),
+      game: createReplicant('stream.game'),
     },
 
     user: {

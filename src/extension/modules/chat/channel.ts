@@ -24,7 +24,7 @@ context.replicants.channel.id.on('change', (_, oldChannel) => {
 // channel id actually resolves to a real user
 // trying to join nonexistent channels on twitch irc can
 // cause issues
-context.replicants.user.id.on('change', (newUserId: string) => {
+context.replicants.user.id.on('change', newUserId => {
   if (!newUserId) {
     return
   }

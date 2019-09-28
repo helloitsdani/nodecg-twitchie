@@ -81,7 +81,7 @@ const update = async () => {
   updateTimeout = setTimeout(update, context.config.timeBetweenUpdates)
 }
 
-context.replicants.user.id.on('change', (newUserId: string) => {
+context.replicants.user.id.on('change', newUserId => {
   context.replicants.stream.info.value = undefined
   context.replicants.user.followers.value = undefined
 
