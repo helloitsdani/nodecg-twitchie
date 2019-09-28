@@ -1,57 +1,89 @@
-import context from '../../context'
+import { HelixFollow, HelixStream, HelixUser } from 'twitch'
 
-const { twitch, nodecg, replicants, config } = context
-const { user, stream } = replicants
+import { FollowInfo, StreamInfo, UserInfo } from '../../../common/replicants'
+import context from '../../context'
 
 let updateTimeout: NodeJS.Timeout
 
-const fetchFollowers = async () => {
-  const follows = await twitch.api!.helix.users.getFollows({ followedUser: user.id.value })
-  console.log(follows)
-  return follows
-}
-
-// if a stream is active, the api response will contain the
-// channel's information as well; therefore, we only need to
-// specifically request it if no stream is active
-const fetchInfo = async () => {
-  const streamInfo = await twitch.api!.helix.streams.getStreamByUserId(user.id.value!)
-
-  if (streamInfo) {
-    return {
-      stream: streamInfo,
-    }
+const serializeUserInfo = (user?: HelixUser | null): UserInfo | undefined => {
+  if (!user) {
+    return undefined
   }
-
-  const channelInfo = await twitch.api!.helix.users.getUserById(user.id.value!)
 
   return {
-    channel: channelInfo,
+    id: user.id,
+    login: user.name,
+    display_name: user.displayName,
+    description: user.description,
+    type: user.type,
+    broadcaster_type: user.broadcasterType,
+    profile_image_url: user.profilePictureUrl,
+    offline_image_url: user.offlinePlaceholderUrl,
+    view_count: user.views,
   }
 }
 
-const update = () => {
-  clearTimeout(updateTimeout)
+const serializeStreamInfo = (stream?: HelixStream | null): StreamInfo | undefined => {
+  if (!stream) {
+    return undefined
+  }
 
-  Promise.all([fetchInfo(), fetchFollowers()])
-    .then(([info, followers]) => {
-      // channel.info.value = Object.assign({}, info.channel)
-      // channel.followers.value = [...followers]
-      // stream.info.value = Object.assign({}, info.stream)
-      console.log(info, followers)
-    })
-    .catch(err => {
-      nodecg.log.error("Couldn't retrieve channel info :()", err)
-    })
-    .then(() => {
-      updateTimeout = setTimeout(update, config.timeBetweenUpdates)
-    })
+  return {
+    id: stream.id,
+    user_id: stream.userId,
+    user_name: stream.userDisplayName,
+    game_id: stream.gameId,
+    type: stream.type,
+    title: stream.title,
+    viewer_count: stream.viewers,
+    started_at: stream.startDate.getTime(),
+    language: stream.language,
+    thumbnail_url: stream.thumbnailUrl,
+  }
 }
 
-user.id.on('change', (newUserId: string) => {
-  user.info.value = undefined
-  user.followers.value = undefined
-  stream.info.value = undefined
+const serializeFollowInfo = (follows: HelixFollow[]): FollowInfo[] =>
+  follows.map(follow => ({
+    followed_at: follow.followDate.getTime(),
+    from_id: follow.userId,
+    from_name: follow.userDisplayName,
+    to_id: follow.followedUserId,
+    to_name: follow.followedUserDisplayName,
+  }))
+
+const getFreshChannelInfo = () => {
+  const userId = context.replicants.user.id.value
+
+  if (!userId) {
+    return Promise.reject('No Twitch user ID is currently set')
+  }
+
+  return Promise.all([
+    context.twitch.api!.helix.streams.getStreamByUserId(userId),
+    context.twitch.api!.helix.users.getUserById(userId),
+    context.twitch.api!.helix.users.getFollows({ followedUser: userId }),
+  ])
+}
+
+const update = async () => {
+  clearTimeout(updateTimeout)
+
+  try {
+    const [streamInfo, userInfo, followers] = await getFreshChannelInfo()
+
+    context.replicants.stream.info.value = serializeStreamInfo(streamInfo)
+    context.replicants.user.info.value = serializeUserInfo(userInfo)
+    context.replicants.user.followers.value = serializeFollowInfo(followers.data)
+  } catch (error) {
+    context.log.error("Couldn't retrieve channel info :()", error)
+  }
+
+  updateTimeout = setTimeout(update, context.config.timeBetweenUpdates)
+}
+
+context.replicants.user.id.on('change', (newUserId: string) => {
+  context.replicants.stream.info.value = undefined
+  context.replicants.user.followers.value = undefined
 
   if (newUserId) {
     update()

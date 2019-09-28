@@ -1,16 +1,12 @@
 import { EmitMessageParamsBag } from '../../common/events'
-import context from '../context'
 import { getMessageDetails, getUserDetails, parseCheermotes, parseTokens } from '../utils/parseMessage'
 
-const { events, replicants } = context
-const {
-  chat: { cheermotes },
-} = replicants
+import context from '../context'
 
-const parseCheermotesFromTwitch = (message: any) => parseCheermotes(message, cheermotes.value)
+const parseCheermotesFromTwitch = (message: any) => parseCheermotes(message, context.replicants.chat.cheermotes.value)
 
 const send = ({ scope = 'chat', action, payload }: EmitMessageParamsBag) =>
-  events.emitMessage({ scope, action, payload })
+  context.events.emitMessage({ scope, action, payload })
 
 export default (chat: any) => {
   chat.on('connected', () => {

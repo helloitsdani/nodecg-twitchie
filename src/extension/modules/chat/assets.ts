@@ -1,11 +1,6 @@
 import context from '../../context'
 import guarantee from '../../utils/guarantee'
 
-const { replicants, config } = context
-
-const { user } = replicants
-const { timeBetweenRetries } = config
-
 const badgesLookup = () => Promise.resolve(null)
 // twitch.api.badges().then((response: any) => {
 //   chat.badges.value = response
@@ -24,11 +19,13 @@ const cheermotesLookup = (_: any) => Promise.resolve(null)
 //     )
 //   })
 
-const guaranteedBadgesLookup = guarantee(badgesLookup, { timeBetweenRetries })
+const guaranteedBadgesLookup = guarantee(badgesLookup, { timeBetweenRetries: context.config.timeBetweenRetries })
 
-const guaranteedCheermotesLookup = guarantee(cheermotesLookup, { timeBetweenRetries })
+const guaranteedCheermotesLookup = guarantee(cheermotesLookup, {
+  timeBetweenRetries: context.config.timeBetweenRetries,
+})
 
-user.id.on('change', (newVal: any) => {
+context.replicants.user.id.on('change', (newVal: any) => {
   if (!newVal) {
     return
   }

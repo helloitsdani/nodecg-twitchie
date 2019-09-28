@@ -1,3 +1,4 @@
+import { TwitchieClientWrapper } from './client'
 import context from './context'
 
 const isNodeCGConfigValid = (config: any) =>
@@ -9,11 +10,13 @@ module.exports = async (nodecg: any) => {
   }
 
   context.nodecg = nodecg
+  context.twitch = new TwitchieClientWrapper()
 
   // mount our refresh route under the main nodecg express app
   const service = require('./service')
   nodecg.mount(service)
 
+  require('./modules/user')
   require('./modules/channel')
   require('./modules/chat')
 

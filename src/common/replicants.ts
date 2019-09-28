@@ -1,5 +1,3 @@
-import { HelixFollow, HelixStream, HelixUser } from 'twitch'
-
 import { NAMESPACE } from './constants'
 
 interface Replicant<T> {
@@ -8,17 +6,50 @@ interface Replicant<T> {
   on(event: 'change', listener: (newValue: T, oldValue?: T) => void): void
 }
 
+interface StreamInfo {
+  id: string
+  user_id: string
+  user_name: string
+  game_id: string
+  type: 'live' | 'vodcast' | ''
+  title: string
+  viewer_count: number
+  started_at: number
+  language: string
+  thumbnail_url: string
+}
+
+interface UserInfo {
+  id: string
+  login: string
+  display_name: string
+  description: string
+  type: 'staff' | 'admin' | 'global_mod' | ''
+  broadcaster_type: 'partner' | 'affiliate' | ''
+  profile_image_url: string
+  offline_image_url: string
+  view_count: number
+}
+
+interface FollowInfo {
+  followed_at: number
+  from_id: string
+  from_name: string
+  to_id: string
+  to_name: string
+}
+
 interface TwitchieReplicants {
   channel: {
     id: Replicant<string>
   }
   stream: {
-    info: Replicant<HelixStream>
+    info: Replicant<StreamInfo>
   }
   user: {
     id: Replicant<string>
-    info: Replicant<HelixUser>
-    followers: Replicant<HelixFollow[]>
+    info: Replicant<UserInfo>
+    followers: Replicant<FollowInfo[]>
   }
   chat: {
     badges: Replicant<any>
@@ -26,7 +57,7 @@ interface TwitchieReplicants {
   }
 }
 
-export { Replicant, TwitchieReplicants }
+export { Replicant, TwitchieReplicants, StreamInfo, UserInfo, FollowInfo }
 
 export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
   const createReplicant = (name: string) =>
