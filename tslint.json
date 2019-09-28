@@ -1,0 +1,14 @@
+{
+    "extends": ["tslint:recommended", "tslint-config-airbnb", "tslint-config-prettier"],
+    "rules": {
+        "import-name": false,
+        "interface-name": [true, "never-prefix"],
+        "no-console": { "severity": "warning" },
+        "no-non-null-assertion": false,
+        "no-submodule-imports": false,
+        "object-literal-sort-keys": false,
+        "semicolon": [true, "never"],
+        "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
+        "prefer-array-literal": [true, { "allow-type-parameters": true }]
+    }
+}

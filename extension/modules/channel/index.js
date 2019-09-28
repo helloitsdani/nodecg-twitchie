@@ -1,2 +1,0 @@
-require('./followers')
-require('./poll')
