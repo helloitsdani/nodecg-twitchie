@@ -1,22 +1,15 @@
-const {
-  getMessageDetails,
-  getUserDetails,
-  parseCheermotes,
-  parseTokens,
-} = require('../utils/parseMessage')
+const { getMessageDetails, getUserDetails, parseCheermotes, parseTokens } = require('../utils/parseMessage')
 
 const { events, replicants } = require('../context')
-const { chat: { cheermotes } } = replicants
+const {
+  chat: { cheermotes },
+} = replicants
 
-const parseCheermotesFromTwitch = (message) => (
-  parseCheermotes(message, cheermotes.value)
-)
+const parseCheermotesFromTwitch = message => parseCheermotes(message, cheermotes.value)
 
-const send = ({ scope = 'chat', action, payload } = {}) => (
-  events.emitMessage({ scope, action, payload })
-)
+const send = ({ scope = 'chat', action, payload } = {}) => events.emitMessage({ scope, action, payload })
 
-module.exports = (chat) => {
+module.exports = chat => {
   chat.on('connected', () => {
     send({ action: 'connected' })
   })
@@ -25,7 +18,7 @@ module.exports = (chat) => {
     send({ action: 'connecting' })
   })
 
-  chat.on('disconnected', (reason) => {
+  chat.on('disconnected', reason => {
     send({ action: 'disconnected', payload: { reason } })
   })
 
@@ -44,7 +37,7 @@ module.exports = (chat) => {
         channel,
         user,
         message,
-      }
+      },
     })
   })
 
@@ -54,10 +47,7 @@ module.exports = (chat) => {
   chat.on('cheer', (channel, userstate, messageText) => {
     const user = getUserDetails(userstate)
     const message = getMessageDetails(messageText, userstate)
-    message.tokens = parseTokens(
-      message.tokens,
-      (token) => parseCheermotesFromTwitch(token)
-    )
+    message.tokens = parseTokens(message.tokens, token => parseCheermotesFromTwitch(token))
 
     send({
       action: 'cheer',
@@ -68,7 +58,7 @@ module.exports = (chat) => {
         cheer: {
           bits: userstate.bits,
         },
-      }
+      },
     })
   })
 

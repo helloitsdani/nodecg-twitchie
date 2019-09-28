@@ -3,25 +3,19 @@ const login = require('../../../lib/login')
 
 const { log, twitch } = require('./context')
 
-const isTwitchSession = (session) => (
-  session.passport
-  && session.passport.user
-  && session.passport.user.provider === 'twitch'
-)
+const isTwitchSession = session =>
+  session.passport && session.passport.user && session.passport.user.provider === 'twitch'
 
-const hasAccessDetails = (session) => (
-  session.passport.user.username
-  && session.passport.user.accessToken
-)
+const hasAccessDetails = session => session.passport.user.username && session.passport.user.accessToken
 
-const performConnect = (session) => {
+const performConnect = session => {
   const { user } = session.passport
 
   log.debug('Performing connect...')
 
   return twitch.connect({
     username: user.username,
-    token: user.accessToken
+    token: user.accessToken,
   })
 }
 
@@ -30,7 +24,7 @@ const performDisconnect = () => {
   return twitch.disconnect()
 }
 
-const handleConnect = (session) => {
+const handleConnect = session => {
   log.debug('Handling connect...')
 
   if (!isTwitchSession(session) || !hasAccessDetails(session)) {
@@ -53,27 +47,24 @@ login.on('logout', handleDisconnect)
 // info based on the user's login state
 // hitting this periodically from the dashboard allows us to keep in sync
 // even if the user hasn't performed a login this browser/server session
-app.get(
-  '/login/twitch/verify',
-  (request, response) => {
-    const session = request.session
+app.get('/login/twitch/verify', (request, response) => {
+  const session = request.session
 
-    log.debug('Token refresh endpoint hit...')
+  log.debug('Token refresh endpoint hit...')
 
-    if (!twitch.isConnected()) {
-      try {
-        handleConnect(session)
-        log.debug('Connected to Twitch.')
-      } catch (e) {
-        log.error('Could not connect to Twitch!', e.message)
-        return response.sendStatus(401)
-      }
-    } else {
-      log.debug('No update necessary.')
+  if (!twitch.isConnected()) {
+    try {
+      handleConnect(session)
+      log.debug('Connected to Twitch.')
+    } catch (e) {
+      log.error('Could not connect to Twitch!', e.message)
+      return response.sendStatus(401)
     }
-
-    return response.sendStatus(200)
+  } else {
+    log.debug('No update necessary.')
   }
-)
+
+  return response.sendStatus(200)
+})
 
 module.exports = app

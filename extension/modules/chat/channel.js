@@ -3,9 +3,7 @@ const getChatChannelFor = require('../../utils/getChatChannelFor')
 
 const { channel, user } = replicants
 
-const isUserInChannel = (channelName) => (
-  twitch.client.getChannels().includes(channelName)
-)
+const isUserInChannel = channelName => twitch.client.getChannels().includes(channelName)
 
 // leave chat immediately when channel ID is changed;
 // there might be a content reason we want to change ASAP
@@ -28,7 +26,7 @@ channel.id.on('change', (newChannel, oldChannel) => {
 // channel id actually resolves to a real user
 // trying to join nonexistent channels on twitch irc can
 // cause issues
-user.id.on('change', (newUserId) => {
+user.id.on('change', newUserId => {
   if (!newUserId) {
     return
   }

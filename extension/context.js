@@ -6,9 +6,7 @@ let replicants
 let events
 let twitchInstance
 
-const getDefaultClientID = (nodecg) => (
-  nodecg.config.login.twitch.clientID
-)
+const getDefaultClientID = nodecg => nodecg.config.login.twitch.clientID
 
 module.exports = {
   get nodecg() {
@@ -21,11 +19,7 @@ module.exports = {
   },
 
   get config() {
-    return Object.assign(
-      {},
-      { clientID: getDefaultClientID(nodecgInstance) },
-      nodecgInstance.bundleConfig
-    )
+    return Object.assign({}, { clientID: getDefaultClientID(nodecgInstance) }, nodecgInstance.bundleConfig)
   },
   set config(instance) {
     throw new Error('bundleConfig is read from /cfg/nodecg-twitchie.json when NodeCG starts')
