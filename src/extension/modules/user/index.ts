@@ -1,33 +1,66 @@
+import debounce from 'debounce'
+import NodeCache from 'node-cache'
+
 import context from '../../context'
 import guarantee from '../../utils/guarantee'
 
+const cache = new NodeCache()
+
 let pendingLookupHandle: () => void
 
-const lookUpUser = async (username: string) => {
-  context.log.info(`Looking up user info for ${username}...`)
-
+const fetchUserId = async (username: string): Promise<string> => {
   if (!context.twitch.api) {
-    throw new Error('API not available')
+    throw new Error('Twitch API unavailable')
   }
 
+  context.log.debug(`Looking up #${username} from API...`)
   const user = await context.twitch.api.helix.users.getUserByName(username)
 
   if (!user) {
-    return
+    throw new Error(`No user found called ${username}`)
   }
 
-  context.replicants.user.id.value = user.id
+  return user.id
 }
 
-const guaranteedLookUpUser = guarantee(lookUpUser, { timeBetweenRetries: 10000 })
+const fetchUserIdWithCache = async (username: string): Promise<string> => {
+  const cachedUserId = cache.get<string>(username)
 
-context.replicants.channel.id.on('change', async username => {
-  context.replicants.user.id.value = undefined
-  context.replicants.user.info.value = undefined
-
-  if (pendingLookupHandle) {
-    pendingLookupHandle()
+  if (cachedUserId) {
+    context.log.debug(`${username} found in cache`)
+    return cachedUserId
   }
 
-  pendingLookupHandle = guaranteedLookUpUser(username)
-})
+  const userId = await fetchUserId(username)
+
+  cache.set<string>(username, userId)
+  return userId
+}
+
+const updateUserId = async (username: string) => {
+  try {
+    const userId = await fetchUserIdWithCache(username)
+    context.replicants.user.id.value = userId
+  } catch (e) {
+    context.replicants.user.id.value = undefined
+  }
+}
+
+const guaranteedUpdateUserId = guarantee(updateUserId, { timeBetweenRetries: 10000 })
+
+context.replicants.channel.id.on(
+  'change',
+  debounce((username?: string) => {
+    context.replicants.user.id.value = undefined
+
+    if (!username) {
+      return
+    }
+
+    if (pendingLookupHandle) {
+      pendingLookupHandle()
+    }
+
+    pendingLookupHandle = guaranteedUpdateUserId(username)
+  }, 1000)
+)

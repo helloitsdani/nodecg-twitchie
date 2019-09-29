@@ -83,6 +83,7 @@ const update = async () => {
 
 context.replicants.user.id.on('change', newUserId => {
   context.replicants.stream.info.value = undefined
+  context.replicants.user.info.value = undefined
   context.replicants.user.followers.value = undefined
 
   if (newUserId) {
