@@ -13,12 +13,12 @@
       super.ready()
       await NodeCG.waitForReplicants(channelInfo, userInfo)
 
-      channelInfo.on('change', channel => {
-        this.$.loading.classList.toggle('is-loading', !channel)
-      })
+      userInfo.on('change', userInfo => {
+        this.$.loading.classList.toggle('is-loading', !userInfo)
 
-      userInfo.on('change', ({ unknown = false } = {}) => {
-        this.$.pages.selected = unknown ? 'error' : 'status'
+        if (userInfo) {
+          // this.$.pages.selected = unknown ? 'error' : 'status'
+        }
       })
     }
   }

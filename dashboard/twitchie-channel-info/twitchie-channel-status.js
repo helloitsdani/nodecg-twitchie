@@ -1,7 +1,7 @@
 /* global nodecg, NodeCG, moment, Polymer */
 
-(() => {
-  const channelInfo = NodeCG.Replicant('channel.info', 'nodecg-twitchie')
+;(() => {
+  const userInfo = NodeCG.Replicant('user.info', 'nodecg-twitchie')
   const streamInfo = NodeCG.Replicant('stream.info', 'nodecg-twitchie')
 
   class TwitchieChannelStatus extends Polymer.Element {
@@ -27,22 +27,16 @@
 
     async ready() {
       super.ready()
-      await NodeCG.waitForReplicants(channelInfo, streamInfo)
+      await NodeCG.waitForReplicants(userInfo, streamInfo)
 
-      channelInfo.on(
-        'change',
-        ({ followers = 0 } = {}) => {
-          this.followers = followers
-        }
-      )
+      userInfo.on('change', ({ followers = 0 } = {}) => {
+        this.followers = followers
+      })
 
-      streamInfo.on(
-        'change',
-        ({ viewers = 0, created_at: createdAt } = {}) => {
-          this.viewers = viewers
-          this.streamStartedAt = createdAt
-        }
-      )
+      streamInfo.on('change', streamInfo => {
+        this.viewers = streamInfo ? streamInfo.viewer_count : 0
+        this.streamStartedAt = streamInfo ? streamInfo.started_at : undefined
+      })
     }
   }
 
