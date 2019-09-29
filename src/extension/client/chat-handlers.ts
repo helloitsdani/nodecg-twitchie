@@ -1,28 +1,24 @@
-import { EmitMessageParamsBag } from '../../common/events'
 import { getMessageDetails, getUserDetails, parseCheermotes, parseTokens } from '../utils/parseMessage'
 
 import context from '../context'
 
 const parseCheermotesFromTwitch = (message: any) => parseCheermotes(message, context.replicants.chat.cheermotes.value)
 
-const send = ({ scope = 'chat', action, payload }: EmitMessageParamsBag) =>
-  context.events.emitMessage({ scope, action, payload })
-
 export default (chat: any) => {
   chat.on('connected', () => {
-    send({ action: 'connected' })
+    context.events.emitMessage('chat.connected', undefined)
   })
 
   chat.on('connecting', () => {
-    send({ action: 'connecting' })
+    context.events.emitMessage('chat.connecting', undefined)
   })
 
   chat.on('disconnected', (reason: string) => {
-    send({ action: 'disconnected', payload: { reason } })
+    context.events.emitMessage('chat.disconnected', reason)
   })
 
   chat.on('reconnect', () => {
-    send({ action: 'reconnect' })
+    context.events.emitMessage('chat.reconnect', undefined)
   })
 
   // message fires on either a chat message, an action, or a whisper
@@ -30,14 +26,20 @@ export default (chat: any) => {
     const message = getMessageDetails(messageText, userstate)
     const user = getUserDetails(userstate)
 
-    send({
-      action: message.type,
-      payload: {
-        channel,
-        user,
-        message,
-      },
-    })
+    if (message.type === 'whisper') {
+      // shhhhhhhhh....secrets
+      return
+    }
+
+    const actionType = message.type === 'action' ? 'chat.action' : 'chat.chat'
+
+    const payload = {
+      channel,
+      user,
+      message,
+    }
+
+    context.events.emitMessage(actionType, payload)
   })
 
   // cheers contain bits within the userstate and may have special emotes in
@@ -48,134 +50,83 @@ export default (chat: any) => {
     const message = getMessageDetails(messageText, userstate)
     message.tokens = parseTokens(message.tokens, (token: any) => parseCheermotesFromTwitch(token))
 
-    send({
-      action: 'cheer',
-      payload: {
-        channel,
-        user,
-        message,
-        cheer: {
-          bits: userstate.bits,
-        },
+    const payload = {
+      channel,
+      user,
+      message,
+      cheer: {
+        bits: userstate.bits,
       },
-    })
+    }
+
+    context.events.emitMessage('chat.cheer', payload)
   })
 
   // handle when users have been naughty
   chat.on('ban', (channel: any, user: any, reason: any) => {
-    send({
-      action: 'ban',
-      payload: { channel, user, reason },
-    })
+    const payload = { channel, user, reason }
+    context.events.emitMessage('chat.ban', payload)
   })
 
   chat.on('timeout', (channel: any, user: any, reason: any, duration: any) => {
-    send({
-      action: 'timeout',
-      payload: { channel, user, reason, duration },
-    })
+    const payload = { channel, user, reason, duration }
+    context.events.emitMessage('chat.timeout', payload)
   })
 
   chat.on('clearchat', () => {
-    send({ action: 'clear' })
+    context.events.emitMessage('chat.clear', undefined)
   })
 
   // join/part messages are batched and dispatched every 30 seconds or so
   chat.on('join', (channel: any, username: any, self: any) => {
-    send({
-      action: 'join',
-      payload: { channel, username, self },
-    })
+    const payload = { channel, username, self }
+    context.events.emitMessage('chat.join', payload)
   })
 
   chat.on('part', (channel: any, username: any, self: any) => {
-    send({
-      action: 'part',
-      payload: { channel, username, self },
-    })
-  })
-
-  // handle chat config modes
-  chat.on('subscribers', (channel: any, enabled: any) => {
-    send({
-      action: 'subscribers',
-      payload: { channel, enabled },
-    })
-  })
-
-  chat.on('slowmode', (channel: any, enabled: any) => {
-    send({
-      action: 'slowmode',
-      payload: { channel, enabled },
-    })
-  })
-
-  chat.on('emoteonly', (channel: any, enabled: any) => {
-    send({
-      action: 'emoteonly',
-      payload: { channel, enabled },
-    })
-  })
-
-  chat.on('r9kbeta', (channel: any, enabled: any) => {
-    send({
-      action: 'r9kbeta',
-      payload: { channel, enabled },
-    })
+    const payload = { channel, username, self }
+    context.events.emitMessage('chat.part', payload)
   })
 
   // handle channel-related updates which twitch sends through chat
   chat.on('subscription', (channel: any, username: any, extra: any = {}) => {
-    send({
-      scope: 'channel',
-      action: 'subscription',
-      payload: {
-        channel,
-        username,
-        resub: false,
-        prime: !!extra.prime,
-      },
-    })
+    const payload = {
+      channel,
+      username,
+      resub: false,
+      prime: !!extra.prime,
+    }
+
+    context.events.emitMessage('channel.subscription', payload)
   })
 
   chat.on('resub', (channel: any, username: any, months: any, messageText: any, _: any, extra: any = {}) => {
     const message = getMessageDetails(messageText)
 
-    send({
-      scope: 'channel',
-      action: 'subscription',
-      payload: {
-        channel,
-        username,
-        months,
-        message,
-        resub: true,
-        prime: !!extra.prime,
-      },
-    })
+    const payload = {
+      channel,
+      username,
+      months,
+      message,
+      resub: true,
+      prime: !!extra.prime,
+    }
+
+    context.events.emitMessage('channel.subscription', payload)
   })
 
   chat.on('hosted', (channel: any, host: any, viewers: any) => {
-    send({
-      scope: 'channel',
-      action: 'hosted',
-      payload: { channel, host, viewers },
-    })
+    const payload = { channel, host, viewers }
+    context.events.emitMessage('channel.hosted', payload)
   })
 
   chat.on('hosting', (channel: any, target: any, viewers: any) => {
-    send({
-      scope: 'channel',
-      action: 'hosting',
-      payload: { channel, target, viewers },
-    })
+    const payload = { channel, target, viewers }
+    context.events.emitMessage('channel.hosting', payload)
   })
 
   chat.on('unhost', (channel: any, viewers: any) => {
-    send({
-      scope: 'channel',
-      action: 'unhost',
-      payload: { channel, viewers },
-    })
+    const payload = { channel, viewers }
+    context.events.emitMessage('channel.unhost', payload)
   })
 }

@@ -1,28 +1,21 @@
 import EventEmitter from 'events'
 
-const getMessageKey = (scope?: string, action?: string) => `${scope ? `${scope}.` : ''}${action}`
+import { TwitchieEmitFunction } from '../types'
 
-interface EmitMessageParamsBag {
-  action?: string
-  scope?: string
-  payload?: any
+type TwitchieEventEmitter = EventEmitter & {
+  emitMessage: TwitchieEmitFunction
 }
 
-type NodeCGEventEmitter = EventEmitter & {
-  emitMessage: (params: EmitMessageParamsBag) => void
-}
-
-export { NodeCGEventEmitter, EmitMessageParamsBag }
+export { TwitchieEventEmitter }
 
 export default (nodecg: any) => {
-  const emitter = new EventEmitter() as NodeCGEventEmitter
+  const emitter = new EventEmitter() as TwitchieEventEmitter
 
   // convenience method for emitting events at the same time as
   // updating/broadcasting channel information
-  emitter.emitMessage = ({ action, scope, payload }) => {
-    const key = getMessageKey(scope, action)
-    nodecg.sendMessage(key, payload)
-    emitter.emit(key, payload)
+  emitter.emitMessage = (action, payload) => {
+    nodecg.sendMessage(action, payload)
+    emitter.emit(action, payload)
   }
 
   return emitter

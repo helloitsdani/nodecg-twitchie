@@ -1,6 +1,6 @@
 import { HelixFollow, HelixStream, HelixUser } from 'twitch'
 
-import { FollowInfo, StreamInfo, UserInfo } from '../../../common/replicants'
+import { FollowInfo, StreamInfo, UserInfo } from '../../../types'
 import context from '../../context'
 
 let updateTimeout: NodeJS.Timeout

@@ -1,7 +1,7 @@
 import NodeCache from 'node-cache'
 import { HelixGame } from 'twitch'
 
-import { GameInfo } from '../../../common/replicants'
+import { GameInfo } from '../../../types'
 import context from '../../context'
 
 const cache = new NodeCache()

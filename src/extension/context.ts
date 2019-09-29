@@ -1,11 +1,12 @@
-import createEventEmitter, { NodeCGEventEmitter } from '../common/events'
-import createReplicants, { TwitchieReplicants } from '../common/replicants'
+import createEventEmitter, { TwitchieEventEmitter } from '../common/events'
+import createReplicants from '../common/replicants'
+import { TwitchieReplicants } from '../types'
 
 import { TwitchieClientWrapper } from './client'
 
 let nodecgInstance: any
 let replicants: TwitchieReplicants
-let events: NodeCGEventEmitter
+let events: TwitchieEventEmitter
 let twitchInstance: TwitchieClientWrapper
 
 const getDefaultClientID = (nodecg: any) => nodecg.config.login.twitch.clientID

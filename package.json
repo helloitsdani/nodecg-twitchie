@@ -14,6 +14,7 @@
     "precommit": "lint-staged",
     "prepush": "npm test"
   },
+  "types": "src/types/index.ts",
   "lint-staged": {
     "{dashboard,extension,graphics}/**/*.ts": "tslint"
   },

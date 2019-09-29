@@ -11,11 +11,7 @@ context.replicants.user.followers.on('change', (newValue, oldValue) => {
     const isNewFollower = !followers.includes(follower.from_name)
 
     if (isNewFollower) {
-      context.events.emitMessage({
-        scope: 'channel',
-        action: 'follower',
-        payload: follower,
-      })
+      context.events.emitMessage('channel.follower', follower)
     }
 
     return isNewFollower
