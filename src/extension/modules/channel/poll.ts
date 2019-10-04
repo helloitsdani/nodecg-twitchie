@@ -1,6 +1,6 @@
-import { HelixFollow, HelixStream, HelixUser } from 'twitch'
+import { HelixFollow, HelixPaginatedResultWithTotal, HelixStream, HelixUser } from 'twitch'
 
-import { FollowInfo, StreamInfo, UserInfo } from '../../../types'
+import { FollowersInfo, FollowInfo, StreamInfo, UserInfo } from '../../../types'
 import context from '../../context'
 
 let updateTimeout: NodeJS.Timeout
@@ -42,14 +42,18 @@ const serializeStreamInfo = (stream?: HelixStream | null): StreamInfo | undefine
   }
 }
 
-const serializeFollowInfo = (follows: HelixFollow[]): FollowInfo[] =>
-  follows.map(follow => ({
-    followed_at: follow.followDate.getTime(),
-    from_id: follow.userId,
-    from_name: follow.userDisplayName,
-    to_id: follow.followedUserId,
-    to_name: follow.followedUserDisplayName,
-  }))
+const mapFollowInfo = (follow: HelixFollow): FollowInfo => ({
+  followed_at: follow.followDate.getTime(),
+  from_id: follow.userId,
+  from_name: follow.userDisplayName,
+  to_id: follow.followedUserId,
+  to_name: follow.followedUserDisplayName,
+})
+
+const serializeFollowersInfo = (follows: HelixPaginatedResultWithTotal<HelixFollow>): FollowersInfo => ({
+  total: follows.total,
+  followers: follows.data.map(mapFollowInfo),
+})
 
 const getFreshChannelInfo = () => {
   const userId = context.replicants.user.id.value
@@ -72,8 +76,9 @@ const update = async () => {
     const [streamInfo, userInfo, followers] = await getFreshChannelInfo()
 
     context.replicants.stream.info.value = serializeStreamInfo(streamInfo)
+    context.replicants.game.id.value = streamInfo ? streamInfo.gameId : undefined
     context.replicants.user.info.value = serializeUserInfo(userInfo)
-    context.replicants.user.followers.value = serializeFollowInfo(followers.data)
+    context.replicants.user.followers.value = serializeFollowersInfo(followers)
   } catch (error) {
     context.log.error("Couldn't retrieve channel info :()", error)
   }
@@ -83,6 +88,7 @@ const update = async () => {
 
 context.replicants.user.id.on('change', newUserId => {
   context.replicants.stream.info.value = undefined
+  context.replicants.game.id.value = undefined
   context.replicants.user.info.value = undefined
   context.replicants.user.followers.value = undefined
 

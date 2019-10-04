@@ -5,9 +5,9 @@ context.replicants.user.followers.on('change', (newValue, oldValue) => {
     return
   }
 
-  const followers = oldValue.map(follower => follower.from_name)
+  const followers = oldValue.followers.map(follower => follower.from_name)
 
-  newValue.every(follower => {
+  newValue.followers.every(follower => {
     const isNewFollower = !followers.includes(follower.from_name)
 
     if (isNewFollower) {

@@ -35,6 +35,11 @@ export interface UserInfo {
   view_count: number
 }
 
+export interface FollowersInfo {
+  total: number
+  followers: FollowInfo[]
+}
+
 export interface FollowInfo {
   followed_at: number
   from_id: string
@@ -76,12 +81,15 @@ export interface TwitchieReplicants {
   }
   stream: {
     info: Replicant<StreamInfo>
-    game: Replicant<GameInfo>
+  }
+  game: {
+    id: Replicant<string>
+    info: Replicant<GameInfo>
   }
   user: {
     id: Replicant<string>
     info: Replicant<UserInfo>
-    followers: Replicant<FollowInfo[]>
+    followers: Replicant<FollowersInfo>
   }
   chat: {
     badges: Replicant<any>

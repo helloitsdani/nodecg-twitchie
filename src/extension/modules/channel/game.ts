@@ -50,14 +50,18 @@ const fetchGameInfoWithCache = async (gameId: string): Promise<GameInfo> => {
 
 const updateGameInfo = async (gameId: string) => {
   const gameInfo = await fetchGameInfoWithCache(gameId)
-  context.replicants.stream.game.value = gameInfo
+  context.replicants.game.info.value = gameInfo
 }
 
-context.replicants.stream.info.on('change', streamInfo => {
-  if (!streamInfo) {
-    context.replicants.stream.game.value = undefined
+context.replicants.game.id.on('change', (gameId, oldGameId) => {
+  if (!gameId) {
+    context.replicants.game.info.value = undefined
     return
   }
 
-  updateGameInfo(streamInfo.game_id)
+  if (gameId === oldGameId) {
+    return
+  }
+
+  updateGameInfo(gameId)
 })
