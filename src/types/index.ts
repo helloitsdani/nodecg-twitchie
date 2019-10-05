@@ -92,7 +92,7 @@ export interface TwitchieReplicants {
     followers: Replicant<FollowersInfo>
   }
   chat: {
-    badges: Replicant<any>
+    channel: Replicant<string>
     cheermotes: Replicant<any>
   }
 }

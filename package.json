@@ -61,7 +61,8 @@
     "request": "2.74.0",
     "request-promise-native": "^1.0.4",
     "tmi.js": "^1.2.0",
-    "twitch": "^3.5.0"
+    "twitch": "^3.5.0",
+    "twitch-chat-client": "^3.5.0"
   },
   "devDependencies": {
     "@types/debounce": "^1.2.0",

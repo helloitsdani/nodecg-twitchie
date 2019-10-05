@@ -1,9 +1,8 @@
-import tmi from 'tmi.js'
 import TwitchClient from 'twitch'
+import TwitchChatClient from 'twitch-chat-client'
 
 import context from '../context'
 
-import getChatChannelFor from '../utils/getChatChannelFor'
 import bindChatHandlers from './chat-handlers'
 
 interface TwitchieClientAuthProps {
@@ -12,7 +11,7 @@ interface TwitchieClientAuthProps {
 }
 
 class TwitchieClientWrapper {
-  public client?: any
+  public client?: TwitchChatClient
   public api?: TwitchClient
 
   public auth?: TwitchieClientAuthProps
@@ -21,7 +20,7 @@ class TwitchieClientWrapper {
 
   public disconnect = async () => {
     try {
-      await this.client.disconnect()
+      await this.client!.quit()
     } catch (e) {
       // Oh Well
     }
@@ -41,27 +40,17 @@ class TwitchieClientWrapper {
     const currentChannel = context.replicants.channel.id.value || this.auth.username
 
     this.api = await TwitchClient.withCredentials(context.config.clientID, this.auth.token, undefined)
-    this.client = new tmi.client({
-      options: {
-        debug: true,
-      },
-      connection: {
-        reconnect: true,
-      },
-      identity: {
-        username: this.auth.username,
-        password: `oauth:${this.auth.token}`,
-      },
-      channels: [getChatChannelFor(currentChannel)],
-      logger: context.log,
-    })
+    this.client = await TwitchChatClient.forTwitchClient(this.api)
 
     bindChatHandlers(this.client)
 
     try {
       await this.client.connect()
+      await this.client.waitForRegistration()
+      await this.client.join(currentChannel)
       context.replicants.channel.id.value = currentChannel
     } catch (error) {
+      this.api = undefined
       this.client = undefined
       context.log.error('Could not connect to Twitch!', error)
       throw error

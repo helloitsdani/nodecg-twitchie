@@ -1,7 +1,4 @@
 import context from '../../context'
-import getChatChannelFor from '../../utils/getChatChannelFor'
-
-const isUserInChannel = (channelName: string) => context.twitch.client.getChannels().includes(channelName)
 
 // leave chat immediately when channel ID is changed;
 // there might be a content reason we want to change ASAP
@@ -11,24 +8,30 @@ context.replicants.channel.id.on('change', (_, oldChannel) => {
     return
   }
 
-  const channelToPart = getChatChannelFor(oldChannel)
-
-  if (!isUserInChannel(channelToPart)) {
+  if (!context.twitch.client) {
     return
   }
 
-  context.twitch.client.part(channelToPart)
+  try {
+    context.twitch.client.part(oldChannel)
+  } catch (e) {
+    // Oh No!!
+  }
 })
 
 // only try and join a channel when we're sure the provided
 // channel id actually resolves to a real user
 // trying to join nonexistent channels on twitch irc can
 // cause issues
-context.replicants.user.id.on('change', newUserId => {
-  if (!newUserId) {
+context.replicants.user.info.on('change', async newUserInfo => {
+  if (!newUserInfo) {
     return
   }
 
-  const channelToJoin = getChatChannelFor(context.replicants.channel.id.value!)
-  context.twitch.client.join(channelToJoin)
+  if (!context.twitch.client) {
+    return
+  }
+
+  await context.twitch.client.join(newUserInfo.login)
+  context.replicants.chat.channel.value = newUserInfo.login
 })

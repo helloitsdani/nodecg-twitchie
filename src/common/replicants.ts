@@ -29,7 +29,7 @@ export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
     },
 
     chat: {
-      badges: createReplicant<any>('chat.badges'),
+      channel: createReplicant<string>('chat.channel'),
       cheermotes: createReplicant<any>('chat.cheermotes'),
     },
   }
