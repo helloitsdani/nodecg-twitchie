@@ -6,7 +6,7 @@ import context from '../context'
 
 export default (client: TwitchChatClient) => {
   // @ts-ignore
-  client.onAction((_, __, ___, msg) => {
+  client.onAction((channel, user, _, message) => {
     // const message = getMessageDetails(messageText, userstate)
     // const user = getUserDetails(userstate)
     // const payload = {
@@ -18,7 +18,7 @@ export default (client: TwitchChatClient) => {
   })
 
   // @ts-ignore
-  client.onPrivmsg((_, __, ___, msg) => {
+  client.onPrivmsg((channel, user, _, message) => {
     // const message = getMessageDetails(messageText, userstate)
     // const user = getUserDetails(userstate)
     // const payload = {
@@ -27,8 +27,8 @@ export default (client: TwitchChatClient) => {
     //   message,
     // }
     // context.events.emitMessage('chat.chat', payload)
-    msg.parseEmotes().map(console.log)
-    msg.parseEmotesAndBits(context.replicants.chat.cheermotes.value as any).map(console.log)
+    console.log(message.userInfo.badges)
+    message.parseEmotesAndBits(context.replicants.chat.cheermotes.value).map(console.log)
   })
 
   /* host */

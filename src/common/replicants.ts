@@ -1,36 +1,41 @@
 import { FollowersInfo, GameInfo, Replicant, StreamInfo, TwitchieReplicants, UserInfo } from '../types'
 import { NAMESPACE } from './constants'
 
+const createReplicant = <T>(nodecg: any, name: string, defaultValue?: T): Replicant<T> =>
+  nodecg.Replicant(name, NAMESPACE, {
+    defaultValue,
+    persistent: false,
+  })
+
+export { createReplicant }
+
 export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
-  const createReplicant = <T>(name: string): Replicant<T> =>
-    nodecg.Replicant(name, NAMESPACE, {
-      defaultValue: defaults[name],
-      persistent: false,
-    })
+  const createReplicantWithDefault = <T>(name: string): Replicant<T> => createReplicant(nodecg, name, defaults[name])
 
   return {
     channel: {
-      id: createReplicant<string>('channel.id'),
+      id: createReplicantWithDefault<string>('channel.id'),
     },
 
     stream: {
-      info: createReplicant<StreamInfo>('stream.info'),
+      info: createReplicantWithDefault<StreamInfo>('stream.info'),
     },
 
     game: {
-      id: createReplicant<string>('game.id'),
-      info: createReplicant<GameInfo>('game.info'),
+      id: createReplicantWithDefault<string>('game.id'),
+      info: createReplicantWithDefault<GameInfo>('game.info'),
     },
 
     user: {
-      id: createReplicant<string>('user.id'),
-      info: createReplicant<UserInfo>('user.info'),
-      followers: createReplicant<FollowersInfo>('user.followers'),
+      id: createReplicantWithDefault<string>('user.id'),
+      info: createReplicantWithDefault<UserInfo>('user.info'),
+      followers: createReplicantWithDefault<FollowersInfo>('user.followers'),
     },
 
     chat: {
-      channel: createReplicant<string>('chat.channel'),
-      cheermotes: createReplicant<any>('chat.cheermotes'),
+      channel: createReplicantWithDefault<string>('chat.channel'),
+      badges: createReplicantWithDefault<any>('chat.badges'),
+      cheermotes: createReplicantWithDefault<any>('chat.cheermotes'),
     },
   }
 }

@@ -14,6 +14,7 @@
     "precommit": "lint-staged",
     "prepush": "npm test"
   },
+  "main": "client/",
   "types": "src/types/index.ts",
   "lint-staged": {
     "{dashboard,extension,graphics}/**/*.ts": "tslint"
@@ -61,7 +62,7 @@
     "request": "2.74.0",
     "request-promise-native": "^1.0.4",
     "twitch": "^3.5.0",
-    "twitch-chat-client": "^3.5.0"
+    "twitch-chat-client": "^3.5.1"
   },
   "devDependencies": {
     "@types/debounce": "^1.2.0",

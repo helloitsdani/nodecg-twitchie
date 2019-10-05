@@ -48,24 +48,48 @@ export interface FollowInfo {
   to_name: string
 }
 
+export interface ChatUser {
+  id: string
+  name: string
+  username: string
+  color: string
+  badges: Map<string, string>
+  isMod: boolean
+  isSubscriber: boolean
+}
+
+export interface ChatTextMessageToken {
+  type: 'text'
+  text: string
+}
+
+export interface ChatEmoteMessageToken {
+  type: 'emote'
+  id: string
+  name: string
+}
+
+export interface ChatCheerMessageToken {
+  type: 'cheer'
+  name: string
+  amount: number
+  displayInfo: {
+    url: string
+    color: string
+  }
+}
+
+export type ChatMessageToken = ChatTextMessageToken | ChatEmoteMessageToken | ChatCheerMessageToken
+
 export interface MessageTypes {
   'channel.follower': FollowInfo
   'channel.subscription': any
   'chat.action': any
-  'chat.chat': any
-  'chat.cheer': any
-  'chat.connected': undefined
-  'chat.connecting': undefined
-  'chat.disconnected': string
-  'chat.reconnect': undefined
+  'chat.message': any
   'chat.clear': undefined
   'chat.ban': any
   'chat.timeout': any
-  'chat.join': any
-  'chat.part': any
   'channel.hosted': any
-  'channel.hosting': any
-  'channel.unhost': any
 }
 
 export type TwitchieEmitFunction = <T extends keyof MessageTypes>(action: T, payload: MessageTypes[T]) => void
@@ -93,6 +117,7 @@ export interface TwitchieReplicants {
   }
   chat: {
     channel: Replicant<string>
+    badges: Replicant<any>
     cheermotes: Replicant<any>
   }
 }
