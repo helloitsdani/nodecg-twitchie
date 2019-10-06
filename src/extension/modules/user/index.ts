@@ -13,7 +13,7 @@ const fetchUserId = async (username: string): Promise<string> => {
     throw new Error('Twitch API unavailable')
   }
 
-  context.log.debug(`Looking up #${username} from API...`)
+  context.log.debug(`Looking up ${username} from API...`)
   const user = await context.twitch.api.helix.users.getUserByName(username)
 
   if (!user) {

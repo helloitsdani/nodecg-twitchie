@@ -35,6 +35,30 @@ export interface UserInfo {
   view_count: number
 }
 
+export interface SubscriberInfo {
+  name: string
+  months: number
+  streak?: number
+  message?: string
+  plan: string
+  planName: string
+  isPrime: boolean
+}
+
+export interface SubscriberGiftInfo extends SubscriberInfo {
+  gifter?: string
+  gifterDisplayName?: string
+  gifterGiftCount?: number
+}
+
+export interface SubscriberCommunityGiftInfo {
+  count: number
+  gifter?: string
+  gifterDisplayName?: string
+  gifterGiftCount?: number
+  plan: string
+}
+
 export interface FollowersInfo {
   total: number
   followers: FollowInfo[]
@@ -49,13 +73,28 @@ export interface FollowInfo {
 }
 
 export interface ChatUser {
-  id: string
+  id?: string
   name: string
   username: string
-  color: string
+  color?: string
   badges: Map<string, string>
   isMod: boolean
   isSubscriber: boolean
+}
+
+export enum ChatMessageType {
+  ACTION = 'action',
+  MESSAGE = 'message',
+}
+
+export interface ChatMessage {
+  id?: string
+  type: ChatMessageType
+  user: ChatUser
+  message: string
+  tokens: ChatMessageToken[]
+  isCheer: boolean
+  totalBits: number
 }
 
 export interface ChatTextMessageToken {
@@ -81,15 +120,54 @@ export interface ChatCheerMessageToken {
 
 export type ChatMessageToken = ChatTextMessageToken | ChatEmoteMessageToken | ChatCheerMessageToken
 
+export interface ChatActionPayload {
+  channel: string
+  message: ChatMessage
+}
+
+export interface ChatMessagePayload {
+  channel: string
+  message: ChatMessage
+}
+
+export interface ChatBanPayload {
+  channel: string
+  user: string
+  reason: string
+}
+
+export interface ChatTimeoutPayload {
+  channel: string
+  user: string
+  reason: string
+  duration: number
+}
+
+export interface ChatHostedPayload {
+  channel: string
+  byChannel: string
+  auto: boolean
+  viewers: number
+}
+
+export interface ChatRemoveMessagePayload {
+  channel: string
+  messageId: string
+}
+
 export interface MessageTypes {
-  'channel.follower': FollowInfo
-  'channel.subscription': any
-  'chat.action': any
-  'chat.message': any
+  'user.follower': FollowInfo
+  'user.subscription': SubscriberInfo
+  'user.subscription.gift': SubscriberGiftInfo
+  'user.subscription.community': SubscriberCommunityGiftInfo
+  'user.hosted': ChatHostedPayload
+  'chat.join': string
+  'chat.action': ChatActionPayload
+  'chat.message': ChatMessagePayload
   'chat.clear': undefined
-  'chat.ban': any
-  'chat.timeout': any
-  'channel.hosted': any
+  'chat.removeMessage': ChatRemoveMessagePayload
+  'chat.ban': ChatBanPayload
+  'chat.timeout': ChatTimeoutPayload
 }
 
 export type TwitchieEmitFunction = <T extends keyof MessageTypes>(action: T, payload: MessageTypes[T]) => void

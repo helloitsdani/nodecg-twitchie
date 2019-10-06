@@ -1,41 +1,96 @@
-import TwitchChatClient from 'twitch-chat-client'
+import TwitchChatClient, { ChatCommunitySubInfo, ChatSubGiftInfo, ChatSubInfo, ChatUser } from 'twitch-chat-client'
+import TwitchPrivateMessage from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
 
-// import { getMessageDetails, getUserDetails, parseCheermotes, parseTokens } from '../utils/parseMessage'
-
+import {
+  ChatMessage,
+  ChatMessageType,
+  SubscriberCommunityGiftInfo,
+  SubscriberGiftInfo,
+  SubscriberInfo,
+} from '../../types'
 import context from '../context'
 
+const serializeSubscriberInfo = (subInfo: ChatSubInfo): SubscriberInfo => ({
+  name: subInfo.displayName,
+  message: subInfo.message,
+  months: subInfo.months,
+  streak: subInfo.streak,
+  plan: subInfo.plan,
+  planName: subInfo.planName,
+  isPrime: subInfo.isPrime,
+})
+
+const serializeSubscriberGiftInfo = (subInfo: ChatSubGiftInfo): SubscriberGiftInfo => ({
+  ...serializeSubscriberGiftInfo(subInfo),
+  gifter: subInfo.gifter,
+  gifterDisplayName: subInfo.gifterDisplayName,
+  gifterGiftCount: subInfo.gifterGiftCount,
+})
+
+const serializeCommunityGiftInfo = (giftInfo: ChatCommunitySubInfo): SubscriberCommunityGiftInfo => ({
+  count: giftInfo.count,
+  gifter: giftInfo.gifter,
+  gifterDisplayName: giftInfo.gifterDisplayName,
+  gifterGiftCount: giftInfo.gifterGiftCount,
+  plan: giftInfo.plan,
+})
+
+const serializeUserInfo = (user: ChatUser) => ({
+  id: user.userId,
+  name: user.userName,
+  username: user.userName,
+  color: user.color,
+  badges: user.badges,
+  isMod: user.isMod,
+  isSubscriber: user.isSubscriber,
+})
+
+const serializeMessageInfo = (
+  type: ChatMessageType,
+  rawMessage: string,
+  message: TwitchPrivateMessage
+): ChatMessage => ({
+  type,
+  user: serializeUserInfo(message.userInfo),
+  message: rawMessage,
+  tokens: message.parseEmotesAndBits(context.replicants.chat.cheermotes.value),
+  isCheer: message.isCheer,
+  totalBits: message.totalBits,
+})
+
 export default (client: TwitchChatClient) => {
-  // @ts-ignore
-  client.onAction((channel, user, _, message) => {
-    // const message = getMessageDetails(messageText, userstate)
-    // const user = getUserDetails(userstate)
-    // const payload = {
-    //   channel,
-    //   user,
-    //   message,
-    // }
-    // context.events.emitMessage('chat.action', payload)
+  client.onJoin(channel => {
+    context.events.emitMessage('chat.join', channel)
   })
 
-  // @ts-ignore
-  client.onPrivmsg((channel, user, _, message) => {
-    // const message = getMessageDetails(messageText, userstate)
-    // const user = getUserDetails(userstate)
-    // const payload = {
-    //   channel,
-    //   user,
-    //   message,
-    // }
-    // context.events.emitMessage('chat.chat', payload)
-    console.log(message.userInfo.badges)
-    message.parseEmotesAndBits(context.replicants.chat.cheermotes.value).map(console.log)
+  client.onAction((channel, _, raw, message) => {
+    const payload = {
+      channel,
+      message: serializeMessageInfo(ChatMessageType.ACTION, raw, message),
+    }
+
+    context.events.emitMessage('chat.action', payload)
+  })
+
+  client.onPrivmsg((channel, _, raw, message) => {
+    const payload = {
+      channel,
+      message: serializeMessageInfo(ChatMessageType.MESSAGE, raw, message),
+    }
+
+    context.events.emitMessage('chat.message', payload)
   })
 
   /* host */
-  // @ts-ignore
-  client.onHosted((channel, hosterChannel, auto, viewers) => {
-    const payload = { channel, host: hosterChannel, viewers, auto }
-    context.events.emitMessage('channel.hosted', payload)
+  client.onHosted((channel, byChannel, auto, viewers) => {
+    const payload = {
+      channel,
+      byChannel,
+      auto,
+      viewers: viewers || 0,
+    }
+
+    context.events.emitMessage('user.hosted', payload)
   })
 
   // @ts-ignore
@@ -44,39 +99,26 @@ export default (client: TwitchChatClient) => {
   })
 
   /* subscriptions */
-  // @ts-ignore
-  client.onSub((channel, user, subInfo, message) => {
-    // const payload = {
-    //   channel,
-    //   username,
-    //   resub: false,
-    //   prime: !!extra.prime,
-    // }
-    // context.events.emitMessage('channel.subscription', payload)
+  client.onSub((_, __, subInfo) => {
+    const payload = serializeSubscriberInfo(subInfo)
+    context.events.emitMessage('user.subscription', payload)
+  })
+
+  client.onResub((_, __, subInfo) => {
+    const payload = serializeSubscriberInfo(subInfo)
+    context.events.emitMessage('user.subscription', payload)
   })
 
   // @ts-ignore
-  client.onResub((channel, user, subInfo, message) => {
-    // const message = getMessageDetails(messageText)
-    // const payload = {
-    //   channel,
-    //   username,
-    //   months,
-    //   message,
-    //   resub: true,
-    //   prime: !!extra.prime,
-    // }
-    // context.events.emitMessage('channel.subscription', payload)
+  client.onSubGift((_, __, subInfo) => {
+    const payload = serializeSubscriberGiftInfo(subInfo)
+    context.events.emitMessage('user.subscription.gift', payload)
   })
 
   // @ts-ignore
-  client.onSubGift((channel, user, subInfo, message) => {
-    // sub gift
-  })
-
-  // @ts-ignore
-  client.onCommunitySub((channel, user, subinfo, message) => {
-    // community sub gifts
+  client.onCommunitySub((channel, user, subInfo) => {
+    const payload = serializeCommunityGiftInfo(subInfo)
+    context.events.emitMessage('user.subscription.community', payload)
   })
 
   /* rituals */
@@ -90,9 +132,9 @@ export default (client: TwitchChatClient) => {
     context.events.emitMessage('chat.clear', undefined)
   })
 
-  // @ts-ignore
-  client.onMessageRemove((channel, messageId, message) => {
-    // naughty
+  client.onMessageRemove((channel, messageId) => {
+    const payload = { channel, messageId }
+    context.events.emitMessage('chat.removeMessage', payload)
   })
 
   client.onTimeout((channel, user, reason, duration) => {
