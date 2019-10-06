@@ -21,7 +21,7 @@ const serializeSubscriberInfo = (subInfo: ChatSubInfo): SubscriberInfo => ({
 })
 
 const serializeSubscriberGiftInfo = (subInfo: ChatSubGiftInfo): SubscriberGiftInfo => ({
-  ...serializeSubscriberGiftInfo(subInfo),
+  ...serializeSubscriberInfo(subInfo),
   gifter: subInfo.gifter,
   gifterDisplayName: subInfo.gifterDisplayName,
   gifterGiftCount: subInfo.gifterGiftCount,
@@ -59,10 +59,6 @@ const serializeMessageInfo = (
 })
 
 export default (client: TwitchChatClient) => {
-  client.onJoin(channel => {
-    context.events.emitMessage('chat.join', channel)
-  })
-
   client.onAction((channel, _, raw, message) => {
     const payload = {
       channel,
@@ -100,23 +96,27 @@ export default (client: TwitchChatClient) => {
 
   /* subscriptions */
   client.onSub((_, __, subInfo) => {
+    console.log('subscriber', subInfo)
     const payload = serializeSubscriberInfo(subInfo)
     context.events.emitMessage('user.subscription', payload)
   })
 
   client.onResub((_, __, subInfo) => {
+    console.log('resub', subInfo)
     const payload = serializeSubscriberInfo(subInfo)
     context.events.emitMessage('user.subscription', payload)
   })
 
   // @ts-ignore
   client.onSubGift((_, __, subInfo) => {
+    console.log('sub gift', subInfo)
     const payload = serializeSubscriberGiftInfo(subInfo)
     context.events.emitMessage('user.subscription.gift', payload)
   })
 
   // @ts-ignore
   client.onCommunitySub((channel, user, subInfo) => {
+    console.log('community sub', subInfo)
     const payload = serializeCommunityGiftInfo(subInfo)
     context.events.emitMessage('user.subscription.community', payload)
   })

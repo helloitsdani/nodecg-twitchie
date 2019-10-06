@@ -161,7 +161,6 @@ export interface MessageTypes {
   'user.subscription.gift': SubscriberGiftInfo
   'user.subscription.community': SubscriberCommunityGiftInfo
   'user.hosted': ChatHostedPayload
-  'chat.join': string
   'chat.action': ChatActionPayload
   'chat.message': ChatMessagePayload
   'chat.clear': undefined
