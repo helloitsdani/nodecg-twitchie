@@ -89,9 +89,14 @@ export default (client: TwitchChatClient) => {
     context.events.emitMessage('user.hosted', payload)
   })
 
-  // @ts-ignore
-  client.onRaid((channel, user, raidInfo, message) => {
-    // raid
+  client.onRaid((channel, _, raidInfo) => {
+    const payload = {
+      channel,
+      byChannel: raidInfo.displayName,
+      viewers: raidInfo.viewerCount,
+    }
+
+    context.events.emitMessage('user.raid', payload)
   })
 
   /* subscriptions */
@@ -122,9 +127,14 @@ export default (client: TwitchChatClient) => {
   })
 
   /* rituals */
-  // @ts-ignore
-  client.onRitual((channel, user, ritualInfo, message) => {
-    // ritual
+  client.onRitual((channel, user, ritualInfo) => {
+    const payload = {
+      channel,
+      user,
+      message: ritualInfo.message,
+      ritualName: ritualInfo.ritualName,
+    }
+    context.events.emitMessage('chat.ritual', payload)
   })
 
   /* naughty management options */

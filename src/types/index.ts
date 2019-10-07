@@ -150,6 +150,19 @@ export interface ChatHostedPayload {
   viewers: number
 }
 
+export interface ChatRaidPayload {
+  channel: string
+  byChannel: string
+  viewers: number
+}
+
+export interface ChatRitualPayload {
+  channel: string
+  user: string
+  message: string
+  ritualName: string
+}
+
 export interface ChatRemoveMessagePayload {
   channel: string
   messageId: string
@@ -161,8 +174,10 @@ export interface MessageTypes {
   'user.subscription.gift': SubscriberGiftInfo
   'user.subscription.community': SubscriberCommunityGiftInfo
   'user.hosted': ChatHostedPayload
+  'user.raid': ChatRaidPayload
   'chat.action': ChatActionPayload
   'chat.message': ChatMessagePayload
+  'chat.ritual': ChatRitualPayload
   'chat.clear': undefined
   'chat.removeMessage': ChatRemoveMessagePayload
   'chat.ban': ChatBanPayload
