@@ -7,6 +7,7 @@
   },
   "scripts": {
     "build": "NODE_ENV=production tsc --rootDir src --outDir .",
+    "build:client": "rollup -c",
     "watch": "npm run build -- --watch",
     "test": "ava",
     "lint:js": "tslint \"{dashboard,extension,graphics}/**/*.(ts|js)\"",
