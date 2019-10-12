@@ -6,14 +6,17 @@
     "node": ">=6.4.0"
   },
   "scripts": {
+    "build": "NODE_ENV=production tsc --rootDir src --outDir .",
+    "watch": "npm run build -- --watch",
     "test": "ava",
-    "lint:js": "eslint \"{dashboard,extension,graphics}/**/*.js\"",
+    "lint:js": "tslint \"{dashboard,extension,graphics}/**/*.(ts|js)\"",
     "lint": "npm run lint:js",
     "precommit": "lint-staged",
     "prepush": "npm test"
   },
+  "main": "src/client/index.ts",
   "lint-staged": {
-    "{dashboard,extension,graphics}/**/*.js": "eslint"
+    "{dashboard,extension,graphics}/**/*.ts": "tslint"
   },
   "description": "Provides Twitch channel, stream and chat information via NodeCG replicants",
   "homepage": "https://github.com/helloitsdan/nodecg-twitchie",
@@ -38,29 +41,43 @@
         "width": 2,
         "file": "channel.html",
         "headerColor": "#6441A4"
-      },
-      {
-        "name": "Events",
-        "title": "Latest Channel Events",
-        "file": "events.html",
-        "headerColor": "#6441A4",
-        "fullbleed": true
       }
+    ]
+  },
+  "ava": {
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
     ]
   },
   "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "dependencies": {
     "debounce": "^1.0.2",
+    "express": "^4.17.1",
+    "node-cache": "^4.2.1",
     "request": "2.74.0",
     "request-promise-native": "^1.0.4",
-    "tmi.js": "^1.2.0"
+    "twitch": "^3.5.0",
+    "twitch-chat-client": "^3.5.1"
   },
   "devDependencies": {
+    "@types/debounce": "^1.2.0",
+    "@types/express": "^4.17.1",
     "ava": "^0.19.1",
-    "eslint": "^3.5.0",
-    "eslint-config-airbnb": "^12.0.0",
-    "eslint-plugin-import": "^1.16.0",
     "husky": "^0.13.3",
-    "lint-staged": "^3.5.0"
+    "lint-staged": "^3.5.0",
+    "prettier": "^1.18.2",
+    "stylelint": "^11.0.0",
+    "stylelint-config-recommended-scss": "^4.0.0",
+    "stylelint-scss": "^3.11.1",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.17.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.2.1"
   }
 }
