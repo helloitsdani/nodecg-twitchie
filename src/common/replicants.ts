@@ -1,17 +1,22 @@
 import { FollowersInfo, GameInfo, Replicant, StreamInfo, TwitchieReplicants, UserInfo } from '../types'
 import { NAMESPACE } from './constants'
 
+interface ReplicantOptionsBag<T> {
+  defaultValue?: T
+  persistent?: boolean
+}
+
 const createReplicant = <T>(
   nodecg: any,
   name: string,
-  { defaultValue, persistent }: { defaultValue?: T; persistent?: boolean } = {}
+  { defaultValue, persistent }: ReplicantOptionsBag<T> = {}
 ): Replicant<T> =>
   nodecg.Replicant(name, NAMESPACE, {
     defaultValue,
     persistent: !!persistent,
   })
 
-export { createReplicant }
+export { ReplicantOptionsBag, createReplicant }
 
 export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
   const createReplicantWithDefault = <T>(name: string): Replicant<T> => createReplicant(nodecg, name, defaults[name])

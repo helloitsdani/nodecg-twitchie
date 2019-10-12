@@ -1,6 +1,6 @@
-import createReplicants, { createReplicant } from '../common/replicants'
-
+import replicants, { createReplicant } from './replicants'
 import { TwitchieListenFunction, TwitchieReplicants } from '../types'
+
 import getBadge from './utils/getBadge'
 import getBadgeFromCurrentSets from './utils/getBadgeFromCurrentSets'
 import getEmote from './utils/getEmote'
@@ -14,11 +14,10 @@ type TwitchieClient = TwitchieReplicants & {
   on: TwitchieListenFunction
 }
 
-const replicants = createReplicants(nodecg)
-
 const client: TwitchieClient = {
   ...replicants,
   on: listenFor,
 }
 
+export { TwitchieClient }
 export default client
