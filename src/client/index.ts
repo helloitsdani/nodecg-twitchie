@@ -8,8 +8,6 @@ import listenFor from './utils/listenFor'
 
 export { createReplicant, listenFor, getEmote, getBadge, getBadgeFromCurrentSets }
 
-export * from '../types'
-
 type TwitchieClient = TwitchieReplicants & {
   on: TwitchieListenFunction
 }
