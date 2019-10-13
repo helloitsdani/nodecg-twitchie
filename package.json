@@ -1,6 +1,6 @@
 {
   "name": "nodecg-twitchie",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "engines": {
     "node": ">=6.4.0"
@@ -28,7 +28,8 @@
   },
   "files": [
     "dashboard",
-    "extension"
+    "extension",
+    "graphics"
   ],
   "keywords": [
     "nodecg-bundle"
