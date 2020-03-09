@@ -1,27 +1,55 @@
-/* global nodecg, NodeCG, moment, Polymer */
+import { PolymerElement, html } from '/node_modules/@polymer/polymer/polymer-element.js'
 
-;(() => {
-  const channelInfo = NodeCG.Replicant('stream.info', 'nodecg-twitchie')
-  const userInfo = NodeCG.Replicant('user.info', 'nodecg-twitchie')
+import './twitchie-channel-field.js'
+import './twitchie-channel-status.js'
 
-  class TwitchieChannelInfo extends Polymer.Element {
-    static get is() {
-      return 'twitchie-channel-info'
-    }
+import '/bundles/nodecg-twitchie/dashboard/twitchie-styles/twitchie-styles.js'
 
-    async ready() {
-      super.ready()
-      await NodeCG.waitForReplicants(channelInfo, userInfo)
+const channelInfo = NodeCG.Replicant('stream.info', 'nodecg-twitchie')
+const userInfo = NodeCG.Replicant('user.info', 'nodecg-twitchie')
 
-      userInfo.on('change', userInfo => {
-        this.$.loading.classList.toggle('is-loading', !userInfo)
+class TwitchieChannelInfo extends PolymerElement {
+  static get template() {
+    return html`
+      <style include="twitchie-styles"></style>
 
-        if (userInfo) {
-          // this.$.pages.selected = unknown ? 'error' : 'status'
-        }
-      })
-    }
+      <twitchie-channel-field></twitchie-channel-field>
+
+      <iron-pages id="pages" selected="status" attr-for-selected="name">
+        <section name="error">
+          We couldn't find any channels with that ID on Twitch.
+        </section>
+
+        <section name="status">
+          <div id="loading" class="c-loading">
+            <div class="c-loading__message">
+              <paper-spinner class="c-loading__spinner" active=""></paper-spinner>
+              <span>Retrieving channel info…</span>
+            </div>
+          </div>
+
+          <twitchie-channel-status></twitchie-channel-status>
+        </section>
+      </iron-pages>
+    `
   }
 
-  customElements.define(TwitchieChannelInfo.is, TwitchieChannelInfo)
-})()
+  static get is() {
+    return 'twitchie-channel-info'
+  }
+
+  async ready() {
+    super.ready()
+    await NodeCG.waitForReplicants(channelInfo, userInfo)
+
+    userInfo.on('change', userInfo => {
+      this.$.loading.classList.toggle('is-loading', !userInfo)
+
+      if (userInfo) {
+        // this.$.pages.selected = unknown ? 'error' : 'status'
+      }
+    })
+  }
+}
+
+customElements.define(TwitchieChannelInfo.is, TwitchieChannelInfo)

@@ -1,17 +1,14 @@
-/* global nodecg, NodeCG, moment, Polymer */
+/* global nodecg, NodeCG, moment */
+import { PolymerElement, html } from '/node_modules/@polymer/polymer/polymer-element.js'
 
-(() => {
-  const getCounterText = (diff) => {
+;(() => {
+  const getCounterText = diff => {
     const diffMoment = moment.utc(diff)
 
-    return diffMoment.format(
-      diffMoment.hours() > 0
-        ? 'H:mm:ss'
-        : 'm:ss'
-    )
+    return diffMoment.format(diffMoment.hours() > 0 ? 'H:mm:ss' : 'm:ss')
   }
 
-  class TwitchieDurationCounter extends Polymer.Element {
+  class TwitchieDurationCounter extends PolymerElement {
     static get is() {
       return 'twitchie-duration-counter'
     }
@@ -47,10 +44,7 @@
       this.startedMoment = moment.utc(newStarted)
 
       this.tick()
-      this.tickTimer = setInterval(
-        () => this.tick(),
-        1 * 1000,
-      )
+      this.tickTimer = setInterval(() => this.tick(), 1 * 1000)
     }
   }
 

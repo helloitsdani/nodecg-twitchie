@@ -3,7 +3,9 @@
 /types/
 /client/
 /graphics/
+/dashboard/
 /lib/
+/.cache/
 
 # Logs
 logs
