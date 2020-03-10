@@ -1,14 +1,20 @@
-/* global nodecg, NodeCG, Polymer */
+/* global nodecg, NodeCG */
 
+import * as Polymer from '@polymer/polymer'
 import moment from 'moment'
 
 const getCounterText = diff => {
   const diffMoment = moment.utc(diff)
-
   return diffMoment.format(diffMoment.hours() > 0 ? 'H:mm:ss' : 'm:ss')
 }
 
-class TwitchieDurationCounter extends Polymer.Element {
+class TwitchieDurationCounter extends Polymer.PolymerElement {
+  static get template() {
+    return Polymer.html`
+    [[counterText]]
+    `
+  }
+
   static get is() {
     return 'twitchie-duration-counter'
   }
