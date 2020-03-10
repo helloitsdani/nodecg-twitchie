@@ -1,13 +1,10 @@
 /* global nodecg, NodeCG */
 
-(async () => {
+;(async () => {
   const loginURL = '/login/twitch'
   const verifyURL = '/login/twitch/verify'
 
-  const {
-    timeBetweenUpdates = 60000,
-    requireLogin = true,
-  } = nodecg.bundleConfig
+  const { timeBetweenUpdates = 60000, requireLogin = true } = nodecg.bundleConfig
 
   const loggedInStatus = NodeCG.Replicant('login.status', 'nodecg-twitchie')
 
@@ -21,10 +18,7 @@
   // trigger nodecg's "login" express event to be emitted
   // manually hitting this endpoint should ensure this happens
   const verifyLogin = async () => {
-    const response = await fetch(
-      verifyURL,
-      { method: 'GET', credentials: 'include' }
-    )
+    const response = await fetch(verifyURL, { method: 'GET', credentials: 'include' })
 
     if (!response.ok) {
       throw new Error('Login endpoint returned error', response.status)
@@ -46,7 +40,7 @@
 
   pollForLoginStatus()
 
-  loggedInStatus.on('change', (isLoggedIn) => {
+  loggedInStatus.on('change', isLoggedIn => {
     if (requireLogin && !isLoggedIn) {
       redirectToLogin()
     }

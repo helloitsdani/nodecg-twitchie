@@ -50,10 +50,18 @@ const mapFollowInfo = (follow: HelixFollow): FollowInfo => ({
   to_name: follow.followedUserDisplayName,
 })
 
-const serializeFollowersInfo = (follows: HelixPaginatedResultWithTotal<HelixFollow>): FollowersInfo => ({
-  total: follows.total,
-  followers: follows.data.map(mapFollowInfo),
-})
+const serializeFollowersInfo = (
+  follows: HelixPaginatedResultWithTotal<HelixFollow> | null
+): FollowersInfo | undefined => {
+  if (!follows) {
+    return undefined
+  }
+
+  return {
+    total: follows.total,
+    followers: follows.data.map(mapFollowInfo),
+  }
+}
 
 const getFreshChannelInfo = () => {
   const userId = context.replicants.user.id.value
