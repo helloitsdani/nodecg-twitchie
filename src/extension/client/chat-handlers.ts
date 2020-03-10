@@ -147,13 +147,13 @@ export default (client: TwitchChatClient) => {
     context.events.emitMessage('chat.removeMessage', payload)
   })
 
-  client.onTimeout((channel, user, reason, duration) => {
-    const payload = { channel, user, reason, duration }
+  client.onTimeout((channel, user, duration) => {
+    const payload = { channel, user, duration }
     context.events.emitMessage('chat.timeout', payload)
   })
 
-  client.onBan((channel, user, reason) => {
-    const payload = { channel, user, reason }
+  client.onBan((channel, user) => {
+    const payload = { channel, user }
     context.events.emitMessage('chat.ban', payload)
   })
 }

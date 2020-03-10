@@ -133,13 +133,11 @@ export interface ChatMessagePayload {
 export interface ChatBanPayload {
   channel: string
   user: string
-  reason: string
 }
 
 export interface ChatTimeoutPayload {
   channel: string
   user: string
-  reason: string
   duration: number
 }
 
