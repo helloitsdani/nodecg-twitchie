@@ -37,18 +37,20 @@ class TwitchieClientWrapper {
       await this.disconnect()
     }
 
-    const currentChannel = context.replicants.channel.id.value || this.auth.username
+    const getCurrentChannel = () => context.replicants.channel.id.value || this.auth?.username
 
     this.api = await TwitchClient.withCredentials(context.config.clientID, this.auth.token, undefined)
-    this.client = await TwitchChatClient.forTwitchClient(this.api)
+    this.client = await TwitchChatClient.forTwitchClient(this.api, {
+      channels: () => {
+        const joinChannel = getCurrentChannel()
+        return joinChannel ? [joinChannel] : []
+      },
+    })
 
     bindChatHandlers(this.client)
 
     try {
       await this.client.connect()
-      await this.client.waitForRegistration()
-      await this.client.join(currentChannel)
-      context.replicants.channel.id.value = currentChannel
     } catch (error) {
       this.api = undefined
       this.client = undefined
