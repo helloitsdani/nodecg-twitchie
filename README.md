@@ -12,7 +12,7 @@ Out of the box, Twitchie will provide you with all of this:
 * Chat and API calls through the [really good twitch and twitch-chat-client libraries](https://github.com/d-fischer/twitch)
 
 ## Compatibility
-Twitchie requires that you use a version of NodeCG greater than *1.0*, and a version of node greater than *6.4.0*, because of some compatibility stuff.
+Twitchie requires that you use a version of NodeCG greater than *1.5.0*, and a version of node greater than *6.4.0*, because of some compatibility stuff.
 
 ## Usage
 

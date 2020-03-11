@@ -38,7 +38,7 @@
     "lib"
   ],
   "nodecg": {
-    "compatibleRange": ">=1.0.0",
+    "compatibleRange": ">=1.5.0",
     "dashboardPanels": [
       {
         "name": "Channel",
