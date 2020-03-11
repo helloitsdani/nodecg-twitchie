@@ -13,7 +13,7 @@ context.replicants.channel.id.on('change', (_, oldChannel) => {
   }
 
   try {
-    context.twitch.client.part(`#${oldChannel}`)
+    context.twitch.client.part(oldChannel)
   } catch (e) {
     // Oh No!!
     console.log(e)
