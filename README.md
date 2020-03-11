@@ -4,13 +4,12 @@ Twitchie makes it easy to get all your Twitch channel, stream, and chat informat
 
 Out of the box, Twitchie will provide you with all of this:
 
-* Channel info
+* User info
 * Stream info
 * Follower notifications
 * Subscriber notifications
 * Cheer notifications
-* Chat, via [tmi.js](https://tmijs.org/)
-* Emote (and cheermote) parsing from chat messages, including channel-specific emotes
+* Chat and API calls through the [really good twitch and twitch-chat-client libraries](https://github.com/d-fischer/twitch)
 
 ## Compatibility
 Twitchie requires that you use a version of NodeCG greater than *1.0*, and a version of node greater than *6.4.0*, because of some compatibility stuff.
@@ -19,7 +18,7 @@ Twitchie requires that you use a version of NodeCG greater than *1.0*, and a ver
 
 Everything that Twitchie handles is exposed through NodeCG's replicants and bundle messages, in the `nodecg-twitchie` namespace. This means that getting stream information in your graphics is extra-simple!
 
-```
+```javascript
 const showSubscriber = subscriber => {
   // show notification in your graphics...
 }
@@ -30,8 +29,19 @@ const updateChannelInfo = info => {
 
 nodecg.listenFor('channel.subscriber', 'nodecg-twitchie', showSubscriber)
 
-const channelInfo = nodecg.Replicant('channel.info', 'nodecg-twitchie')
-channelInfo.on('change', updateChannelInfo)
+const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitchie')
+streamInfo.on('change', updateStreamInfo)
+```
+
+### The twitchie client
+
+The default export of this module is a little client for use in your graphics, which gives you an easy way to listen to events or access your stream information in your graphics without having to manually configure loads of replicants. Using the twitchie client, the above example could be rewritten like so...
+
+```javascript
+import twitchie from 'nodecg-twitchie'
+
+twitchie.on('channel.subscriber', showSubscriber)
+twitchie.stream.info.on('change', updateStreamInfo)
 ```
 
 ### Events and Replicants
@@ -40,7 +50,7 @@ For a full list of all the events you can subscribe to, and the data Twitchie ma
 
 ### Custom requests with Twitchie
 
-You can also use Twitchie to query the Twitch API/access the tmi.js client directly through your bundles, if you want to do something we can't handle quite yet. For instructions on how to do this, please see the [Extension API wiki page](https://github.com/helloitsdan/nodecg-twitchie/wiki/Extension-API).
+The twitchie extension exposes an instance of the [Twitch library](https://github.com/d-fischer/twitch). If you want to query the Twitch API directly, you can access it through `nodecg.extensions['nodecg-twitchie'].api`.
 
 ## Configuring Twitchie
 
