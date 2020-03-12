@@ -6,6 +6,8 @@
 /dashboard/
 /lib/
 /.cache/
+/.parcel-cache/
+/dist/
 
 # Logs
 logs

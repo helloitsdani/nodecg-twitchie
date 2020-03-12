@@ -2,6 +2,13 @@ const styleElement = document.createElement('dom-module')
 
 styleElement.innerHTML = `<template>
   <style>
+    :root {
+      --background-color: #2F3A4F;
+      --primary-text-color: #fff;
+      --secondary-text-color: rgba(255, 255, 255, 0.5);
+      --primary-color: #6441a4;
+    }
+
     h1,
     h2,
     h3,
@@ -36,7 +43,7 @@ styleElement.innerHTML = `<template>
     }
 
     paper-spinner {
-      --paper-spinner-layer-1-color: #6441a5;
+      --paper-spinner-layer-1-color: var(--primary-color);
       --paper-spinner-layer-2-color: var(--paper-spinner-layer-1-color);
       --paper-spinner-layer-3-color: var(--paper-spinner-layer-1-color);
       --paper-spinner-layer-4-color: var(--paper-spinner-layer-1-color);
@@ -87,7 +94,7 @@ styleElement.innerHTML = `<template>
       align-items: center;
       justify-content: center;
 
-      background: #f5f5f5;
+      background: var(--background-color);
       opacity: 0;
       visibility: hidden;
       transition: 0.3s all ease-in-out;
@@ -106,6 +113,10 @@ styleElement.innerHTML = `<template>
 
     .c-loading__spinner {
       margin: 0 0.5em 0 0;
+    }
+
+    svg {
+      fill: currentColor;
     }
   </style>
 </template>`
