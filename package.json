@@ -6,7 +6,7 @@
   "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "homepage": "https://github.com/helloitsdan/nodecg-twitchie",
   "name": "nodecg-twitchie",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "license": "MIT",
   "engines": {
     "node": ">=6.4.0"
@@ -23,7 +23,8 @@
     "precommit": "lint-staged",
     "prepush": "npm test"
   },
-  "browser": "lib/index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dashboard": "dashboard/index.html",
   "lint-staged": {
     "{dashboard,extension}/**/*.ts": "tslint"
