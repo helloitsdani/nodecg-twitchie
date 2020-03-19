@@ -53,13 +53,9 @@ const updateGameInfo = async (gameId: string) => {
   context.replicants.game.info.value = gameInfo
 }
 
-context.replicants.game.id.on('change', (gameId, oldGameId) => {
+context.replicants.game.id.on('change', gameId => {
   if (!gameId) {
     context.replicants.game.info.value = undefined
-    return
-  }
-
-  if (gameId === oldGameId) {
     return
   }
 
