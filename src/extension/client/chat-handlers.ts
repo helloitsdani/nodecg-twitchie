@@ -40,7 +40,7 @@ const serializeUserInfo = (user: ChatUser) => ({
   name: user.userName,
   username: user.userName,
   color: user.color,
-  badges: user.badges,
+  badges: Object.fromEntries(user.badges.entries()),
   isMod: user.isMod,
   isSubscriber: user.isSubscriber,
 })

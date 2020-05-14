@@ -77,7 +77,7 @@ export interface ChatUser {
   name: string
   username: string
   color?: string
-  badges: Map<string, string>
+  badges: Record<string, string>
   isMod: boolean
   isSubscriber: boolean
 }
