@@ -12,7 +12,7 @@ Out of the box, Twitchie will provide you with all of this:
 * Chat and API calls through the [really good twitch and twitch-chat-client libraries](https://github.com/d-fischer/twitch)
 
 ## Compatibility
-Twitchie requires that you use a version of NodeCG greater than *1.5.0*, and a version of node greater than *6.4.0*, because of some compatibility stuff.
+Twitchie requires that you use a version of NodeCG greater than *1.6.1*, and a version of node greater than *10.0.0*, because of some compatibility stuff.
 
 ## Usage
 
@@ -56,4 +56,4 @@ The twitchie extension exposes an instance of the [Twitch library](https://githu
 
 In order to use Twitchie, you'll need to enable Twitch logins on your NodeCG instance, as we use this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](http://nodecg.com/tutorial-nodecg-configuration.html).
 
-Please make sure you've included **user_read** and **chat_login** in your scopes!
+Please make sure you've included `user_read channel:read:subscriptions user:read:broadcast chat:read chat:edit` in your scopes!
