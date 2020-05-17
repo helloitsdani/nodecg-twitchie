@@ -6,7 +6,7 @@
   "repository": "https://github.com/helloitsdan/nodecg-twitchie.git",
   "homepage": "https://github.com/helloitsdan/nodecg-twitchie",
   "name": "nodecg-twitchie",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "license": "MIT",
   "engines": {
     "node": ">=6.4.0"
@@ -37,10 +37,11 @@
   "files": [
     "dashboard",
     "extension",
+    "common",
     "lib"
   ],
   "nodecg": {
-    "compatibleRange": ">=1.5.0",
+    "compatibleRange": ">=1.6.1",
     "dashboardPanels": [
       {
         "name": "Channel",
