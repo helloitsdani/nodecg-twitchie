@@ -10,6 +10,6 @@ context.replicants.chat.channel.on('change', async newChannel => {
     throw new Error('Twitch api not available')
   }
 
-  const cheermotes = await context.twitch.api.kraken.bits.getCheermotes(newChannel, true)
+  const cheermotes = await context.twitch.api.bits.getCheermotes(newChannel)
   context.replicants.chat.cheermotes.value = cheermotes
 })

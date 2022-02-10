@@ -1,7 +1,6 @@
 import createEventEmitter, { TwitchieEventEmitter } from '../common/events'
 import createReplicants from '../common/replicants'
 import { TwitchieReplicants } from '../types'
-
 import { TwitchieClientWrapper } from './client'
 
 let nodecgInstance: any

@@ -4,15 +4,16 @@ Twitchie makes it easy to get all your Twitch channel, stream, and chat informat
 
 Out of the box, Twitchie will provide you with all of this:
 
-* User info
-* Stream info
-* Follower notifications
-* Subscriber notifications
-* Cheer notifications
-* Chat and API calls through the [really good twitch and twitch-chat-client libraries](https://github.com/d-fischer/twitch)
+- User info
+- Stream info
+- Follower notifications
+- Subscriber notifications
+- Cheer notifications
+- Chat and API calls through the [really good twurple libraries](https://https://twurple.js.org/)
 
 ## Compatibility
-Twitchie requires that you use a version of NodeCG greater than *1.6.1*, and a version of node greater than *10.0.0*, because of some compatibility stuff.
+
+Twitchie requires that you use a version of NodeCG greater than _1.6.1_, and a version of node greater than _10.0.0_, because of some compatibility stuff.
 
 ## Usage
 
@@ -27,7 +28,11 @@ const updateChannelInfo = info => {
   // update now playing, uptime, etc...
 }
 
-nodecg.listenFor('channel.subscriber', 'nodecg-twitchie', showSubscriber)
+nodecg.listenFor(
+  'channel.subscriber',
+  'nodecg-twitchie',
+  showSubscriber
+)
 
 const streamInfo = nodecg.Replicant('stream.info', 'nodecg-twitchie')
 streamInfo.on('change', updateStreamInfo)

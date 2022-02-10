@@ -1,5 +1,5 @@
 import NodeCache from 'node-cache'
-import { HelixGame } from 'twitch'
+import { HelixGame } from '@twurple/api'
 
 import { GameInfo } from '../../../types'
 import context from '../../context'

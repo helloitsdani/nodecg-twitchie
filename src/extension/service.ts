@@ -63,7 +63,7 @@ app.get('/login/twitch/verify', (request: any, response: any) => {
       handleConnect(session)
       log.debug('Connected to Twitch.')
     } catch (e) {
-      log.error('Could not connect to Twitch!', e.message)
+      log.error('Could not connect to Twitch!', e)
       return response.sendStatus(401)
     }
   } else {

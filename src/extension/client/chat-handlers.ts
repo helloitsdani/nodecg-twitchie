@@ -1,4 +1,4 @@
-import TwitchChatClient, { ChatCommunitySubInfo, ChatSubGiftInfo, ChatSubInfo, ChatUser } from 'twitch-chat-client'
+import { ChatClient, ChatCommunitySubInfo, ChatSubGiftInfo, ChatSubInfo, ChatUser } from '@twurple/chat'
 
 import {
   ChatMessage,
@@ -53,7 +53,7 @@ const serializeMessageInfo = (type: ChatMessageType, rawMessage: string, message
   totalBits: message.totalBits,
 })
 
-export default (client: TwitchChatClient) => {
+export default (client: ChatClient) => {
   client.onAction((channel, _, raw, message) => {
     const payload = {
       channel,

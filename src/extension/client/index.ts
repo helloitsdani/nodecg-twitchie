@@ -1,5 +1,6 @@
-import TwitchClient from 'twitch'
-import TwitchChatClient from 'twitch-chat-client'
+import { ApiClient } from '@twurple/api'
+import { StaticAuthProvider } from '@twurple/auth'
+import { ChatClient } from '@twurple/chat'
 
 import context from '../context'
 
@@ -11,17 +12,19 @@ interface TwitchieClientAuthProps {
 }
 
 class TwitchieClientWrapper {
-  public client?: TwitchChatClient
+  public api?: ApiClient
 
-  public api?: TwitchClient
-
-  public auth?: TwitchieClientAuthProps
+  public client?: ChatClient
 
   public isConnected = () => !!this.client
 
   public disconnect = async () => {
+    if (!this.client) {
+      return Promise.resolve()
+    }
+
     try {
-      await this.client!.quit()
+      await this.client.quit()
     } catch (e) {
       // Oh Well
     }
@@ -30,18 +33,20 @@ class TwitchieClientWrapper {
   }
 
   public connect = async (auth: TwitchieClientAuthProps) => {
-    this.auth = auth
-
     context.log.debug('Connecting to twitch...')
 
     if (this.isConnected()) {
       await this.disconnect()
     }
 
-    this.api = await TwitchClient.withCredentials(context.config.clientID, this.auth.token, undefined)
-    this.client = await TwitchChatClient.forTwitchClient(this.api, {
+    const authProvider = new StaticAuthProvider(context.config.clientID, auth.token)
+
+    this.api = new ApiClient({ authProvider })
+
+    this.client = new ChatClient({
+      authProvider,
       channels: () => {
-        const currentChannel = context.replicants.channel.id.value || this.auth?.username
+        const currentChannel = context.replicants.channel.id.value || auth.username
         return currentChannel ? [currentChannel] : []
       },
     })
@@ -49,10 +54,12 @@ class TwitchieClientWrapper {
     try {
       bindChatHandlers(this.client)
       await this.client.connect()
-      context.replicants.channel.id.value = this.auth?.username
+
+      context.replicants.channel.id.value = auth.username
     } catch (error) {
       this.api = undefined
       this.client = undefined
+
       context.log.error('Could not connect to Twitch!', error)
       throw error
     }
