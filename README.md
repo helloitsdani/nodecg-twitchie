@@ -9,7 +9,7 @@ Out of the box, Twitchie will provide you with all of this:
 - Follower notifications
 - Subscriber notifications
 - Cheer notifications
-- Chat and API calls through the [really good twurple libraries](https://https://twurple.js.org/)
+- Chat and API calls through the [really good twurple libraries](https://twurple.js.org/)
 
 ## Compatibility
 
@@ -49,16 +49,12 @@ twitchie.on('channel.subscriber', showSubscriber)
 twitchie.stream.info.on('change', updateStreamInfo)
 ```
 
-### Events and Replicants
-
-For a full list of all the events you can subscribe to, and the data Twitchie makes available through replicants, please see the [Events and Replicants wiki page](https://github.com/helloitsdan/nodecg-twitchie/wiki/Events-and-Replicants).
-
 ### Custom requests with Twitchie
 
-The twitchie extension exposes an instance of the [Twitch library](https://github.com/d-fischer/twitch). If you want to query the Twitch API directly, you can access it through `nodecg.extensions['nodecg-twitchie'].api`.
+The twitchie extension exposes an instance of the [twurple API library](https://twurple.js.org/). If you want to query the Twitch API directly, you can access it through `nodecg.extensions['nodecg-twitchie'].api`.
 
 ## Configuring Twitchie
 
-In order to use Twitchie, you'll need to enable Twitch logins on your NodeCG instance, as we use this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](http://nodecg.com/tutorial-nodecg-configuration.html).
+In order to use Twitchie, you'll need to enable Twitch logins on your NodeCG instance, as we use this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](https://www.nodecg.dev/docs/nodecg-configuration).
 
 Please make sure you've included `user_read channel:read:subscriptions user:read:broadcast chat:read chat:edit` in your scopes!
