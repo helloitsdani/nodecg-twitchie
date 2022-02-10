@@ -13,6 +13,7 @@ module.exports = async (nodecg: any) => {
   context.twitch = new TwitchieClientWrapper()
 
   // mount our refresh route under the main nodecg express app
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const service = require('./service')
   nodecg.mount(service)
 

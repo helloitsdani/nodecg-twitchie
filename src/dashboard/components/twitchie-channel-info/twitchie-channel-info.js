@@ -1,4 +1,4 @@
-/* global nodecg, NodeCG */
+/* global NodeCG */
 
 import * as Polymer from '@polymer/polymer'
 import '@polymer/iron-pages/iron-pages'
@@ -49,10 +49,10 @@ class TwitchieChannelInfo extends Polymer.PolymerElement {
     super.ready()
 
     NodeCG.waitForReplicants(userInfo).then(() => {
-      userInfo.on('change', userInfo => {
-        this.$.loading.classList.toggle('is-loading', !userInfo)
+      userInfo.on('change', newUserInfo => {
+        this.$.loading.classList.toggle('is-loading', !newUserInfo)
 
-        if (userInfo) {
+        if (newUserInfo) {
           // this.$.pages.selected = unknown ? 'error' : 'status'
         }
       })

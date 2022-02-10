@@ -1,6 +1,6 @@
 /* global nodecg, NodeCG */
 
-;(async () => {
+(async () => {
   const loginURL = '/login/twitch'
   const verifyURL = '/login/twitch/verify'
 

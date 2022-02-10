@@ -15,6 +15,7 @@ class TwitchieContext {
   get nodecg() {
     return nodecgInstance
   }
+
   set nodecg(instance) {
     nodecgInstance = instance
     replicants = createReplicants(nodecgInstance)
@@ -24,6 +25,7 @@ class TwitchieContext {
   get config() {
     return Object.assign({}, { clientID: getDefaultClientID(nodecgInstance) }, nodecgInstance.bundleConfig)
   }
+
   set config(_) {
     throw new Error('bundleConfig is read from /cfg/nodecg-twitchie.json when NodeCG starts')
   }
@@ -31,6 +33,7 @@ class TwitchieContext {
   get log() {
     return nodecgInstance ? nodecgInstance.log : console
   }
+
   set log(_) {
     throw new Error('Logger is created by NodeCG and cannot be overwritten')
   }
@@ -38,6 +41,7 @@ class TwitchieContext {
   get events() {
     return events
   }
+
   set events(_) {
     throw new Error('Emitter is initialised when nodecg instance is set')
   }
@@ -45,6 +49,7 @@ class TwitchieContext {
   get replicants() {
     return replicants
   }
+
   set replicants(_) {
     throw new Error('Replicants are initialised when nodecg instance is set')
   }
@@ -52,6 +57,7 @@ class TwitchieContext {
   get twitch() {
     return twitchInstance
   }
+
   set twitch(instance: TwitchieClientWrapper) {
     twitchInstance = instance
   }

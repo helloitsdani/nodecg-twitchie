@@ -1,5 +1,3 @@
-/* global nodecg, NodeCG */
-
 import * as Polymer from '@polymer/polymer'
 import moment from 'moment'
 

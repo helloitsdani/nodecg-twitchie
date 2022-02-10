@@ -12,6 +12,7 @@ interface TwitchieClientAuthProps {
 
 class TwitchieClientWrapper {
   public client?: TwitchChatClient
+
   public api?: TwitchClient
 
   public auth?: TwitchieClientAuthProps

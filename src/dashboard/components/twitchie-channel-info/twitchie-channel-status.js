@@ -1,4 +1,4 @@
-/* global nodecg, NodeCG */
+/* global NodeCG */
 
 import * as Polymer from '@polymer/polymer'
 
@@ -87,9 +87,9 @@ class TwitchieChannelStatus extends Polymer.PolymerElement {
         this.followers = followers
       })
 
-      streamInfo.on('change', streamInfo => {
-        this.viewers = streamInfo ? streamInfo.viewer_count : 0
-        this.streamStartedAt = streamInfo ? streamInfo.started_at : undefined
+      streamInfo.on('change', newStreamInfo => {
+        this.viewers = newStreamInfo ? newStreamInfo.viewer_count : 0
+        this.streamStartedAt = newStreamInfo ? newStreamInfo.started_at : undefined
       })
     })
   }

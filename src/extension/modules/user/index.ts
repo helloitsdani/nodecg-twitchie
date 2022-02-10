@@ -62,5 +62,5 @@ context.replicants.channel.id.on(
     }
 
     pendingLookupHandle = guaranteedUpdateUserId(username)
-  }, 1000)
+  }, 1000),
 )

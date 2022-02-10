@@ -1,4 +1,4 @@
-/* global nodecg, NodeCG */
+/* global NodeCG */
 
 import * as Polymer from '@polymer/polymer'
 import '@polymer/iron-image/iron-image'

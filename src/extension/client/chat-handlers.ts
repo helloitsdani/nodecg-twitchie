@@ -1,5 +1,4 @@
 import TwitchChatClient, { ChatCommunitySubInfo, ChatSubGiftInfo, ChatSubInfo, ChatUser } from 'twitch-chat-client'
-import TwitchPrivateMessage from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
 
 import {
   ChatMessage,
@@ -45,11 +44,7 @@ const serializeUserInfo = (user: ChatUser) => ({
   isSubscriber: user.isSubscriber,
 })
 
-const serializeMessageInfo = (
-  type: ChatMessageType,
-  rawMessage: string,
-  message: TwitchPrivateMessage
-): ChatMessage => ({
+const serializeMessageInfo = (type: ChatMessageType, rawMessage: string, message: any): ChatMessage => ({
   type,
   user: serializeUserInfo(message.userInfo),
   message: rawMessage,
@@ -112,15 +107,13 @@ export default (client: TwitchChatClient) => {
     context.events.emitMessage('user.subscription', payload)
   })
 
-  // @ts-ignore
   client.onSubGift((_, __, subInfo) => {
     console.log('sub gift', subInfo)
     const payload = serializeSubscriberGiftInfo(subInfo)
     context.events.emitMessage('user.subscription.gift', payload)
   })
 
-  // @ts-ignore
-  client.onCommunitySub((channel, user, subInfo) => {
+  client.onCommunitySub((_, __, subInfo) => {
     console.log('community sub', subInfo)
     const payload = serializeCommunityGiftInfo(subInfo)
     context.events.emitMessage('user.subscription.community', payload)

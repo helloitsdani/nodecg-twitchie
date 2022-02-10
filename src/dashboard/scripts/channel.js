@@ -1,4 +1,4 @@
-import '../components/twitchie-channel-info/twitchie-channel-info.js'
+import '../components/twitchie-channel-info/twitchie-channel-info'
 import './verify-login'
 
 document.getElementById('app').innerHTML = `

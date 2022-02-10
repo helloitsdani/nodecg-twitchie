@@ -24,7 +24,7 @@ const fetchGameInfo = async (gameId: string): Promise<GameInfo> => {
   }
 
   context.log.debug(`Looking up game #${gameId} from API...`)
-  const gameInfo = await context.twitch.api!.helix.games.getGameById(gameId)
+  const gameInfo = await context.twitch.api.helix.games.getGameById(gameId)
   const serializedGameInfo = serializeGameInfo(gameInfo)
 
   if (!serializedGameInfo) {

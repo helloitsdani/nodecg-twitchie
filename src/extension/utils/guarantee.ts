@@ -2,7 +2,7 @@ import context from '../context'
 
 const guarantee = <T>(
   promiseFn: (...params: any[]) => Promise<T>,
-  { timeBetweenRetries = 30000, logger = context.log } = {}
+  { timeBetweenRetries = 30000, logger = context.log } = {},
 ) => {
   let retryTimeout: NodeJS.Timeout
 

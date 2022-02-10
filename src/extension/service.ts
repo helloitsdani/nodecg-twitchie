@@ -1,7 +1,9 @@
 import express from 'express'
-// @ts-ignore
-import login from '../../../lib/login'
 import context from './context'
+
+// this gets imported from NodeCG at runtime
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/extensions
+const login = require('../../../lib/login')
 
 const app = express()
 
