@@ -11,13 +11,10 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "airbnb-typescript/base",
+    "prettier",
     "plugin:import/recommended"
   ],
   "parserOptions": {
     "project": "./tsconfig.json"
-  },
-  "rules": {
-    "semi": "off",
-    "@typescript-eslint/semi": "off"
   }
 }
