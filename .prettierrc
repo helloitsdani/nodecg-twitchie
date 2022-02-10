@@ -4,7 +4,7 @@
   "printWidth": 120,
   "semi": false,
   "singleQuote": true,
-  "trailingComma": "es5",
+  "trailingComma": "all",
   "overrides": [
     {
       "files": "*.md",

@@ -51,7 +51,7 @@ const mapFollowInfo = (follow: HelixFollow): FollowInfo => ({
 })
 
 const serializeFollowersInfo = (
-  follows: HelixPaginatedResultWithTotal<HelixFollow> | null
+  follows: HelixPaginatedResultWithTotal<HelixFollow> | null,
 ): FollowersInfo | undefined => {
   if (!follows) {
     return undefined

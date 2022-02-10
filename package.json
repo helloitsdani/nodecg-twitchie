@@ -18,10 +18,8 @@
     "build:extension": "NODE_ENV=production tsc --rootDir src --outDir .",
     "watch": "npm run build -- --watch",
     "test": "ava",
-    "lint:js": "eslint src/{dashboard,extension}/**/*.(ts|js)",
-    "lint": "npm run lint:js",
-    "precommit": "lint-staged",
-    "prepush": "npm test"
+    "lint": "eslint \"src/{extension,dashboard}/**/*.{ts,js}\"",
+    "prepare": "husky install"
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
