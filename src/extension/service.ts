@@ -14,22 +14,6 @@ const isTwitchSession = (session: any) =>
 
 const hasAccessDetails = (session: any) => session.passport.user.username && session.passport.user.accessToken
 
-const performConnect = (session: any) => {
-  const { user } = session.passport
-
-  log.debug('Performing connect...')
-
-  return twitch.connect({
-    username: user.username,
-    token: user.accessToken,
-  })
-}
-
-const performDisconnect = () => {
-  log.debug('Performing disconnect...')
-  return twitch.disconnect()
-}
-
 const handleConnect = (session: any) => {
   log.debug('Handling connect...')
 
@@ -37,12 +21,17 @@ const handleConnect = (session: any) => {
     throw new Error('Invalid session data receieved')
   }
 
-  return performConnect(session)
+  const { user } = session.passport
+
+  return twitch.connect({
+    username: user.username,
+    token: user.accessToken,
+  })
 }
 
 const handleDisconnect = () => {
   log.debug('Handling disconnect...')
-  return performDisconnect()
+  return twitch.disconnect()
 }
 
 // listen for login and logout events emitted from nodecg's login module

@@ -16,7 +16,7 @@ class TwitchieClientWrapper {
 
   public client?: ChatClient
 
-  public isConnected = () => !!this.client
+  public isConnected = () => this.client && (this.client.isConnected || this.client.isConnecting)
 
   public disconnect = async () => {
     if (!this.client) {
@@ -26,7 +26,7 @@ class TwitchieClientWrapper {
     try {
       await this.client.quit()
     } catch (e) {
-      // Oh Well
+      context.log.error('Could not tear down twitch chat client!', e)
     }
 
     this.client = undefined
@@ -42,19 +42,14 @@ class TwitchieClientWrapper {
     const authProvider = new StaticAuthProvider(context.config.clientID, auth.token)
 
     this.api = new ApiClient({ authProvider })
-
     this.client = new ChatClient({
       authProvider,
-      channels: () => {
-        const currentChannel = context.replicants.channel.id.value || auth.username
-        return currentChannel ? [currentChannel] : []
-      },
+      webSocket: true,
     })
 
     try {
       bindChatHandlers(this.client)
       await this.client.connect()
-
       context.replicants.channel.id.value = auth.username
     } catch (error) {
       this.api = undefined
