@@ -48,7 +48,11 @@ const serializeMessageInfo = (type: ChatMessageType, rawMessage: string, message
   type,
   user: serializeUserInfo(message.userInfo),
   message: rawMessage,
-  tokens: message.parseEmotesAndBits(context.replicants.chat.cheermotes.value),
+  tokens: message.parseEmotesAndBits(context.replicants.chat.cheermotes.value, {
+    background: 'dark',
+    scale: '4',
+    state: 'animated',
+  }),
   isCheer: message.isCheer,
   totalBits: message.totalBits,
 })
