@@ -45,10 +45,17 @@ export interface SubscriberInfo {
   isPrime: boolean
 }
 
-export interface SubscriberGiftInfo extends SubscriberInfo {
+export interface SubscriberGiftInfo {
+  name: string
+  giftDuration: number
   gifter?: string
-  gifterDisplayName?: string
   gifterGiftCount?: number
+  message?: string
+  months: number
+  streak?: number
+  plan: string
+  planName: string
+  isPrime: boolean
 }
 
 export interface SubscriberCommunityGiftInfo {
@@ -78,8 +85,11 @@ export interface ChatUser {
   username: string
   color?: string
   badges: Record<string, string>
+  isBroadcaster: boolean
+  isFounder: boolean
   isMod: boolean
   isSubscriber: boolean
+  isVip: boolean
 }
 
 export enum ChatMessageType {
@@ -88,13 +98,13 @@ export enum ChatMessageType {
 }
 
 export interface ChatMessage {
-  id?: string
+  id: string
   type: ChatMessageType
   user: ChatUser
   message: string
   tokens: ChatMessageToken[]
   isCheer: boolean
-  totalBits: number
+  bits: number
 }
 
 export interface ChatTextMessageToken {
@@ -186,7 +196,7 @@ export type TwitchieEmitFunction = <T extends keyof MessageTypes>(action: T, pay
 
 export type TwitchieListenFunction = <T extends keyof MessageTypes>(
   action: T,
-  callback: (payload: MessageTypes[T]) => void
+  callback: (payload: MessageTypes[T]) => void,
 ) => void
 
 export interface TwitchieReplicants {

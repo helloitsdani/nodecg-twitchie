@@ -1,4 +1,5 @@
 import { ChatClient, ChatCommunitySubInfo, ChatSubGiftInfo, ChatSubInfo, ChatUser } from '@twurple/chat'
+import { TwitchPrivateMessage } from '@twurple/chat/lib/commands/TwitchPrivateMessage'
 
 import {
   ChatMessage,
@@ -9,7 +10,7 @@ import {
 } from '../../types'
 import context from '../context'
 
-const serializeSubscriberInfo = (subInfo: ChatSubInfo): SubscriberInfo => ({
+const serializeSub = (subInfo: ChatSubInfo): SubscriberInfo => ({
   name: subInfo.displayName,
   message: subInfo.message,
   months: subInfo.months,
@@ -19,14 +20,20 @@ const serializeSubscriberInfo = (subInfo: ChatSubInfo): SubscriberInfo => ({
   isPrime: subInfo.isPrime,
 })
 
-const serializeSubscriberGiftInfo = (subInfo: ChatSubGiftInfo): SubscriberGiftInfo => ({
-  ...serializeSubscriberInfo(subInfo),
+const serializeSubGift = (subInfo: ChatSubGiftInfo): SubscriberGiftInfo => ({
+  name: subInfo.displayName,
+  giftDuration: subInfo.giftDuration,
   gifter: subInfo.gifter,
-  gifterDisplayName: subInfo.gifterDisplayName,
   gifterGiftCount: subInfo.gifterGiftCount,
+  message: subInfo.message,
+  months: subInfo.months,
+  streak: subInfo.streak,
+  plan: subInfo.plan,
+  planName: subInfo.planName,
+  isPrime: subInfo.isPrime,
 })
 
-const serializeCommunityGiftInfo = (giftInfo: ChatCommunitySubInfo): SubscriberCommunityGiftInfo => ({
+const serializeCommunitySub = (giftInfo: ChatCommunitySubInfo): SubscriberCommunityGiftInfo => ({
   count: giftInfo.count,
   gifter: giftInfo.gifter,
   gifterDisplayName: giftInfo.gifterDisplayName,
@@ -34,19 +41,23 @@ const serializeCommunityGiftInfo = (giftInfo: ChatCommunitySubInfo): SubscriberC
   plan: giftInfo.plan,
 })
 
-const serializeUserInfo = (user: ChatUser) => ({
+const serializeUser = (user: ChatUser) => ({
   id: user.userId,
-  name: user.userName,
+  name: user.displayName ?? user.userName,
   username: user.userName,
   color: user.color,
   badges: Object.fromEntries(user.badges.entries()),
+  isBroadcaster: user.isBroadcaster,
+  isFounder: user.isFounder,
   isMod: user.isMod,
   isSubscriber: user.isSubscriber,
+  isVip: user.isVip,
 })
 
-const serializeMessageInfo = (type: ChatMessageType, rawMessage: string, message: any): ChatMessage => ({
+const serializeMessage = (type: ChatMessageType, rawMessage: string, message: TwitchPrivateMessage): ChatMessage => ({
+  id: message.id,
   type,
-  user: serializeUserInfo(message.userInfo),
+  user: serializeUser(message.userInfo),
   message: rawMessage,
   tokens: message.parseEmotesAndBits(context.replicants.chat.cheermotes.value, {
     background: 'dark',
@@ -54,84 +65,84 @@ const serializeMessageInfo = (type: ChatMessageType, rawMessage: string, message
     state: 'animated',
   }),
   isCheer: message.isCheer,
-  totalBits: message.totalBits,
+  bits: message.bits,
 })
 
 export default (client: ChatClient) => {
-  client.onAction((channel, _, raw, message) => {
-    const payload = {
-      channel,
-      message: serializeMessageInfo(ChatMessageType.ACTION, raw, message),
-    }
+  const giftCounts = new Map<string | undefined, number>()
 
-    context.events.emitMessage('chat.action', payload)
+  client.onAction((channel, _, raw, message) => {
+    context.events.emitMessage('chat.action', {
+      channel,
+      message: serializeMessage(ChatMessageType.ACTION, raw, message),
+    })
   })
 
-  client.onPrivmsg((channel, _, raw, message) => {
-    const payload = {
+  client.onMessage((channel, _, raw, message) => {
+    context.events.emitMessage('chat.message', {
       channel,
-      message: serializeMessageInfo(ChatMessageType.MESSAGE, raw, message),
-    }
-
-    context.events.emitMessage('chat.message', payload)
+      message: serializeMessage(ChatMessageType.MESSAGE, raw, message),
+    })
   })
 
   /* host */
   client.onHosted((channel, byChannel, auto, viewers) => {
-    const payload = {
+    context.events.emitMessage('user.hosted', {
       channel,
       byChannel,
       auto,
       viewers: viewers || 0,
-    }
-
-    context.events.emitMessage('user.hosted', payload)
+    })
   })
 
   client.onRaid((channel, _, raidInfo) => {
-    const payload = {
+    context.events.emitMessage('user.raid', {
       channel,
       byChannel: raidInfo.displayName,
       viewers: raidInfo.viewerCount,
-    }
-
-    context.events.emitMessage('user.raid', payload)
+    })
   })
 
   /* subscriptions */
   client.onSub((_, __, subInfo) => {
-    console.log('subscriber', subInfo)
-    const payload = serializeSubscriberInfo(subInfo)
-    context.events.emitMessage('user.subscription', payload)
+    context.events.emitMessage('user.subscription', serializeSub(subInfo))
   })
 
   client.onResub((_, __, subInfo) => {
-    console.log('resub', subInfo)
-    const payload = serializeSubscriberInfo(subInfo)
-    context.events.emitMessage('user.subscription', payload)
+    context.events.emitMessage('user.subscription', serializeSub(subInfo))
   })
 
   client.onSubGift((_, __, subInfo) => {
-    console.log('sub gift', subInfo)
-    const payload = serializeSubscriberGiftInfo(subInfo)
-    context.events.emitMessage('user.subscription.gift', payload)
+    const remainingGifts = giftCounts.get(subInfo.gifter) ?? 0
+
+    if (remainingGifts > 0) {
+      giftCounts.set(subInfo.gifter, remainingGifts - 1)
+      return
+    }
+
+    context.events.emitMessage('user.subscription.gift', serializeSubGift(subInfo))
   })
 
-  client.onCommunitySub((_, __, subInfo) => {
-    console.log('community sub', subInfo)
-    const payload = serializeCommunityGiftInfo(subInfo)
-    context.events.emitMessage('user.subscription.community', payload)
+  client.onCommunitySub((_, gifter, subInfo) => {
+    /*
+     * community gift subs send individual sub gift events, too;
+     * we keep count here so that those invidual events can be
+     * filtered out
+     */
+    const previousGiftCount = giftCounts.get(gifter) ?? 0
+    giftCounts.set(gifter, previousGiftCount + subInfo.count)
+
+    context.events.emitMessage('user.subscription.community', serializeCommunitySub(subInfo))
   })
 
   /* rituals */
   client.onRitual((channel, user, ritualInfo) => {
-    const payload = {
+    context.events.emitMessage('chat.ritual', {
       channel,
       user,
       message: ritualInfo.message,
       ritualName: ritualInfo.ritualName,
-    }
-    context.events.emitMessage('chat.ritual', payload)
+    })
   })
 
   /* naughty management options */
@@ -140,17 +151,14 @@ export default (client: ChatClient) => {
   })
 
   client.onMessageRemove((channel, messageId) => {
-    const payload = { channel, messageId }
-    context.events.emitMessage('chat.removeMessage', payload)
+    context.events.emitMessage('chat.removeMessage', { channel, messageId })
   })
 
   client.onTimeout((channel, user, duration) => {
-    const payload = { channel, user, duration }
-    context.events.emitMessage('chat.timeout', payload)
+    context.events.emitMessage('chat.timeout', { channel, user, duration })
   })
 
   client.onBan((channel, user) => {
-    const payload = { channel, user }
-    context.events.emitMessage('chat.ban', payload)
+    context.events.emitMessage('chat.ban', { channel, user })
   })
 }
