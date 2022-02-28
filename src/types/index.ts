@@ -79,6 +79,11 @@ export interface FollowInfo {
   to_name: string
 }
 
+export interface NewChatterInfo {
+  name: string
+  message: string
+}
+
 export interface ChatUser {
   id?: string
   name: string
@@ -177,6 +182,7 @@ export interface ChatRemoveMessagePayload {
 }
 
 export interface MessageTypes {
+  'user.new': NewChatterInfo
   'user.follower': FollowInfo
   'user.subscription': SubscriberInfo
   'user.subscription.gift': SubscriberGiftInfo

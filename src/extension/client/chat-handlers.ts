@@ -137,12 +137,19 @@ export default (client: ChatClient) => {
 
   /* rituals */
   client.onRitual((channel, user, ritualInfo) => {
-    context.events.emitMessage('chat.ritual', {
-      channel,
-      user,
-      message: ritualInfo.message,
-      ritualName: ritualInfo.ritualName,
-    })
+    if (ritualInfo.ritualName === 'new_chatter') {
+      context.events.emitMessage('user.new', {
+        name: user,
+        message: ritualInfo.message,
+      })
+    } else {
+      context.events.emitMessage('chat.ritual', {
+        channel,
+        user,
+        message: ritualInfo.message,
+        ritualName: ritualInfo.ritualName,
+      })
+    }
   })
 
   /* naughty management options */
