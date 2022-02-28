@@ -74,14 +74,14 @@ export default (client: ChatClient) => {
   client.onAction((channel, _, raw, message) => {
     context.events.emitMessage('chat.action', {
       channel,
-      message: serializeMessage(ChatMessageType.ACTION, raw, message),
+      message: serializeMessage(ChatMessageType.action, raw, message),
     })
   })
 
   client.onMessage((channel, _, raw, message) => {
     context.events.emitMessage('chat.message', {
       channel,
-      message: serializeMessage(ChatMessageType.MESSAGE, raw, message),
+      message: serializeMessage(ChatMessageType.message, raw, message),
     })
   })
 

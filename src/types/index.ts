@@ -98,8 +98,8 @@ export interface ChatUser {
 }
 
 export enum ChatMessageType {
-  ACTION = 'action',
-  MESSAGE = 'message',
+  action = 'action',
+  message = 'message',
 }
 
 export interface ChatMessage {
