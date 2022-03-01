@@ -6,17 +6,11 @@ import context from '../../context'
 
 const cache = new NodeCache()
 
-const serializeGameInfo = (game?: HelixGame | null): GameInfo | undefined => {
-  if (!game) {
-    return undefined
-  }
-
-  return {
-    id: game.id,
-    name: game.name,
-    box_art_url: game.boxArtUrl,
-  }
-}
+const serializeGameInfo = (game: HelixGame): GameInfo => ({
+  id: game.id,
+  name: game.name,
+  box_art_url: game.boxArtUrl,
+})
 
 const fetchGameInfo = async (gameId: string): Promise<GameInfo> => {
   if (!context.twitch.api) {
@@ -24,14 +18,13 @@ const fetchGameInfo = async (gameId: string): Promise<GameInfo> => {
   }
 
   context.log.debug(`Looking up game #${gameId} from API...`)
-  const gameInfo = await context.twitch.api.helix.games.getGameById(gameId)
-  const serializedGameInfo = serializeGameInfo(gameInfo)
+  const game = await context.twitch.api.games.getGameById(gameId)
 
-  if (!serializedGameInfo) {
+  if (!game) {
     throw new Error(`Unknown Game ID: ${gameId}`)
   }
 
-  return serializedGameInfo
+  return serializeGameInfo(game)
 }
 
 const fetchGameInfoWithCache = async (gameId: string): Promise<GameInfo> => {
@@ -53,7 +46,7 @@ const updateGameInfo = async (gameId: string) => {
   context.replicants.game.info.value = gameInfo
 }
 
-context.replicants.game.id.on('change', gameId => {
+context.replicants.game.id.on('change', (gameId) => {
   if (!gameId) {
     context.replicants.game.info.value = undefined
     return

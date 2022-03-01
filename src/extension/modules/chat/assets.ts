@@ -7,7 +7,7 @@ context.replicants.chat.channel.on('change', async (newChannel) => {
   }
 
   if (!context.twitch.api) {
-    throw new Error('Twitch api not available')
+    throw new Error('No Twitch API instance is available')
   }
 
   const cheermotes = await context.twitch.api.bits.getCheermotes(newChannel)

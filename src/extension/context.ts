@@ -22,7 +22,10 @@ class TwitchieContext {
   }
 
   get config() {
-    return Object.assign({}, { clientID: getDefaultClientID(nodecgInstance) }, nodecgInstance.bundleConfig)
+    return {
+      clientID: getDefaultClientID(nodecgInstance),
+      ...nodecgInstance.bundleConfig,
+    }
   }
 
   set config(_) {
