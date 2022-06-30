@@ -7,12 +7,12 @@ const panels = {
 }
 
 const pages = Object.keys(panels).map(
-  name =>
+  (name) =>
     new HtmlWebpackPlugin({
       filename: `${name}.html`,
       template: path.join(__dirname, 'src', 'dashboard', `panel-template.html`),
       chunks: ['vendor', 'shared', name],
-    })
+    }),
 )
 
 module.exports = {

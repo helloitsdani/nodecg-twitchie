@@ -1,7 +1,7 @@
 import typescript from '@rollup/plugin-typescript'
 
 export default {
-  input: './src/index.ts',
+  input: './src/client/index.ts',
   output: {
     name: 'nodecg-twitchie',
     dir: './lib',

@@ -3,5 +3,6 @@
     "outDir": "."
   },
   "extends": "./tsconfig.json",
-  "files": ["./src/extension/index.ts"]
+  "include": ["src/extension/**/*", "src/common/**/*", "src/types/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -12,6 +12,7 @@
     "node": ">=6.4.0"
   },
   "scripts": {
+    "clean": "npx del-cli extension types client common dashboard lib",
     "build": "npm run build:extension && npm run build:dashboard && npm run build:client",
     "build:client": "rollup --config rollup.config.client.js",
     "build:dashboard": "webpack --config webpack.config.dashboard.js",
