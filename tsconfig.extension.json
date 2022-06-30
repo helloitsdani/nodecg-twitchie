@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "outDir": "."
+  },
+  "extends": "./tsconfig.json",
+  "files": ["./src/extension/index.ts"]
+}
