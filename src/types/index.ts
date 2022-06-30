@@ -1,3 +1,5 @@
+import { TwitchieClientWrapper } from '../extension/client'
+
 export interface Replicant<T> {
   value?: T
   namespace?: string
@@ -226,4 +228,15 @@ export interface TwitchieReplicants {
     badges: Replicant<any>
     cheermotes: Replicant<any>
   }
+}
+
+export type TwitchieExtension = {
+  replicants: TwitchieReplicants
+  client: TwitchieClientWrapper['client']
+  api: TwitchieClientWrapper['api']
+  on: TwitchieListenFunction
+}
+
+export type TwitchieClient = TwitchieReplicants & {
+  on: TwitchieListenFunction
 }
