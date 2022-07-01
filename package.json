@@ -16,7 +16,7 @@
     "build": "npm run build:extension && npm run build:dashboard && npm run build:client",
     "build:client": "rollup --config rollup.config.client.js",
     "build:dashboard": "webpack --config webpack.config.dashboard.js",
-    "build:extension": "NODE_ENV=production tsc --project tsconfig.extension.json",
+    "build:extension": "NODE_ENV=production tsc --declaration --project tsconfig.extension.json",
     "watch": "npm run build -- --watch",
     "test": "ava",
     "lint": "eslint \"src/{extension,dashboard}/**/*.{ts,js}\"",
