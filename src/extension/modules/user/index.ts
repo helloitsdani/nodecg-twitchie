@@ -6,7 +6,7 @@ import guarantee from '../../utils/guarantee'
 
 const cache = new NodeCache()
 
-let pendingLookupHandle: () => void
+let clearPendingLookupHandle: () => void
 
 const fetchUserId = async (username: string): Promise<string> => {
   if (!context.twitch.api) {
@@ -57,10 +57,10 @@ context.replicants.channel.id.on(
       return
     }
 
-    if (pendingLookupHandle) {
-      pendingLookupHandle()
+    if (clearPendingLookupHandle) {
+      clearPendingLookupHandle()
     }
 
-    pendingLookupHandle = guaranteedUpdateUserId(username)
+    clearPendingLookupHandle = guaranteedUpdateUserId(username)
   }, 1000),
 )

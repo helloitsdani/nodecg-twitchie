@@ -1,10 +1,10 @@
 import { TwitchieExtension } from '../types'
-import { NodeCG } from '../../../../types/server'
+import { NodeCG, NodeCGConfig } from '../../../../types/server'
 
 import { TwitchieClientWrapper } from './client'
 import context from './context'
 
-const isNodeCGConfigValid = (config: NodeCG['config']) =>
+const isNodeCGConfigValid = (config: NodeCGConfig) =>
   config.login.enabled && config.login.twitch?.enabled && config.login.twitch.clientID
 
 module.exports = (nodecg: NodeCG) => {
@@ -15,11 +15,7 @@ module.exports = (nodecg: NodeCG) => {
   context.nodecg = nodecg
   context.twitch = new TwitchieClientWrapper()
 
-  // mount our refresh route under the main nodecg express app
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const service = require('./service')
-  nodecg.mount(service)
-
+  require('./modules/login')
   require('./modules/user')
   require('./modules/channel')
   require('./modules/chat')
