@@ -9,7 +9,7 @@ interface ReplicantOptionsBag<T> {
 const createReplicant = <T>(
   nodecg: any,
   name: string,
-  { defaultValue, persistent = true }: ReplicantOptionsBag<T> = {}
+  { defaultValue, persistent = true }: ReplicantOptionsBag<T> = {},
 ): Replicant<T> =>
   nodecg.Replicant(name, NAMESPACE, {
     defaultValue,

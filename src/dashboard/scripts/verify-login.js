@@ -1,21 +1,23 @@
 /* global nodecg, NodeCG */
 
-;(async () => {
+;(() => {
   const loginURL = '/login/twitch'
   const verifyURL = '/login/twitch/verify'
 
   const { timeBetweenUpdates = 60000, requireLogin = true } = nodecg.bundleConfig
-  const loggedInStatus = NodeCG.Replicant('login.status', 'nodecg-twitchie')
+  const loggedInStatus = NodeCG.Replicant('login.status', 'nodecg-twitchie', {
+    defaultValue: false,
+    persistent: false,
+  })
+  let pollTimeout
 
-  await NodeCG.waitForReplicants(loggedInStatus)
-
-  const redirectToLogin = () => {
-    window.top.location.replace(loginURL)
-  }
-
-  // if a logged in user returns to the dashboard, it won't
-  // trigger nodecg's "login" express event to be emitted
-  // manually hitting this endpoint should ensure this happens
+  /*
+   * we need to hit the verify endpoint to make sure that
+   * the Twitchie client has the user's current access token.
+   * we can get this on NodeCG's login event when a user
+   * explicitly logs in--but this only happens with new logins,
+   * not for users who already have a session cookie
+   */
   const verifyLogin = async () => {
     const response = await fetch(verifyURL)
 
@@ -27,21 +29,30 @@
   }
 
   const pollForLoginStatus = async () => {
-    try {
-      await verifyLogin()
-      loggedInStatus.value = true
-    } catch (e) {
-      loggedInStatus.value = false
+    if (pollTimeout) {
+      clearTimeout(pollTimeout)
     }
 
-    setTimeout(pollForLoginStatus, timeBetweenUpdates)
+    try {
+      await verifyLogin()
+
+      loggedInStatus.value = true
+      pollTimeout = setTimeout(pollForLoginStatus, timeBetweenUpdates)
+    } catch (e) {
+      window.top.location.replace(loginURL)
+    }
   }
 
   pollForLoginStatus()
 
+  /*
+   * this replicant should only change when NodeCG restarts;
+   * re-polling when that happens allows us to reconnect to
+   * Twitch without having to refresh the Dashboard
+   */
   loggedInStatus.on('change', (isLoggedIn) => {
     if (requireLogin && !isLoggedIn) {
-      redirectToLogin()
+      pollForLoginStatus()
     }
   })
 })()
