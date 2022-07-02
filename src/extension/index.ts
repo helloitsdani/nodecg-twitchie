@@ -23,6 +23,7 @@ module.exports = (nodecg: NodeCG) => {
   require('./modules/user')
   require('./modules/channel')
   require('./modules/chat')
+  require('./modules/debug')
 
   const twitchieExtension: TwitchieExtension = {
     get replicants() {

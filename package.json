@@ -50,12 +50,24 @@
         "width": 2,
         "file": "channel.html",
         "headerColor": "#6441A4"
+      },
+      {
+        "name": "Events",
+        "title": "Debug Events",
+        "file": "debug-events.html",
+        "workspace": "Debug",
+        "headerColor": "#6441A4",
+        "width": 2
       }
     ]
   },
   "dependencies": {
     "@polymer/iron-image": "^3.0.2",
     "@polymer/iron-pages": "^3.0.1",
+    "@polymer/paper-dropdown-menu": "^3.0.0",
+    "@polymer/paper-listbox": "^3.0.0",
+    "@polymer/paper-item": "^3.0.0",
+    "@polymer/paper-button": "^3.0.0",
     "@polymer/paper-input": "^3.2.1",
     "@polymer/paper-spinner": "^3.0.2",
     "@polymer/polymer": "^3.4.1",

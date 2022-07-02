@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const panels = {
   channel: './src/dashboard/scripts/channel.js',
+  'debug-events': './src/dashboard/scripts/debug-events.js',
 }
 
 const pages = Object.keys(panels).map(

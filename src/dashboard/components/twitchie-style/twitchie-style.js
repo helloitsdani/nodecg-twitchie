@@ -49,6 +49,11 @@ styleElement.innerHTML = `<template>
       --paper-spinner-layer-4-color: var(--paper-spinner-layer-1-color);
     }
 
+    paper-listbox {
+      --paper-listbox-background-color: var(--background-color);
+      --paper-listbox-color: var(--primary-text-color);
+    }
+
     paper-checkbox {
       --paper-checkbox-size: 1.5em;
     }
