@@ -12,7 +12,6 @@ export default {
     typescript({
       declaration: true,
       declarationDir: 'lib/',
-      rootDir: 'src/',
       module: 'es6',
     }),
   ],

@@ -23,7 +23,7 @@
     "prepare": "husky install"
   },
   "main": "lib/index.js",
-  "types": "types/index.d.ts",
+  "types": "lib/client/index.d.ts",
   "dashboard": "dashboard/index.html",
   "lint-staged": {
     "{dashboard,extension}/**/*.(ts|js)": "eslint"
