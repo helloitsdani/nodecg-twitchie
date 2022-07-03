@@ -19,33 +19,33 @@ const createReplicant = <T>(
 export { ReplicantOptionsBag, createReplicant }
 
 export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
-  const createReplicantWithDefault = <T>(name: string, persistent?: boolean): Replicant<T> =>
+  const createReplicantWithDefault = <T>(name: string, persistent = false): Replicant<T> =>
     createReplicant(nodecg, name, { persistent, defaultValue: defaults[name] })
 
   return {
     channel: {
-      id: createReplicantWithDefault<string>('channel.id', false),
+      id: createReplicantWithDefault<string>('channel.id'),
     },
 
     stream: {
-      info: createReplicantWithDefault<StreamInfo>('stream.info', false),
+      info: createReplicantWithDefault<StreamInfo>('stream.info'),
     },
 
     game: {
-      id: createReplicantWithDefault<string>('game.id', false),
-      info: createReplicantWithDefault<GameInfo>('game.info', false),
+      id: createReplicantWithDefault<string>('game.id'),
+      info: createReplicantWithDefault<GameInfo>('game.info'),
     },
 
     user: {
-      id: createReplicantWithDefault<string>('user.id', false),
-      info: createReplicantWithDefault<UserInfo>('user.info', false),
-      followers: createReplicantWithDefault<FollowersInfo>('user.followers', false),
+      id: createReplicantWithDefault<string>('user.id'),
+      info: createReplicantWithDefault<UserInfo>('user.info'),
+      followers: createReplicantWithDefault<FollowersInfo>('user.followers'),
     },
 
     chat: {
-      channel: createReplicantWithDefault<string>('chat.channel', false),
-      badges: createReplicantWithDefault<any>('chat.badges', false),
-      cheermotes: createReplicantWithDefault<any>('chat.cheermotes', false),
+      channel: createReplicantWithDefault<string>('chat.channel'),
+      badges: createReplicantWithDefault<any>('chat.badges'),
+      cheermotes: createReplicantWithDefault<any>('chat.cheermotes'),
     },
   }
 }

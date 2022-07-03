@@ -8,7 +8,7 @@ import '../twitchie-duration-counter/twitchie-duration-counter'
 const userInfo = NodeCG.Replicant('user.info', 'nodecg-twitchie')
 const streamInfo = NodeCG.Replicant('stream.info', 'nodecg-twitchie')
 
-class TwitchieChannelStatus extends Polymer.PolymerElement {
+class TwitchieChannelStats extends Polymer.PolymerElement {
   static get template() {
     return Polymer.html`
     <style include="twitchie-style">
@@ -31,7 +31,7 @@ class TwitchieChannelStatus extends Polymer.PolymerElement {
       }
     </style>
 
-    <div class="c-stats">
+    <div class="c-stats c-field-group">
       <div class="viewers c-stat">
         <svg class="c-stat__icon" height="16px" version="1.1" viewBox="0 0 16 16" width="16px" x="0px" y="0px">
           <path clip-rule="evenodd" d="M11,14H5H2v-1l3-3h2L5,8V2h6v6l-2,2h2l3,3v1H11z" fill-rule="evenodd"></path>
@@ -60,7 +60,7 @@ class TwitchieChannelStatus extends Polymer.PolymerElement {
   }
 
   static get is() {
-    return 'twitchie-channel-status'
+    return 'twitchie-channel-stats'
   }
 
   static get properties() {
@@ -87,7 +87,7 @@ class TwitchieChannelStatus extends Polymer.PolymerElement {
         this.followers = followers
       })
 
-      streamInfo.on('change', newStreamInfo => {
+      streamInfo.on('change', (newStreamInfo) => {
         this.viewers = newStreamInfo ? newStreamInfo.viewer_count : 0
         this.streamStartedAt = newStreamInfo ? newStreamInfo.started_at : undefined
       })
@@ -95,4 +95,4 @@ class TwitchieChannelStatus extends Polymer.PolymerElement {
   }
 }
 
-customElements.define(TwitchieChannelStatus.is, TwitchieChannelStatus)
+customElements.define(TwitchieChannelStats.is, TwitchieChannelStats)

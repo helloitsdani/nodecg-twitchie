@@ -9,6 +9,12 @@ styleElement.innerHTML = `<template>
       --primary-color: #6441a4;
     }
 
+    hr {
+      opacity: 0.5;
+      border: 0;
+      border-bottom: 1px solid var(--secondary-text-color);
+    }
+
     h1,
     h2,
     h3,
@@ -90,6 +96,7 @@ styleElement.innerHTML = `<template>
 
     .c-loading {
       position: absolute;
+      z-index: 99;
       top: 0;
       left: 0;
       width: 100%;
