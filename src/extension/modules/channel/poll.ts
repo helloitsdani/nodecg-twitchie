@@ -14,7 +14,6 @@ const serializeUserInfo = (user: HelixUser): UserInfo | undefined => ({
   broadcaster_type: user.broadcasterType as any,
   profile_image_url: user.profilePictureUrl,
   offline_image_url: user.offlinePlaceholderUrl,
-  view_count: user.views,
 })
 
 const serializeStreamInfo = (stream: HelixStream): StreamInfo | undefined => ({
