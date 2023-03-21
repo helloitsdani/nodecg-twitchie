@@ -13,7 +13,6 @@ const fetchUserId = async (username: string): Promise<string> => {
     throw new Error('Twitch API unavailable')
   }
 
-  context.log.debug(`Looking up ${username} from API...`)
   const user = await context.twitch.api.users.getUserByName(username)
 
   if (!user) {
@@ -41,7 +40,10 @@ const updateUserId = async (username: string) => {
   try {
     const userId = await fetchUserIdWithCache(username)
     context.replicants.user.id.value = userId
+
+    context.log.debug(`Resolved ${username} to ${userId}!`)
   } catch (e) {
+    context.log.error(`Couldn't load user details for ${username}`, e)
     context.replicants.user.id.value = undefined
   }
 }
@@ -56,6 +58,8 @@ context.replicants.channel.id.on(
     if (!username) {
       return
     }
+
+    context.log.debug(`Looking up userid for ${username}...`)
 
     if (clearPendingLookupHandle) {
       clearPendingLookupHandle()

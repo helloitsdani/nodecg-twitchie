@@ -3,9 +3,7 @@ import context from '../../context'
 context.nodecg.listenFor('debug.user.follower', ({ username }) => {
   context.events.emitMessage('user.follower', {
     from_name: username,
-    to_name: context.replicants.channel.id.value ?? '',
     from_id: '',
-    to_id: '',
     followed_at: Date.now(),
   })
 })

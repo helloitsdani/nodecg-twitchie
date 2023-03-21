@@ -1,4 +1,5 @@
-import { HelixFollow, HelixPaginatedResultWithTotal, HelixStream, HelixUser } from '@twurple/api'
+import { HelixPaginatedResultWithTotal, HelixStream, HelixUser } from '@twurple/api'
+import { HelixChannelFollower } from '@twurple/api/lib/api/helix/channel/HelixChannelFollower'
 
 import { FollowersInfo, FollowInfo, StreamInfo, UserInfo } from '../../../types'
 import context from '../../context'
@@ -29,15 +30,15 @@ const serializeStreamInfo = (stream: HelixStream): StreamInfo | undefined => ({
   thumbnail_url: stream.thumbnailUrl,
 })
 
-const mapFollowInfo = (follow: HelixFollow): FollowInfo => ({
+const mapFollowInfo = (follow: HelixChannelFollower): FollowInfo => ({
   followed_at: follow.followDate.getTime(),
   from_id: follow.userId,
   from_name: follow.userDisplayName,
-  to_id: follow.followedUserId,
-  to_name: follow.followedUserDisplayName,
 })
 
-const serializeFollowersInfo = (follows: HelixPaginatedResultWithTotal<HelixFollow>): FollowersInfo | undefined => ({
+const serializeFollowersInfo = (
+  follows: HelixPaginatedResultWithTotal<HelixChannelFollower>,
+): FollowersInfo | undefined => ({
   total: follows.total,
   followers: follows.data.map(mapFollowInfo),
 })
@@ -56,7 +57,7 @@ const getFreshChannelInfo = () => {
   return Promise.all([
     context.twitch.api.streams.getStreamByUserId(userId),
     context.twitch.api.users.getUserById(userId),
-    context.twitch.api.users.getFollows({ followedUser: userId }),
+    context.twitch.api.channels.getChannelFollowers(userId, userId),
   ])
 }
 

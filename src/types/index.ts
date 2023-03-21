@@ -81,8 +81,6 @@ export interface FollowInfo {
   followed_at: number
   from_id: string
   from_name: string
-  to_id: string
-  to_name: string
 }
 
 export interface NewChatterInfo {
