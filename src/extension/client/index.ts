@@ -15,6 +15,7 @@ class TwitchieClientWrapper {
   public api?: ApiClient
 
   public authProvider?: AuthProvider
+
   public client?: ChatClient
 
   public isConnected = () => this.client && (this.client?.irc.isConnecting || this.client?.irc.isConnected)
