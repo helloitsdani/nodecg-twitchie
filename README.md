@@ -13,18 +13,18 @@ Out of the box, Twitchie will provide you with all of this:
 
 ## Compatibility
 
-Twitchie requires that you use a version of NodeCG greater than _1.6.1_, and a version of node greater than _10.0.0_, because of some compatibility stuff.
+Twitchie requires that you use a version of NodeCG greater than _2.0.0_, and a version of node greater than _16.0.0_, because of some compatibility stuff.
 
 ## Usage
 
 Everything that Twitchie handles is exposed through NodeCG's replicants and bundle messages, in the `nodecg-twitchie` namespace. This means that getting stream information in your graphics is extra-simple!
 
 ```javascript
-const showSubscriber = subscriber => {
+const showSubscriber = (subscriber) => {
   // show notification in your graphics...
 }
 
-const updateChannelInfo = info => {
+const updateChannelInfo = (info) => {
   // update now playing, uptime, etc...
 }
 
