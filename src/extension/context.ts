@@ -1,9 +1,3 @@
-/*
-  NodeCG doesn't publish types separately, instead
-  recommending that bundles import them relatively.
-  This import does mean that the bundle has to be
-  compiled from within a NodeCG installation, though...
-*/
 import type NodeCG from '@nodecg/types'
 
 import createEventEmitter, { TwitchieEventEmitter } from '../common/events'
