@@ -85,16 +85,6 @@ export default (client: ChatClient) => {
     })
   })
 
-  /* host */
-  client.onHosted((channel, byChannel, auto, viewers) => {
-    context.events.emitMessage('user.hosted', {
-      channel,
-      byChannel,
-      auto,
-      viewers: viewers || 0,
-    })
-  })
-
   client.onRaid((channel, _, raidInfo) => {
     context.events.emitMessage('user.raid', {
       channel,

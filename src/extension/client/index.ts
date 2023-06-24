@@ -16,7 +16,7 @@ class TwitchieClientWrapper {
 
   public client?: ChatClient
 
-  public isConnected = () => this.client && (this.client.isConnected || this.client.isConnecting)
+  public isConnected = () => this.client && (this.client?.irc.isConnecting || this.client?.irc.isConnected)
 
   public disconnect = async () => {
     if (!this.client) {

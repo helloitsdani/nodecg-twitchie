@@ -1,5 +1,10 @@
 import { TwitchieClientWrapper } from '../extension/client'
 
+export interface BundleConfig {
+  timeBetweenUpdates: number
+  timeBetweenRetries: number
+}
+
 export interface Replicant<T> {
   value?: T
   namespace?: string
@@ -34,7 +39,6 @@ export interface UserInfo {
   broadcaster_type: 'partner' | 'affiliate' | ''
   profile_image_url: string
   offline_image_url: string
-  view_count: number
 }
 
 export interface SubscriberInfo {
@@ -158,13 +162,6 @@ export interface ChatTimeoutPayload {
   duration: number
 }
 
-export interface ChatHostedPayload {
-  channel: string
-  byChannel: string
-  auto: boolean
-  viewers: number
-}
-
 export interface ChatRaidPayload {
   channel: string
   byChannel: string
@@ -189,7 +186,6 @@ export interface MessageTypes {
   'user.subscription': SubscriberInfo
   'user.subscription.gift': SubscriberGiftInfo
   'user.subscription.community': SubscriberCommunityGiftInfo
-  'user.hosted': ChatHostedPayload
   'user.raid': ChatRaidPayload
   'chat.action': ChatActionPayload
   'chat.message': ChatMessagePayload
