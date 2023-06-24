@@ -71,28 +71,6 @@ const serializeMessage = (type: ChatMessageType, rawMessage: string, message: Tw
 export default (client: ChatClient) => {
   const giftCounts = new Map<string | undefined, number>()
 
-  client.onAction((channel, _, raw, message) => {
-    context.events.emitMessage('chat.action', {
-      channel,
-      message: serializeMessage(ChatMessageType.action, raw, message),
-    })
-  })
-
-  client.onMessage((channel, _, raw, message) => {
-    context.events.emitMessage('chat.message', {
-      channel,
-      message: serializeMessage(ChatMessageType.message, raw, message),
-    })
-  })
-
-  client.onRaid((channel, _, raidInfo) => {
-    context.events.emitMessage('user.raid', {
-      channel,
-      byChannel: raidInfo.displayName,
-      viewers: raidInfo.viewerCount,
-    })
-  })
-
   /* subscriptions */
   client.onSub((_, __, subInfo) => {
     context.events.emitMessage('user.subscription', serializeSub(subInfo))
@@ -123,6 +101,20 @@ export default (client: ChatClient) => {
     giftCounts.set(gifter, previousGiftCount + subInfo.count)
 
     context.events.emitMessage('user.subscription.community', serializeCommunitySub(subInfo))
+  })
+
+  client.onAction((channel, _, raw, message) => {
+    context.events.emitMessage('chat.action', {
+      channel,
+      message: serializeMessage(ChatMessageType.action, raw, message),
+    })
+  })
+
+  client.onMessage((channel, _, raw, message) => {
+    context.events.emitMessage('chat.message', {
+      channel,
+      message: serializeMessage(ChatMessageType.message, raw, message),
+    })
   })
 
   /* rituals */
