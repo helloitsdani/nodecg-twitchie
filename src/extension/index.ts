@@ -1,14 +1,15 @@
-import { TwitchieExtension } from '../types'
-import { NodeCG, NodeCGConfig } from '../../../../types/server'
+import type NodeCG from '@nodecg/types'
+
+import { BundleConfig, TwitchieExtension } from '../types'
 
 import { TwitchieClientWrapper } from './client'
 import context from './context'
 
-const isNodeCGConfigValid = (config: NodeCGConfig) =>
+const isNodeCGConfigValid = (config: NodeCG.Config) =>
   config.login.enabled && config.login.twitch?.enabled && config.login.twitch.clientID
 
-module.exports = (nodecg: NodeCG) => {
-  if (!isNodeCGConfigValid(nodecg.config)) {
+module.exports = (nodecg: NodeCG.ServerAPI<BundleConfig>) => {
+  if (!isNodeCGConfigValid(nodecg.config as any)) {
     throw new Error('nodecg-twitchie requires Twitch login to be enabled in your NodeCG config!')
   }
 

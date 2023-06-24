@@ -1,5 +1,9 @@
 import { TwitchieClientWrapper } from '../extension/client'
 
+export interface BundleConfig {
+  timeBetweenUpdates: number
+}
+
 export interface Replicant<T> {
   value?: T
   namespace?: string

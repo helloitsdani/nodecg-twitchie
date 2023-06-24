@@ -4,14 +4,14 @@
   This import does mean that the bundle has to be
   compiled from within a NodeCG installation, though...
 */
-import { NodeCG } from '../../../../types/server'
+import type NodeCG from '@nodecg/types'
 
 import createEventEmitter, { TwitchieEventEmitter } from '../common/events'
 import createReplicants from '../common/replicants'
-import { TwitchieReplicants } from '../types'
+import { BundleConfig, TwitchieReplicants } from '../types'
 import { TwitchieClientWrapper } from './client'
 
-let nodecgInstance: NodeCG
+let nodecgInstance: NodeCG.ServerAPI<BundleConfig>
 let replicants: TwitchieReplicants
 let events: TwitchieEventEmitter
 let twitchInstance: TwitchieClientWrapper
@@ -29,7 +29,7 @@ export default {
 
   get config() {
     return {
-      clientID: nodecgInstance.config.login.twitch?.clientID,
+      clientID: nodecgInstance.config.login.twitch!.clientID,
       ...nodecgInstance.bundleConfig,
     }
   },

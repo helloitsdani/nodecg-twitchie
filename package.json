@@ -42,7 +42,7 @@
     "lib"
   ],
   "nodecg": {
-    "compatibleRange": ">=1.6.1",
+    "compatibleRange": ">=2.0.0",
     "dashboardPanels": [
       {
         "name": "Channel",
@@ -82,6 +82,7 @@
     "request-promise-native": "^1.0.9"
   },
   "devDependencies": {
+    "@nodecg/types": "^2.1.9",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/debounce": "^1.2.1",
     "@types/express": "^4.17.17",
