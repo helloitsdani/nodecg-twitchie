@@ -42,45 +42,43 @@ export interface UserInfo {
 }
 
 export interface SubscriberInfo {
-  name: string
-  months: number
-  streak?: number
-  message?: string
-  plan: string
-  planName: string
-  isPrime: boolean
+  cumulativeMonths: number
+  durationMonths: number
+  messageText: string
+  streakMonths: number | null
+  tier: string
+  userDisplayName: string
+  userName: string
 }
 
 export interface SubscriberGiftInfo {
-  name: string
-  giftDuration: number
-  gifter?: string
-  gifterGiftCount?: number
-  message?: string
-  months: number
-  streak?: number
-  plan: string
-  planName: string
-  isPrime: boolean
-}
-
-export interface SubscriberCommunityGiftInfo {
-  count: number
-  gifter?: string
-  gifterDisplayName?: string
-  gifterGiftCount?: number
-  plan: string
-}
-
-export interface FollowersInfo {
-  total: number
-  followers: FollowInfo[]
+  amount: number
+  cumulativeAmount: number | null
+  gifterDisplayName: string
+  gifterName: string
+  isAnonymous: boolean
+  tier: string
 }
 
 export interface FollowInfo {
-  followed_at: number
-  from_id: string
-  from_name: string
+  followDate: number
+  userDisplayName: string
+  userName: string
+}
+
+export interface CheerInfo {
+  bits: number
+  isAnonymous: boolean
+  message: string
+  userName: string | null
+  userDisplayName: string | null
+}
+
+export interface ShoutoutInfo {
+  startDate: number
+  viewerCount: number
+  shoutedOutBroadcasterName: string
+  shoutedOutBroadcasterDisplayName: string
 }
 
 export interface NewChatterInfo {
@@ -161,8 +159,8 @@ export interface ChatTimeoutPayload {
 }
 
 export interface ChatRaidPayload {
-  channel: string
-  byChannel: string
+  raidedBroadcasterDisplayName: string
+  raidedBroadcasterName: string
   viewers: number
 }
 
@@ -178,16 +176,70 @@ export interface ChatRemoveMessagePayload {
   messageId: string
 }
 
+interface PollChoiceInfo {
+  channelPointsVotes: number
+  id: string
+  title: string
+  totalVotes: number
+}
+
+interface PollInfo {
+  bitsPerVote: number
+  channelPointsPerVote: number
+  choices: PollChoiceInfo[]
+  endDate: number
+  id: string
+  isBitsVotingEnabled: boolean
+  isChannelPointsVotingEnabled: boolean
+  startDate: number
+  status: 'running' | 'completed' | 'archived' | 'terminated'
+  title: string
+}
+
+interface PredictionTopPredictorInfo {
+  channelPointsUsed: number
+  channelPointsWon: number | null
+  userDisplayName: string
+  userName: string
+  userId: string
+}
+
+interface PredictionOutcomeInfo {
+  channelPoints: number
+  users: number
+  topPredictors: PredictionTopPredictorInfo[]
+}
+
+interface PredictionInfo {
+  id: string
+  startDate: number
+  lockDate: number | null
+  endDate: number | null
+  outcomes: PredictionOutcomeInfo[]
+  title: string
+  status: 'running' | 'locked' | 'resolved' | 'canceled'
+  winningOutcome: PredictionOutcomeInfo | null
+  winningOutcomeId: string | null
+}
+
 export interface MessageTypes {
-  'user.new': NewChatterInfo
   'user.follower': FollowInfo
   'user.subscription': SubscriberInfo
   'user.subscription.gift': SubscriberGiftInfo
-  'user.subscription.community': SubscriberCommunityGiftInfo
+  'user.cheer': CheerInfo
   'user.raid': ChatRaidPayload
+  shoutout: ShoutoutInfo
+  ritual: ChatRitualPayload
+  'ritual.new': NewChatterInfo
+  'poll.begin': PollInfo
+  'poll.progress': PollInfo
+  'poll.end': PollInfo
+  'prediction.begin': PredictionInfo
+  'prediction.progress': PredictionInfo
+  'prediction.lock': PredictionInfo
+  'prediction.end': PredictionInfo
   'chat.action': ChatActionPayload
   'chat.message': ChatMessagePayload
-  'chat.ritual': ChatRitualPayload
   'chat.clear': undefined
   'chat.removeMessage': ChatRemoveMessagePayload
   'chat.ban': ChatBanPayload
@@ -215,7 +267,6 @@ export interface TwitchieReplicants {
   user: {
     id: Replicant<string>
     info: Replicant<UserInfo>
-    followers: Replicant<FollowersInfo>
   }
   chat: {
     channel: Replicant<string>

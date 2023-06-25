@@ -1,4 +1,4 @@
-import { FollowersInfo, GameInfo, Replicant, StreamInfo, TwitchieReplicants, UserInfo } from '../types'
+import { GameInfo, Replicant, StreamInfo, TwitchieReplicants, UserInfo } from '../types'
 import { NAMESPACE } from './constants'
 
 interface ReplicantOptionsBag<T> {
@@ -39,7 +39,6 @@ export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
     user: {
       id: createReplicantWithDefault<string>('user.id'),
       info: createReplicantWithDefault<UserInfo>('user.info'),
-      followers: createReplicantWithDefault<FollowersInfo>('user.followers'),
     },
 
     chat: {

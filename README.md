@@ -57,4 +57,4 @@ The twitchie extension exposes an instance of the [twurple API library](https://
 
 In order to use Twitchie, you'll need to enable Twitch logins on your NodeCG instance, as we use this authentication to connect to the Twitch API and chat. Instructions on how to do this can be found in the [NodeCG documentation](https://www.nodecg.dev/docs/nodecg-configuration).
 
-Please make sure you've included `user_read channel:read:subscriptions channel:read:redemptions user:read:broadcast moderator:read:followers bits:read chat:read chat:edit` in your scopes!
+Please make sure you've included `user_read channel:read:subscriptions channel:read:redemptions user:read:broadcast moderator:read:followers bits:read chat:read chat:edit moderator:read:shoutouts channel:read:predictions channel:read:polls` in your scopes!
