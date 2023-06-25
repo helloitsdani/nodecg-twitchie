@@ -1,5 +1,4 @@
-import { HelixPaginatedResultWithTotal, HelixStream, HelixUser } from '@twurple/api'
-import { HelixChannelFollower } from '@twurple/api/lib/api/helix/channel/HelixChannelFollower'
+import { HelixPaginatedResultWithTotal, HelixStream, HelixUser, HelixChannelFollower } from '@twurple/api'
 
 import { FollowersInfo, FollowInfo, StreamInfo, UserInfo } from '../../../types'
 import context from '../../context'
