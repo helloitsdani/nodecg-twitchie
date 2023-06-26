@@ -28,6 +28,8 @@ context.nodecg.listenFor('debug.user.subscription.gift', ({ username }) => {
     gifterName: username,
     isAnonymous: false,
     tier: '1000',
+    recipientDisplayName: 'SOMEONE',
+    recipientName: 'someone',
   })
 })
 
@@ -39,5 +41,7 @@ context.nodecg.listenFor('debug.user.subscription.community', ({ username }) => 
     gifterName: username,
     isAnonymous: false,
     tier: '1000',
+    recipientDisplayName: 'SOMEONE',
+    recipientName: 'someone',
   })
 })
