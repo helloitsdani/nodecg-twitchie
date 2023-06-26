@@ -29,29 +29,34 @@ context.replicants.user.id.on('change', (newUserId) => {
     })
   })
 
-  /* Subscriptions */
-  eventsub.onChannelSubscriptionMessage(newUserId, (event) => {
-    context.events.emitMessage('user.subscription', {
-      cumulativeMonths: event.cumulativeMonths,
-      durationMonths: event.durationMonths,
-      messageText: event.messageText,
-      streakMonths: event.streakMonths,
-      tier: event.tier,
-      userDisplayName: event.userDisplayName,
-      userName: event.userDisplayName,
-    })
-  })
+  /*
+    Subscriptions
+    temporarily disabled, as EventSub does not provide subscription info
+    in a way that lets us do proper overlay-style alerts
+  */
 
-  eventsub.onChannelSubscriptionGift(newUserId, (event) => {
-    context.events.emitMessage('user.subscription.gift', {
-      amount: event.amount,
-      cumulativeAmount: event.cumulativeAmount,
-      gifterDisplayName: event.gifterDisplayName,
-      gifterName: event.gifterName,
-      isAnonymous: event.isAnonymous,
-      tier: event.tier,
-    })
-  })
+  // eventsub.onChannelSubscriptionMessage(newUserId, (event) => {
+  //   context.events.emitMessage('user.subscription', {
+  //     cumulativeMonths: event.cumulativeMonths,
+  //     durationMonths: event.durationMonths,
+  //     messageText: event.messageText,
+  //     streakMonths: event.streakMonths,
+  //     tier: event.tier,
+  //     userDisplayName: event.userDisplayName,
+  //     userName: event.userDisplayName,
+  //   })
+  // })
+
+  // eventsub.onChannelSubscriptionGift(newUserId, (event) => {
+  //   context.events.emitMessage('user.subscription.gift', {
+  //     amount: event.amount,
+  //     cumulativeAmount: event.cumulativeAmount,
+  //     gifterDisplayName: event.gifterDisplayName,
+  //     gifterName: event.gifterName,
+  //     isAnonymous: event.isAnonymous,
+  //     tier: event.tier,
+  //   })
+  // })
 
   /* Cheers */
   eventsub.onChannelCheer(newUserId, (event) => {

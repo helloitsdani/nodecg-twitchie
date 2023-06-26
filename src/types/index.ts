@@ -52,10 +52,12 @@ export interface SubscriberInfo {
 }
 
 export interface SubscriberGiftInfo {
-  amount: number
+  amount: number | null
   cumulativeAmount: number | null
-  gifterDisplayName: string
-  gifterName: string
+  recipientDisplayName: string | null
+  recipientName: string | null
+  gifterDisplayName: string | null
+  gifterName: string | null
   isAnonymous: boolean
   tier: string
 }
