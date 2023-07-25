@@ -1,2 +1,1 @@
-require('./assets')
 require('./channel')

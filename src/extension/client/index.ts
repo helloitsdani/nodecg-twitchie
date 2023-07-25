@@ -1,5 +1,5 @@
 import { ApiClient } from '@twurple/api'
-import { StaticAuthProvider } from '@twurple/auth'
+import { AuthProvider, StaticAuthProvider } from '@twurple/auth'
 import { ChatClient } from '@twurple/chat'
 
 import context from '../context'
@@ -13,6 +13,8 @@ interface TwitchieClientAuthProps {
 
 class TwitchieClientWrapper {
   public api?: ApiClient
+
+  public authProvider?: AuthProvider
 
   public client?: ChatClient
 
@@ -39,11 +41,11 @@ class TwitchieClientWrapper {
       await this.disconnect()
     }
 
-    const authProvider = new StaticAuthProvider(context.config.clientID, auth.token)
+    this.authProvider = new StaticAuthProvider(context.config.clientID, auth.token)
 
-    this.api = new ApiClient({ authProvider })
+    this.api = new ApiClient({ authProvider: this.authProvider })
     this.client = new ChatClient({
-      authProvider,
+      authProvider: this.authProvider,
       webSocket: true,
     })
 

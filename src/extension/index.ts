@@ -20,6 +20,7 @@ module.exports = (nodecg: NodeCG.ServerAPI<BundleConfig>) => {
   require('./modules/user')
   require('./modules/channel')
   require('./modules/chat')
+  require('./modules/eventsub')
   require('./modules/debug')
 
   const twitchieExtension: TwitchieExtension = {

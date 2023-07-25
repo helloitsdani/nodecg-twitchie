@@ -10,8 +10,6 @@ const client: TwitchieClient = {
 export * from '../types'
 
 export { createReplicant } from './replicants'
-export { default as getBadge } from './utils/getBadge'
-export { default as getBadgeFromCurrentSets } from './utils/getBadgeFromCurrentSets'
 export { default as getEmote } from './utils/getEmote'
 export { default as listenFor } from './utils/listenFor'
 

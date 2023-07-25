@@ -1,44 +1,17 @@
-import { ChatClient, ChatCommunitySubInfo, ChatSubGiftInfo, ChatSubInfo, ChatUser } from '@twurple/chat'
-import { TwitchPrivateMessage } from '@twurple/chat/lib/commands/TwitchPrivateMessage'
+import { ChatClient, ChatSubInfo, ChatUser, ChatMessage as TwitchChatMessage, parseChatMessage } from '@twurple/chat'
 
-import {
-  ChatMessage,
-  ChatMessageType,
-  SubscriberCommunityGiftInfo,
-  SubscriberGiftInfo,
-  SubscriberInfo,
-} from '../../types'
+import { ChatMessage, ChatMessageType, SubscriberInfo } from '../../types'
 import context from '../context'
+import { HelixCheermoteList } from '@twurple/api'
 
 const serializeSub = (subInfo: ChatSubInfo): SubscriberInfo => ({
-  name: subInfo.displayName,
-  message: subInfo.message,
-  months: subInfo.months,
-  streak: subInfo.streak,
-  plan: subInfo.plan,
-  planName: subInfo.planName,
-  isPrime: subInfo.isPrime,
-})
-
-const serializeSubGift = (subInfo: ChatSubGiftInfo): SubscriberGiftInfo => ({
-  name: subInfo.displayName,
-  giftDuration: subInfo.giftDuration,
-  gifter: subInfo.gifter,
-  gifterGiftCount: subInfo.gifterGiftCount,
-  message: subInfo.message,
-  months: subInfo.months,
-  streak: subInfo.streak,
-  plan: subInfo.plan,
-  planName: subInfo.planName,
-  isPrime: subInfo.isPrime,
-})
-
-const serializeCommunitySub = (giftInfo: ChatCommunitySubInfo): SubscriberCommunityGiftInfo => ({
-  count: giftInfo.count,
-  gifter: giftInfo.gifter,
-  gifterDisplayName: giftInfo.gifterDisplayName,
-  gifterGiftCount: giftInfo.gifterGiftCount,
-  plan: giftInfo.plan,
+  cumulativeMonths: subInfo.months,
+  durationMonths: subInfo.months,
+  messageText: subInfo.message ?? '',
+  streakMonths: subInfo.streak ?? 0,
+  tier: subInfo.plan,
+  userDisplayName: subInfo.displayName,
+  userName: subInfo.displayName,
 })
 
 const serializeUser = (user: ChatUser) => ({
@@ -54,46 +27,80 @@ const serializeUser = (user: ChatUser) => ({
   isVip: user.isVip,
 })
 
-const serializeMessage = (type: ChatMessageType, rawMessage: string, message: TwitchPrivateMessage): ChatMessage => ({
-  id: message.id,
-  type,
-  user: serializeUser(message.userInfo),
-  message: rawMessage,
-  tokens: message.parseEmotesAndBits(context.replicants.chat.cheermotes.value, {
-    background: 'dark',
-    scale: '4',
-    state: 'animated',
-  }),
-  isCheer: message.isCheer,
-  bits: message.bits,
-})
+const serializeMessage = (
+  type: ChatMessageType,
+  rawMessage: string,
+  message: TwitchChatMessage,
+  cheermotes: HelixCheermoteList,
+): ChatMessage => {
+  const serializedMessage = {
+    id: message.id,
+    type,
+    user: serializeUser(message.userInfo),
+    message: rawMessage,
+    tokens: parseChatMessage(rawMessage, message.emoteOffsets, cheermotes.getPossibleNames()),
+    isCheer: message.isCheer,
+    bits: message.bits,
+  } as ChatMessage
+
+  serializedMessage.tokens = serializedMessage.tokens.map((token) => {
+    if (token.type !== 'cheer') {
+      return token
+    }
+
+    return {
+      ...token,
+      /* the cheermote info can't be sent across the ws to our graphics as it's all in twurple instances,
+         so we have to hardcode the URL for now */
+      displayInfo: cheermotes.getCheermoteDisplayInfo(token.name, token.amount, {
+        scale: '3',
+        state: 'animated',
+        background: 'dark',
+      }),
+    }
+  })
+
+  return serializedMessage
+}
 
 export default (client: ChatClient) => {
-  const giftCounts = new Map<string | undefined, number>()
+  let cheermotes: HelixCheermoteList
+
+  context.replicants.chat.channel.on('change', async (newChannel) => {
+    if (!newChannel) {
+      return
+    }
+
+    if (!context.twitch.api) {
+      throw new Error('No Twitch API instance is available')
+    }
+
+    cheermotes = await context.twitch.api.bits.getCheermotes(newChannel)
+  })
 
   client.onAction((channel, _, raw, message) => {
     context.events.emitMessage('chat.action', {
       channel,
-      message: serializeMessage(ChatMessageType.action, raw, message),
+      message: serializeMessage(ChatMessageType.action, raw, message, cheermotes),
     })
   })
 
   client.onMessage((channel, _, raw, message) => {
     context.events.emitMessage('chat.message', {
       channel,
-      message: serializeMessage(ChatMessageType.message, raw, message),
-    })
-  })
-
-  client.onRaid((channel, _, raidInfo) => {
-    context.events.emitMessage('user.raid', {
-      channel,
-      byChannel: raidInfo.displayName,
-      viewers: raidInfo.viewerCount,
+      message: serializeMessage(ChatMessageType.message, raw, message, cheermotes),
     })
   })
 
   /* subscriptions */
+  /*
+    these should be moved to EventSub, but the subscriptions events aren't really fit
+    for alerts right now--messages aren't sent along with subscription payloads, for example
+    something like this uservoice request would need to be implemented to switch over
+    https://twitch.uservoice.com/forums/310213-developers/suggestions/44500245-revise-the-channel-subscription-topics
+  */
+  const giftCounts = new Map<string | undefined, number>()
+
   client.onSub((_, __, subInfo) => {
     context.events.emitMessage('user.subscription', serializeSub(subInfo))
   })
@@ -110,7 +117,16 @@ export default (client: ChatClient) => {
       return
     }
 
-    context.events.emitMessage('user.subscription.gift', serializeSubGift(subInfo))
+    context.events.emitMessage('user.subscription.gift', {
+      gifterDisplayName: subInfo.gifterDisplayName ?? null,
+      gifterName: subInfo.gifter ?? null,
+      recipientDisplayName: subInfo.displayName,
+      recipientName: subInfo.displayName,
+      tier: subInfo.plan,
+      isAnonymous: false,
+      amount: subInfo.months,
+      cumulativeAmount: subInfo.months,
+    })
   })
 
   client.onCommunitySub((_, gifter, subInfo) => {
@@ -122,18 +138,27 @@ export default (client: ChatClient) => {
     const previousGiftCount = giftCounts.get(gifter) ?? 0
     giftCounts.set(gifter, previousGiftCount + subInfo.count)
 
-    context.events.emitMessage('user.subscription.community', serializeCommunitySub(subInfo))
+    context.events.emitMessage('user.subscription.gift', {
+      gifterDisplayName: subInfo.gifterDisplayName ?? null,
+      gifterName: subInfo.gifter ?? null,
+      recipientDisplayName: null,
+      recipientName: null,
+      tier: subInfo.plan,
+      isAnonymous: false,
+      amount: subInfo.count,
+      cumulativeAmount: subInfo.gifterGiftCount ?? 0,
+    })
   })
 
   /* rituals */
   client.onRitual((channel, user, ritualInfo) => {
     if (ritualInfo.ritualName === 'new_chatter') {
-      context.events.emitMessage('user.new', {
+      context.events.emitMessage('ritual.new', {
         name: user,
         message: ritualInfo.message,
       })
     } else {
-      context.events.emitMessage('chat.ritual', {
+      context.events.emitMessage('ritual', {
         channel,
         user,
         message: ritualInfo.message,
