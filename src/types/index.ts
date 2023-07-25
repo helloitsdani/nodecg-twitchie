@@ -224,6 +224,20 @@ interface PredictionInfo {
   winningOutcomeId: string | null
 }
 
+interface RedemptionPayload {
+  id: string
+  input: string
+  redemptionDate: number
+  rewardCost: number
+  rewardId: string
+  rewardPrompt: string
+  rewardTitle: string
+  status: string
+  userDisplayName: string
+  userId: string
+  userName: string
+}
+
 export interface MessageTypes {
   'user.follower': FollowInfo
   'user.subscription': SubscriberInfo
@@ -246,6 +260,7 @@ export interface MessageTypes {
   'chat.removeMessage': ChatRemoveMessagePayload
   'chat.ban': ChatBanPayload
   'chat.timeout': ChatTimeoutPayload
+  redemption: RedemptionPayload
 }
 
 export type TwitchieEmitFunction = <T extends keyof MessageTypes>(action: T, payload: MessageTypes[T]) => void

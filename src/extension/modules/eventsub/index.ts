@@ -202,5 +202,22 @@ context.replicants.user.id.on('change', (newUserId) => {
     })
   })
 
+  /* Channel point redemptions */
+  eventsub.onChannelRedemptionAdd(newUserId, (event) => {
+    context.events.emitMessage('redemption', {
+      id: event.id,
+      input: event.input,
+      redemptionDate: event.redemptionDate.getTime(),
+      rewardCost: event.rewardCost,
+      rewardId: event.rewardId,
+      rewardPrompt: event.rewardPrompt,
+      rewardTitle: event.rewardTitle,
+      status: event.status,
+      userDisplayName: event.userDisplayName,
+      userId: event.userId,
+      userName: event.userName,
+    })
+  })
+
   eventsub.start()
 })
