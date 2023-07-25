@@ -178,14 +178,14 @@ export interface ChatRemoveMessagePayload {
   messageId: string
 }
 
-interface PollChoiceInfo {
+export interface PollChoiceInfo {
   channelPointsVotes: number
   id: string
   title: string
   totalVotes: number
 }
 
-interface PollInfo {
+export interface PollInfo {
   bitsPerVote: number
   channelPointsPerVote: number
   choices: PollChoiceInfo[]
@@ -198,7 +198,7 @@ interface PollInfo {
   title: string
 }
 
-interface PredictionTopPredictorInfo {
+export interface PredictionTopPredictorInfo {
   channelPointsUsed: number
   channelPointsWon: number | null
   userDisplayName: string
@@ -206,13 +206,13 @@ interface PredictionTopPredictorInfo {
   userId: string
 }
 
-interface PredictionOutcomeInfo {
+export interface PredictionOutcomeInfo {
   channelPoints: number
   users: number
   topPredictors: PredictionTopPredictorInfo[]
 }
 
-interface PredictionInfo {
+export interface PredictionInfo {
   id: string
   startDate: number
   lockDate: number | null
@@ -224,7 +224,7 @@ interface PredictionInfo {
   winningOutcomeId: string | null
 }
 
-interface GoalInfo {
+export interface GoalInfo {
   id: string
   description: string
   type: 'follow' | 'subscription' | 'subscription_count' | 'new_subscription' | 'new_subscription_count'
@@ -235,7 +235,7 @@ interface GoalInfo {
   targetAmount: number
 }
 
-interface RedemptionPayload {
+export interface RedemptionPayload {
   id: string
   input: string
   redemptionDate: number
