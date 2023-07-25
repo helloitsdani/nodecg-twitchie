@@ -81,7 +81,7 @@ export default (client: ChatClient) => {
       recipientDisplayName: subInfo.displayName,
       recipientName: subInfo.displayName,
       tier: subInfo.plan,
-      isAnonymous: !!subInfo.gifter,
+      isAnonymous: false,
       amount: subInfo.months,
       cumulativeAmount: subInfo.months,
     })
@@ -102,9 +102,9 @@ export default (client: ChatClient) => {
       recipientDisplayName: null,
       recipientName: null,
       tier: subInfo.plan,
-      isAnonymous: !!subInfo.gifter,
-      amount: null,
-      cumulativeAmount: null,
+      isAnonymous: false,
+      amount: subInfo.count,
+      cumulativeAmount: subInfo.gifterGiftCount ?? 0,
     })
   })
 
