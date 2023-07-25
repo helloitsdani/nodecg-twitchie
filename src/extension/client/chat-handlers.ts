@@ -93,6 +93,12 @@ export default (client: ChatClient) => {
   })
 
   /* subscriptions */
+  /*
+    these should be moved to EventSub, but the subscriptions events aren't really fit
+    for alerts right now--messages aren't sent along with subscription payloads, for example
+    something like this uservoice request would need to be implemented to switch over
+    https://twitch.uservoice.com/forums/310213-developers/suggestions/44500245-revise-the-channel-subscription-topics
+  */
   const giftCounts = new Map<string | undefined, number>()
 
   client.onSub((_, __, subInfo) => {
