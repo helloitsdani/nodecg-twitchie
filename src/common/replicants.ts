@@ -44,7 +44,7 @@ export default (nodecg: any, defaults: any = {}): TwitchieReplicants => {
     chat: {
       channel: createReplicantWithDefault<string>('chat.channel'),
       badges: createReplicantWithDefault<any>('chat.badges'),
-      cheermotes: createReplicantWithDefault<any>('chat.cheermotes'),
+      cheermotes: createReplicantWithDefault<string[]>('chat.cheermotes'),
     },
   }
 }

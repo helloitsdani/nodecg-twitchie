@@ -11,5 +11,5 @@ context.replicants.chat.channel.on('change', async (newChannel) => {
   }
 
   const cheermotes = await context.twitch.api.bits.getCheermotes(newChannel)
-  context.replicants.chat.cheermotes.value = cheermotes
+  context.replicants.chat.cheermotes.value = cheermotes.getPossibleNames()
 })

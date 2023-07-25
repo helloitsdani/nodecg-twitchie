@@ -1,5 +1,4 @@
-import { ChatClient, ChatSubInfo, ChatUser } from '@twurple/chat'
-import { TwitchPrivateMessage } from '@twurple/chat/lib/commands/TwitchPrivateMessage'
+import { ChatClient, ChatSubInfo, ChatUser, ChatMessage as TwitchChatMessage, parseChatMessage } from '@twurple/chat'
 
 import { ChatMessage, ChatMessageType, SubscriberInfo } from '../../types'
 import context from '../context'
@@ -27,16 +26,12 @@ const serializeUser = (user: ChatUser) => ({
   isVip: user.isVip,
 })
 
-const serializeMessage = (type: ChatMessageType, rawMessage: string, message: TwitchPrivateMessage): ChatMessage => ({
+const serializeMessage = (type: ChatMessageType, rawMessage: string, message: TwitchChatMessage): ChatMessage => ({
   id: message.id,
   type,
   user: serializeUser(message.userInfo),
   message: rawMessage,
-  tokens: message.parseEmotesAndBits(context.replicants.chat.cheermotes.value, {
-    background: 'dark',
-    scale: '4',
-    state: 'animated',
-  }),
+  tokens: parseChatMessage(rawMessage, message.emoteOffsets, context.replicants.chat.cheermotes.value),
   isCheer: message.isCheer,
   bits: message.bits,
 })

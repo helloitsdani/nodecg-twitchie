@@ -85,7 +85,7 @@ export interface ShoutoutInfo {
 
 export interface NewChatterInfo {
   name: string
-  message: string
+  message?: string
 }
 
 export interface ChatUser {
@@ -131,10 +131,6 @@ export interface ChatCheerMessageToken {
   type: 'cheer'
   name: string
   amount: number
-  displayInfo: {
-    url: string
-    color: string
-  }
 }
 
 export type ChatMessageToken = ChatTextMessageToken | ChatEmoteMessageToken | ChatCheerMessageToken
@@ -169,7 +165,7 @@ export interface ChatRaidPayload {
 export interface ChatRitualPayload {
   channel: string
   user: string
-  message: string
+  message?: string
   ritualName: string
 }
 
@@ -273,7 +269,7 @@ export interface TwitchieReplicants {
   chat: {
     channel: Replicant<string>
     badges: Replicant<any>
-    cheermotes: Replicant<any>
+    cheermotes: Replicant<string[]>
   }
 }
 
