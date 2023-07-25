@@ -139,6 +139,46 @@ context.replicants.user.id.on('change', (newUserId) => {
     })
   })
 
+  /* Goals */
+  eventsub.onChannelGoalBegin(newUserId, (event) => {
+    context.events.emitMessage('goal.begin', {
+      id: event.id,
+      description: event.description,
+      type: event.type,
+      startDate: event.startDate.getTime(),
+      endDate: null,
+      isAchieved: false,
+      currentAmount: event.currentAmount,
+      targetAmount: event.targetAmount,
+    })
+  })
+
+  eventsub.onChannelGoalProgress(newUserId, (event) => {
+    context.events.emitMessage('goal.progress', {
+      id: event.id,
+      description: event.description,
+      type: event.type,
+      startDate: event.startDate.getTime(),
+      endDate: null,
+      isAchieved: false,
+      currentAmount: event.currentAmount,
+      targetAmount: event.targetAmount,
+    })
+  })
+
+  eventsub.onChannelGoalEnd(newUserId, (event) => {
+    context.events.emitMessage('goal.end', {
+      id: event.id,
+      description: event.description,
+      type: event.type,
+      startDate: event.startDate.getTime(),
+      endDate: event.endDate.getTime(),
+      isAchieved: event.isAchieved,
+      currentAmount: event.currentAmount,
+      targetAmount: event.targetAmount,
+    })
+  })
+
   /* Predictions */
   eventsub.onChannelPredictionBegin(newUserId, (event) => {
     context.events.emitMessage('prediction.begin', {

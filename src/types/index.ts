@@ -224,6 +224,17 @@ interface PredictionInfo {
   winningOutcomeId: string | null
 }
 
+interface GoalInfo {
+  id: string
+  description: string
+  type: 'follow' | 'subscription' | 'subscription_count' | 'new_subscription' | 'new_subscription_count'
+  startDate: number
+  endDate: number | null
+  isAchieved: boolean
+  currentAmount: number
+  targetAmount: number
+}
+
 interface RedemptionPayload {
   id: string
   input: string
@@ -254,6 +265,9 @@ export interface MessageTypes {
   'prediction.progress': PredictionInfo
   'prediction.lock': PredictionInfo
   'prediction.end': PredictionInfo
+  'goal.begin': GoalInfo
+  'goal.progress': GoalInfo
+  'goal.end': GoalInfo
   'chat.action': ChatActionPayload
   'chat.message': ChatMessagePayload
   'chat.clear': undefined
