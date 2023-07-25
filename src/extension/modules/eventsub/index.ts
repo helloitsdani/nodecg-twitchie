@@ -113,7 +113,12 @@ context.replicants.user.id.on('change', (newUserId) => {
     context.events.emitMessage('poll.progress', {
       bitsPerVote: event.bitsPerVote,
       channelPointsPerVote: event.channelPointsPerVote,
-      choices: event.choices,
+      choices: event.choices.map((choice) => ({
+        id: choice.id,
+        title: choice.title,
+        channelPointsVotes: choice.channelPointsVotes,
+        totalVotes: choice.totalVotes,
+      })),
       endDate: event.endDate.getTime(),
       id: event.id,
       isBitsVotingEnabled: event.isBitsVotingEnabled,
@@ -128,7 +133,12 @@ context.replicants.user.id.on('change', (newUserId) => {
     context.events.emitMessage('poll.progress', {
       bitsPerVote: event.bitsPerVote,
       channelPointsPerVote: event.channelPointsPerVote,
-      choices: event.choices,
+      choices: event.choices.map((choice) => ({
+        id: choice.id,
+        title: choice.title,
+        channelPointsVotes: choice.channelPointsVotes,
+        totalVotes: choice.totalVotes,
+      })),
       endDate: event.endDate.getTime(),
       id: event.id,
       isBitsVotingEnabled: event.isBitsVotingEnabled,
@@ -204,7 +214,19 @@ context.replicants.user.id.on('change', (newUserId) => {
     context.events.emitMessage('prediction.progress', {
       id: event.id,
       lockDate: event.lockDate.getTime(),
-      outcomes: event.outcomes,
+      outcomes: event.outcomes.map((outcome) => ({
+        id: outcome.id,
+        title: outcome.title,
+        users: outcome.users,
+        channelPoints: outcome.channelPoints,
+        topPredictors: outcome.topPredictors.map((predictor) => ({
+          userId: predictor.userId,
+          userDisplayName: predictor.userDisplayName,
+          userName: predictor.userName,
+          channelPointsUsed: predictor.channelPointsUsed,
+          channelPointsWon: predictor.channelPointsWon,
+        })),
+      })),
       startDate: event.startDate.getTime(),
       title: event.title,
       status: 'running',
@@ -218,7 +240,19 @@ context.replicants.user.id.on('change', (newUserId) => {
     context.events.emitMessage('prediction.lock', {
       id: event.id,
       lockDate: event.lockDate.getTime(),
-      outcomes: event.outcomes,
+      outcomes: event.outcomes.map((outcome) => ({
+        id: outcome.id,
+        title: outcome.title,
+        users: outcome.users,
+        channelPoints: outcome.channelPoints,
+        topPredictors: outcome.topPredictors.map((predictor) => ({
+          userId: predictor.userId,
+          userDisplayName: predictor.userDisplayName,
+          userName: predictor.userName,
+          channelPointsUsed: predictor.channelPointsUsed,
+          channelPointsWon: predictor.channelPointsWon,
+        })),
+      })),
       startDate: event.startDate.getTime(),
       title: event.title,
       status: 'locked',
@@ -232,7 +266,19 @@ context.replicants.user.id.on('change', (newUserId) => {
     context.events.emitMessage('prediction.begin', {
       id: event.id,
       lockDate: null,
-      outcomes: event.outcomes,
+      outcomes: event.outcomes.map((outcome) => ({
+        id: outcome.id,
+        title: outcome.title,
+        users: outcome.users,
+        channelPoints: outcome.channelPoints,
+        topPredictors: outcome.topPredictors.map((predictor) => ({
+          userId: predictor.userId,
+          userDisplayName: predictor.userDisplayName,
+          userName: predictor.userName,
+          channelPointsUsed: predictor.channelPointsUsed,
+          channelPointsWon: predictor.channelPointsWon,
+        })),
+      })),
       startDate: event.startDate.getTime(),
       title: event.title,
       status: event.status,
