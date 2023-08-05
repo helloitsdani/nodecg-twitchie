@@ -110,10 +110,11 @@ export default (client: ChatClient) => {
   })
 
   client.onSubGift((_, __, subInfo) => {
-    const remainingGifts = giftCounts.get(subInfo.gifter) ?? 0
+    const gifterID = subInfo.gifter ?? '0'
+    const remainingGifts = giftCounts.get(gifterID) ?? 0
 
     if (remainingGifts > 0) {
-      giftCounts.set(subInfo.gifter, remainingGifts - 1)
+      giftCounts.set(gifterID, remainingGifts - 1)
       return
     }
 
@@ -135,8 +136,10 @@ export default (client: ChatClient) => {
      * we keep count here so that those invidual events can be
      * filtered out
      */
-    const previousGiftCount = giftCounts.get(gifter) ?? 0
-    giftCounts.set(gifter, previousGiftCount + subInfo.count)
+    const gifterID = gifter ?? '0'
+    const previousGiftCount = giftCounts.get(gifterID) ?? 0
+
+    giftCounts.set(gifterID, previousGiftCount + subInfo.count)
 
     context.events.emitMessage('user.subscription.gift', {
       gifterDisplayName: subInfo.gifterDisplayName ?? null,
