@@ -29,8 +29,9 @@ context.nodecg.on('login', (user) => {
   handleLogin(user)
 })
 
-context.nodecg.mount((res) => {
+context.nodecg.mount((res, _, next) => {
   handleLogin(res.user)
+  next()
 })
 
 context.nodecg.on('logout', () => {
